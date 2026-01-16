@@ -76,6 +76,7 @@
             -webkit-backdrop-filter: blur(20px);
             box-shadow: var(--shadow-md);
             transition: all 0.3s ease;
+            position: relative;
         }
         
         h1 { 
@@ -465,9 +466,14 @@
 <body>
     <div class="container">
         <header>
-            <button class="theme-toggle" onclick="toggleTheme()">
-                <i data-lucide="moon" style="width: 20px; height: 20px;"></i>
-            </button>
+            <div style="position: absolute; top: 20px; right: 20px; display: flex; gap: 8px;">
+                <button class="theme-toggle" onclick="toggleLanguage()" title="Change language">
+                    <span id="lang-flag" style="font-size: 20px;">🇪🇸</span>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i data-lucide="moon" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
             <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin: 10px 0;">
                 <svg id="logo" width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="32" cy="32" r="28" class="logo-ring" stroke-width="2" fill="none" opacity="0.4"/>
@@ -483,37 +489,37 @@
                 </svg>
                 <h1 class="logo-text" style="margin: 0; font-size: 3em;">RankRadar</h1>
             </div>
-            <p class="subtitle">ASO Intelligence Platform · Real-time Rankings & Insights</p>
+            <p class="subtitle" data-i18n="subtitle">ASO Intelligence Platform · Real-time Rankings & Insights</p>
             
             <div class="controls">
                 <div class="filter-group">
-                    <button class="filter-btn active" onclick="setTimeRange(7)">7 días</button>
-                    <button class="filter-btn" onclick="setTimeRange(14)">14 días</button>
-                    <button class="filter-btn" onclick="setTimeRange(30)">30 días</button>
-                    <button class="filter-btn" onclick="setTimeRange(90)">90 días</button>
+                    <button class="filter-btn active" onclick="setTimeRange(7)" data-i18n="days7">7 días</button>
+                    <button class="filter-btn" onclick="setTimeRange(14)" data-i18n="days14">14 días</button>
+                    <button class="filter-btn" onclick="setTimeRange(30)" data-i18n="days30">30 días</button>
+                    <button class="filter-btn" onclick="setTimeRange(90)" data-i18n="days90">90 días</button>
                 </div>
                 
                 <div class="filter-group">
-                    <label style="color: white;">Desde:</label>
+                    <label style="color: white;" data-i18n="from">Desde:</label>
                     <input type="date" id="date-from" onchange="applyCustomDateRange()">
-                    <label style="color: white;">Hasta:</label>
+                    <label style="color: white;" data-i18n="to">Hasta:</label>
                     <input type="date" id="date-to" onchange="applyCustomDateRange()">
                 </div>
                 
                 <div class="filter-group">
                     <select id="keyword-filter" onchange="filterByKeyword()">
-                        <option value="all">Todas las keywords</option>
+                        <option value="all" data-i18n="allKeywords">Todas las keywords</option>
                     </select>
                 </div>
                 
                 <div class="export-btns">
                     <button class="export-btn" onclick="exportData('csv')">
                         <i data-lucide="download" style="width: 16px; height: 16px;"></i>
-                        CSV
+                        <span data-i18n="exportCSV">CSV</span>
                     </button>
                     <button class="export-btn" onclick="exportData('pdf')">
                         <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
-                        PDF
+                        <span data-i18n="exportPDF">PDF</span>
                     </button>
                 </div>
             </div>
@@ -521,31 +527,31 @@
 
         <div id="loading" class="loading">
             <i data-lucide="loader" style="width: 40px; height: 40px; display: inline-block; animation: spin 1s linear infinite;"></i>
-            <br>Cargando datos...
+            <br><span data-i18n="loading">Cargando datos...</span>
         </div>
 
         <div id="content" style="display: none;">
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-label">Total Keywords</div>
+                    <div class="stat-label" data-i18n="totalKeywords">Total Keywords</div>
                     <div class="stat-value" id="total-keywords">-</div>
-                    <div style="color: var(--text-secondary); margin-top: 10px;">Monitoreadas activamente</div>
+                    <div style="color: var(--text-secondary); margin-top: 10px;" data-i18n="activelyMonitored">Monitoreadas activamente</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Revenue Mensual Est.</div>
+                    <div class="stat-label" data-i18n="monthlyRevenue">Revenue Mensual Est.</div>
                     <div class="stat-value" id="monthly-revenue">$-</div>
                     <div style="color: var(--text-secondary); margin-top: 10px;" id="revenue-change"></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Top 10 Keywords</div>
+                    <div class="stat-label" data-i18n="top10Keywords">Top 10 Keywords</div>
                     <div class="stat-value" id="top-10">-</div>
                     <div style="color: var(--text-secondary); margin-top: 10px;" id="top10-change"></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Visibilidad</div>
+                    <div class="stat-label" data-i18n="visibility">Visibilidad</div>
                     <div class="stat-value" id="visibility">-%</div>
-                    <div style="color: var(--text-secondary); margin-top: 10px;">Keywords en top 100</div>
+                    <div style="color: var(--text-secondary); margin-top: 10px;" data-i18n="keywordsInTop100">Keywords en top 100</div>
                 </div>
             </div>
 
@@ -555,27 +561,27 @@
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('rankings')">
                         <i data-lucide="trending-up" style="width: 20px; height: 20px;"></i>
-                        Rankings
+                        <span data-i18n="rankings">Rankings</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('competitors')">
                         <i data-lucide="users" style="width: 20px; height: 20px;"></i>
-                        Competidores
+                        <span data-i18n="competitors">Competidores</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('discoveries')">
                         <i data-lucide="search" style="width: 20px; height: 20px;"></i>
-                        Descubrimientos
+                        <span data-i18n="discoveries">Descubrimientos</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('costs')">
                         <i data-lucide="dollar-sign" style="width: 20px; height: 20px;"></i>
-                        Análisis de Costos
+                        <span data-i18n="costs">Análisis de Costos</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('patterns')">
                         <i data-lucide="calendar" style="width: 20px; height: 20px;"></i>
-                        Patrones
+                        <span data-i18n="patterns">Patrones</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('experiments')">
                         <i data-lucide="flask-conical" style="width: 20px; height: 20px;"></i>
-                        A/B Tests
+                        <span data-i18n="experiments">A/B Tests</span>
                     </button>
                 </div>
 
@@ -587,7 +593,7 @@
                 <div class="chart-container">
                     <h2 class="chart-title">
                         <i data-lucide="activity" style="width: 32px; height: 32px;"></i>
-                        Evolución de Rankings
+                        <span data-i18n="rankingsEvolution">Evolución de Rankings</span>
                     </h2>
                     <div style="height: 400px;">
                         <canvas id="rankingsChart"></canvas>
@@ -596,13 +602,13 @@
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
                     <div class="chart-container">
-                        <h2 class="chart-title">Distribución por Ranking</h2>
+                        <h2 class="chart-title" data-i18n="distributionByRanking">Distribución por Ranking</h2>
                         <div style="height: 300px;">
                             <canvas id="distributionChart"></canvas>
                         </div>
                     </div>
                     <div class="chart-container">
-                        <h2 class="chart-title">Top/Bottom Movers</h2>
+                        <h2 class="chart-title" data-i18n="topBottomMovers">Top/Bottom Movers</h2>
                         <div style="height: 300px;">
                             <canvas id="moversChart"></canvas>
                         </div>
@@ -702,6 +708,72 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Translations
+        const translations = {
+            es: {
+                subtitle: 'Plataforma de Inteligencia ASO · Rankings e Insights en Tiempo Real',
+                days7: '7 días',
+                days14: '14 días',
+                days30: '30 días',
+                days90: '90 días',
+                from: 'Desde:',
+                to: 'Hasta:',
+                allKeywords: 'Todas las keywords',
+                loading: 'Cargando datos...',
+                totalKeywords: 'Total Keywords',
+                monthlyRevenue: 'Revenue Mensual Est.',
+                top10Keywords: 'Top 10 Keywords',
+                visibility: 'Visibilidad',
+                activelyMonitored: 'Monitoreadas activamente',
+                keywordsInTop100: 'Keywords en top 100',
+                rankings: 'Rankings',
+                competitors: 'Competidores',
+                discoveries: 'Descubrimientos',
+                costs: 'Costos',
+                patterns: 'Patrones',
+                experiments: 'Experimentos',
+                rankingsEvolution: 'Evolución de Rankings',
+                distributionByRanking: 'Distribución por Ranking',
+                topBottomMovers: 'Top/Bottom Movers',
+                competitorsMonitored: 'Competidores Monitorizados',
+                keywordsDiscovered: 'Keywords Descubiertos',
+                exportCSV: 'CSV',
+                exportPDF: 'PDF'
+            },
+            en: {
+                subtitle: 'ASO Intelligence Platform · Real-time Rankings & Insights',
+                days7: '7 days',
+                days14: '14 days',
+                days30: '30 days',
+                days90: '90 days',
+                from: 'From:',
+                to: 'To:',
+                allKeywords: 'All keywords',
+                loading: 'Loading data...',
+                totalKeywords: 'Total Keywords',
+                monthlyRevenue: 'Est. Monthly Revenue',
+                top10Keywords: 'Top 10 Keywords',
+                visibility: 'Visibility',
+                activelyMonitored: 'Actively monitored',
+                keywordsInTop100: 'Keywords in top 100',
+                rankings: 'Rankings',
+                competitors: 'Competitors',
+                discoveries: 'Discoveries',
+                costs: 'Costs',
+                patterns: 'Patterns',
+                experiments: 'Experiments',
+                rankingsEvolution: 'Rankings Evolution',
+                distributionByRanking: 'Distribution by Ranking',
+                topBottomMovers: 'Top/Bottom Movers',
+                competitorsMonitored: 'Monitored Competitors',
+                keywordsDiscovered: 'Discovered Keywords',
+                exportCSV: 'CSV',
+                exportPDF: 'PDF'
+            }
+        };
+
+        let currentLang = 'es';
 
         // Datos embebidos (generados al crear el dashboard)
         const EMBEDDED_DATA = [{"date":"2026-01-14 18:16:04.410251","keyword":"biblenow","country":"US","rank":2,"app_id":6749528117},{"date":"2026-01-14 18:16:07.312779","keyword":"bedtime bible stories","country":"US","rank":10,"app_id":6749528117},{"date":"2026-01-14 18:16:09.822381","keyword":"bible bedtime stories","country":"US","rank":22,"app_id":6749528117},{"date":"2026-01-14 18:16:12.491964","keyword":"bible sleep","country":"US","rank":5,"app_id":6749528117},{"date":"2026-01-14 18:16:16.412443","keyword":"bible bedtime stories","country":"US","rank":22,"app_id":6749528117},{"date":"2026-01-14 18:16:19.212986","keyword":"bible sleep stories","country":"US","rank":6,"app_id":6749528117},{"date":"2026-01-14 18:16:21.863835","keyword":"bible sleep story","country":"US","rank":22,"app_id":6749528117},{"date":"2026-01-14 18:16:25.580848","keyword":"bible stories bedtime","country":"US","rank":31,"app_id":6749528117},{"date":"2026-01-14 18:16:28.250290","keyword":"bible for sleep","country":"US","rank":50,"app_id":6749528117},{"date":"2026-01-14 18:16:31.903426","keyword":"peaceful bible sleep","country":"US","rank":59,"app_id":6749528117},{"date":"2026-01-14 18:16:35.172629","keyword":"scripture bedtime stories","country":"US","rank":47,"app_id":6749528117},{"date":"2026-01-14 18:16:38.693293","keyword":"peaceful bible audio","country":"US","rank":60,"app_id":6749528117},{"date":"2026-01-14 18:16:42.027543","keyword":"bible relaxation stories","country":"US","rank":44,"app_id":6749528117},{"date":"2026-01-14 18:16:45.005208","keyword":"peaceful bible reading","country":"US","rank":51,"app_id":6749528117},{"date":"2026-01-14 18:16:47.688168","keyword":"bible calm sleep","country":"US","rank":52,"app_id":6749528117},{"date":"2026-01-14 18:16:50.069981","keyword":"bible sleep app","country":"US","rank":60,"app_id":6749528117},{"date":"2026-01-14 18:16:52.949269","keyword":"calming prayer audio","country":"US","rank":46,"app_id":6749528117},{"date":"2026-01-14 18:16:55.771461","keyword":"bible story narration","country":"US","rank":46,"app_id":6749528117},{"date":"2026-01-14 18:16:59.435019","keyword":"kids calming audio bible","country":"US","rank":39,"app_id":6749528117},{"date":"2026-01-14 18:17:01.771642","keyword":"scripture audio stories","country":"US","rank":59,"app_id":6749528117},{"date":"2026-01-14 18:17:05.205082","keyword":"peaceful bible kids app","country":"US","rank":60,"app_id":6749528117},{"date":"2026-01-14 18:17:08.016534","keyword":"healing scripture audio","country":"US","rank":47,"app_id":6749528117},{"date":"2026-01-14 18:17:10.310607","keyword":"calming christian audio","country":"US","rank":32,"app_id":6749528117},{"date":"2026-01-14 18:17:14.018175","keyword":"relaxing bible kids","country":"US","rank":48,"app_id":6749528117},{"date":"2026-01-14 18:17:16.800744","keyword":"calm bible voice","country":"US","rank":59,"app_id":6749528117},{"date":"2026-01-14 18:17:20.408180","keyword":"bible for calm","country":"US","rank":64,"app_id":6749528117},{"date":"2026-01-14 18:17:23.466388","keyword":"bible stories audio","country":"US","rank":71,"app_id":6749528117},{"date":"2026-01-14 18:17:26.968613","keyword":"kids bible narration","country":"US","rank":49,"app_id":6749528117},{"date":"2026-01-14 18:17:29.369378","keyword":"bible sleep stories app","country":"US","rank":57,"app_id":6749528117},{"date":"2026-01-14 18:17:33.213439","keyword":"relaxing bible audio","country":"US","rank":56,"app_id":6749528117},{"date":"2026-01-14 18:17:35.984838","keyword":"guided scripture meditation audio","country":"US","rank":62,"app_id":6749528117},{"date":"2026-01-14 18:17:38.272639","keyword":"peaceful verses","country":"US","rank":64,"app_id":6749528117},{"date":"2026-01-14 18:17:41.220496","keyword":"calming bible app","country":"US","rank":62,"app_id":6749528117},{"date":"2026-01-14 18:17:43.595632","keyword":"bible stories to relax kids","country":"US","rank":73,"app_id":6749528117},{"date":"2026-01-14 18:17:47.149247","keyword":"bible verses sleep audio","country":"US","rank":83,"app_id":6749528117},{"date":"2026-01-14 18:17:50.545153","keyword":"relaxing scripture app","country":"US","rank":102,"app_id":6749528117},{"date":"2026-01-14 18:17:53.463593","keyword":"bible night meditation","country":"US","rank":73,"app_id":6749528117},{"date":"2026-01-14 18:17:56.782779","keyword":"audio bible stories","country":"US","rank":109,"app_id":6749528117},{"date":"2026-01-14 18:17:59.652172","keyword":"bedtime bible audio","country":"US","rank":69,"app_id":6749528117},{"date":"2026-01-14 18:18:02.096449","keyword":"audio bible bedtime","country":"US","rank":67,"app_id":6749528117},{"date":"2026-01-14 18:18:04.978906","keyword":"bible stories for sleep","country":"US","rank":40,"app_id":6749528117},{"date":"2026-01-14 18:18:08.167064","keyword":"bible chat app","country":"US","rank":129,"app_id":6749528117},{"date":"2026-01-14 18:18:10.952904","keyword":"listen to the bible","country":"US","rank":105,"app_id":6749528117},{"date":"2026-01-14 18:18:14.334672","keyword":"bible ai chat","country":"US","rank":43,"app_id":6749528117},{"date":"2026-01-14 18:18:18.204578","keyword":"bible chat gpt","country":"US","rank":66,"app_id":6749528117},{"date":"2026-01-14 18:18:21.752929","keyword":"sleep bible audio","country":"US","rank":64,"app_id":6749528117},{"date":"2026-01-14 18:18:25.634914","keyword":"bible meditation audio","country":"US","rank":109,"app_id":6749528117},{"date":"2026-01-14 18:18:29.403540","keyword":"soothing bible meditation","country":"US","rank":89,"app_id":6749528117},{"date":"2026-01-14 18:18:32.433645","keyword":"bible bedtime app","country":"US","rank":105,"app_id":6749528117},{"date":"2026-01-14 18:18:36.379544","keyword":"bedtime prayer audio","country":"US","rank":103,"app_id":6749528117},{"date":"2026-01-14 18:18:39.525131","keyword":"bible meditation","country":"US","rank":89,"app_id":6749528117},{"date":"2026-01-14 18:18:41.929963","keyword":"relaxing bible app","country":"US","rank":61,"app_id":6749528117},{"date":"2026-01-14 18:18:45.127897","keyword":"personal bible trainer","country":"US","rank":87,"app_id":6749528117},{"date":"2026-01-14 18:18:48.662701","keyword":"bible reading","country":"US","rank":96,"app_id":6749528117},{"date":"2026-01-14 18:18:51.338722","keyword":"kids bible study","country":"US","rank":158,"app_id":6749528117},{"date":"2026-01-14 18:18:55.198692","keyword":"scripture notes","country":"US","rank":105,"app_id":6749528117},{"date":"2026-01-14 18:18:58.823844","keyword":"bible for anxiety","country":"US","rank":72,"app_id":6749528117},{"date":"2026-01-14 18:19:01.291524","keyword":"bible meditation bedtime","country":"US","rank":109,"app_id":6749528117},{"date":"2026-01-14 18:19:03.669951","keyword":"children's bible stories","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-14 18:19:06.035715","keyword":"bible stories for kids","country":"US","rank":120,"app_id":6749528117},{"date":"2026-01-14 18:19:08.476516","keyword":"devotional bible","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-14 18:19:11.009896","keyword":"bible for anxiety relief","country":"US","rank":73,"app_id":6749528117},{"date":"2026-01-14 18:19:13.241524","keyword":"bible meditation for kids","country":"US","rank":104,"app_id":6749528117},{"date":"2026-01-14 18:19:16.101731","keyword":"relaxing bible bedtime kids","country":"US","rank":51,"app_id":6749528117},{"date":"2026-01-14 18:19:18.892796","keyword":"faith ai bible","country":"US","rank":127,"app_id":6749528117},{"date":"2026-01-14 18:19:22.687808","keyword":"the bible chat","country":"US","rank":139,"app_id":6749528117},{"date":"2026-01-14 18:19:25.435805","keyword":"bible chat","country":"US","rank":165,"app_id":6749528117},{"date":"2026-01-14 18:19:28.452339","keyword":"chat with god","country":"US","rank":126,"app_id":6749528117},{"date":"2026-01-14 18:19:31.692358","keyword":"ai bible chat","country":"US","rank":99,"app_id":6749528117},{"date":"2026-01-14 18:19:35.589163","keyword":"haven bible chat","country":"US","rank":62,"app_id":6749528117},{"date":"2026-01-14 18:19:38.940359","keyword":"the bible project","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-14 18:19:41.986341","keyword":"bible chat: daily devotional","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-14 18:19:44.437466","keyword":"bsf bible study","country":"US","rank":114,"app_id":6749528117},{"date":"2026-01-14 18:19:47.023289","keyword":"audio bible app free","country":"US","rank":149,"app_id":6749528117},{"date":"2026-01-14 18:19:50.085811","keyword":"bible path","country":"US","rank":118,"app_id":6749528117},{"date":"2026-01-14 18:19:53.211506","keyword":"bibleproject","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-14 18:19:56.174236","keyword":"bible path: daily devotional","country":"US","rank":108,"app_id":6749528117},{"date":"2026-01-14 18:19:59.234866","keyword":"abide bible sleep meditation","country":"US","rank":111,"app_id":6749528117},{"date":"2026-01-14 18:20:01.641488","keyword":"bible reading tracker","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-14 18:20:05.294873","keyword":"biblechat","country":"US","rank":113,"app_id":6749528117},{"date":"2026-01-14 18:20:09.231262","keyword":"the biblechat","country":"US","rank":170,"app_id":6749528117},{"date":"2026-01-14 18:20:11.677187","keyword":"free bible chat","country":"US","rank":79,"app_id":6749528117},{"date":"2026-01-14 18:20:14.077030","keyword":"daily audio bible","country":"US","rank":122,"app_id":6749528117},{"date":"2026-01-15 18:16:04.410251","keyword":"biblenow","country":"US","rank":2,"app_id":6749528117},{"date":"2026-01-15 18:16:07.312779","keyword":"bedtime bible stories","country":"US","rank":21,"app_id":6749528117},{"date":"2026-01-15 18:16:09.822381","keyword":"bible bedtime stories","country":"US","rank":22,"app_id":6749528117},{"date":"2026-01-15 18:16:12.491964","keyword":"bible sleep","country":"US","rank":19,"app_id":6749528117},{"date":"2026-01-15 18:16:16.412443","keyword":"bible bedtime stories","country":"US","rank":22,"app_id":6749528117},{"date":"2026-01-15 18:16:19.212986","keyword":"bible sleep stories","country":"US","rank":16,"app_id":6749528117},{"date":"2026-01-15 18:16:21.863835","keyword":"bible sleep story","country":"US","rank":22,"app_id":6749528117},{"date":"2026-01-15 18:16:25.580848","keyword":"bible stories bedtime","country":"US","rank":31,"app_id":6749528117},{"date":"2026-01-15 18:16:28.250290","keyword":"bible for sleep","country":"US","rank":31,"app_id":6749528117},{"date":"2026-01-15 18:16:31.903426","keyword":"peaceful bible sleep","country":"US","rank":59,"app_id":6749528117},{"date":"2026-01-15 18:16:35.172629","keyword":"scripture bedtime stories","country":"US","rank":47,"app_id":6749528117},{"date":"2026-01-15 18:16:38.693293","keyword":"peaceful bible audio","country":"US","rank":60,"app_id":6749528117},{"date":"2026-01-15 18:16:42.027543","keyword":"bible relaxation stories","country":"US","rank":44,"app_id":6749528117},{"date":"2026-01-15 18:16:45.005208","keyword":"peaceful bible reading","country":"US","rank":51,"app_id":6749528117},{"date":"2026-01-15 18:16:47.688168","keyword":"bible calm sleep","country":"US","rank":52,"app_id":6749528117},{"date":"2026-01-15 18:16:50.069981","keyword":"bible sleep app","country":"US","rank":60,"app_id":6749528117},{"date":"2026-01-15 18:16:52.949269","keyword":"calming prayer audio","country":"US","rank":46,"app_id":6749528117},{"date":"2026-01-15 18:16:55.771461","keyword":"bible story narration","country":"US","rank":46,"app_id":6749528117},{"date":"2026-01-15 18:16:59.435019","keyword":"kids calming audio bible","country":"US","rank":39,"app_id":6749528117},{"date":"2026-01-15 18:17:01.771642","keyword":"scripture audio stories","country":"US","rank":59,"app_id":6749528117},{"date":"2026-01-15 18:17:05.205082","keyword":"peaceful bible kids app","country":"US","rank":60,"app_id":6749528117},{"date":"2026-01-15 18:17:08.016534","keyword":"healing scripture audio","country":"US","rank":47,"app_id":6749528117},{"date":"2026-01-15 18:17:10.310607","keyword":"calming christian audio","country":"US","rank":32,"app_id":6749528117},{"date":"2026-01-15 18:17:14.018175","keyword":"relaxing bible kids","country":"US","rank":48,"app_id":6749528117},{"date":"2026-01-15 18:17:16.800744","keyword":"calm bible voice","country":"US","rank":59,"app_id":6749528117},{"date":"2026-01-15 18:17:20.408180","keyword":"bible for calm","country":"US","rank":64,"app_id":6749528117},{"date":"2026-01-15 18:17:23.466388","keyword":"bible stories audio","country":"US","rank":71,"app_id":6749528117},{"date":"2026-01-15 18:17:26.968613","keyword":"kids bible narration","country":"US","rank":49,"app_id":6749528117},{"date":"2026-01-15 18:17:29.369378","keyword":"bible sleep stories app","country":"US","rank":57,"app_id":6749528117},{"date":"2026-01-15 18:17:33.213439","keyword":"relaxing bible audio","country":"US","rank":56,"app_id":6749528117},{"date":"2026-01-15 18:17:35.984838","keyword":"guided scripture meditation audio","country":"US","rank":62,"app_id":6749528117},{"date":"2026-01-15 18:17:38.272639","keyword":"peaceful verses","country":"US","rank":64,"app_id":6749528117},{"date":"2026-01-15 18:17:41.220496","keyword":"calming bible app","country":"US","rank":62,"app_id":6749528117},{"date":"2026-01-15 18:17:43.595632","keyword":"bible stories to relax kids","country":"US","rank":73,"app_id":6749528117},{"date":"2026-01-15 18:17:47.149247","keyword":"bible verses sleep audio","country":"US","rank":83,"app_id":6749528117},{"date":"2026-01-15 18:17:50.545153","keyword":"relaxing scripture app","country":"US","rank":102,"app_id":6749528117},{"date":"2026-01-15 18:17:53.463593","keyword":"bible night meditation","country":"US","rank":73,"app_id":6749528117},{"date":"2026-01-15 18:17:56.782779","keyword":"audio bible stories","country":"US","rank":109,"app_id":6749528117},{"date":"2026-01-15 18:17:59.652172","keyword":"bedtime bible audio","country":"US","rank":69,"app_id":6749528117},{"date":"2026-01-15 18:18:02.096449","keyword":"audio bible bedtime","country":"US","rank":67,"app_id":6749528117},{"date":"2026-01-15 18:18:04.978906","keyword":"bible stories for sleep","country":"US","rank":40,"app_id":6749528117},{"date":"2026-01-15 18:18:08.167064","keyword":"bible chat app","country":"US","rank":129,"app_id":6749528117},{"date":"2026-01-15 18:18:10.952904","keyword":"listen to the bible","country":"US","rank":105,"app_id":6749528117},{"date":"2026-01-15 18:18:14.334672","keyword":"bible ai chat","country":"US","rank":43,"app_id":6749528117},{"date":"2026-01-15 18:18:18.204578","keyword":"bible chat gpt","country":"US","rank":66,"app_id":6749528117},{"date":"2026-01-15 18:18:21.752929","keyword":"sleep bible audio","country":"US","rank":64,"app_id":6749528117},{"date":"2026-01-15 18:18:25.634914","keyword":"bible meditation audio","country":"US","rank":109,"app_id":6749528117},{"date":"2026-01-15 18:18:29.403540","keyword":"soothing bible meditation","country":"US","rank":89,"app_id":6749528117},{"date":"2026-01-15 18:18:32.433645","keyword":"bible bedtime app","country":"US","rank":105,"app_id":6749528117},{"date":"2026-01-15 18:18:36.379544","keyword":"bedtime prayer audio","country":"US","rank":103,"app_id":6749528117},{"date":"2026-01-15 18:18:39.525131","keyword":"bible meditation","country":"US","rank":89,"app_id":6749528117},{"date":"2026-01-15 18:18:41.929963","keyword":"relaxing bible app","country":"US","rank":61,"app_id":6749528117},{"date":"2026-01-15 18:18:45.127897","keyword":"personal bible trainer","country":"US","rank":87,"app_id":6749528117},{"date":"2026-01-15 18:18:48.662701","keyword":"bible reading","country":"US","rank":96,"app_id":6749528117},{"date":"2026-01-15 18:18:51.338722","keyword":"kids bible study","country":"US","rank":158,"app_id":6749528117},{"date":"2026-01-15 18:18:55.198692","keyword":"scripture notes","country":"US","rank":105,"app_id":6749528117},{"date":"2026-01-15 18:18:58.823844","keyword":"bible for anxiety","country":"US","rank":72,"app_id":6749528117},{"date":"2026-01-15 18:19:01.291524","keyword":"bible meditation bedtime","country":"US","rank":109,"app_id":6749528117},{"date":"2026-01-15 18:19:03.669951","keyword":"children's bible stories","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-15 18:19:06.035715","keyword":"bible stories for kids","country":"US","rank":120,"app_id":6749528117},{"date":"2026-01-15 18:19:08.476516","keyword":"devotional bible","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-15 18:19:11.009896","keyword":"bible for anxiety relief","country":"US","rank":73,"app_id":6749528117},{"date":"2026-01-15 18:19:13.241524","keyword":"bible meditation for kids","country":"US","rank":104,"app_id":6749528117},{"date":"2026-01-15 18:19:16.101731","keyword":"relaxing bible bedtime kids","country":"US","rank":51,"app_id":6749528117},{"date":"2026-01-15 18:19:18.892796","keyword":"faith ai bible","country":"US","rank":127,"app_id":6749528117},{"date":"2026-01-15 18:19:22.687808","keyword":"the bible chat","country":"US","rank":139,"app_id":6749528117},{"date":"2026-01-15 18:19:25.435805","keyword":"bible chat","country":"US","rank":165,"app_id":6749528117},{"date":"2026-01-15 18:19:28.452339","keyword":"chat with god","country":"US","rank":126,"app_id":6749528117},{"date":"2026-01-15 18:19:31.692358","keyword":"ai bible chat","country":"US","rank":99,"app_id":6749528117},{"date":"2026-01-15 18:19:35.589163","keyword":"haven bible chat","country":"US","rank":62,"app_id":6749528117},{"date":"2026-01-15 18:19:38.940359","keyword":"the bible project","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-15 18:19:41.986341","keyword":"bible chat: daily devotional","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-15 18:19:44.437466","keyword":"bsf bible study","country":"US","rank":114,"app_id":6749528117},{"date":"2026-01-15 18:19:47.023289","keyword":"audio bible app free","country":"US","rank":149,"app_id":6749528117},{"date":"2026-01-15 18:19:50.085811","keyword":"bible path","country":"US","rank":118,"app_id":6749528117},{"date":"2026-01-15 18:19:53.211506","keyword":"bibleproject","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-15 18:19:56.174236","keyword":"bible path: daily devotional","country":"US","rank":108,"app_id":6749528117},{"date":"2026-01-15 18:19:59.234866","keyword":"abide bible sleep meditation","country":"US","rank":111,"app_id":6749528117},{"date":"2026-01-15 18:20:01.641488","keyword":"bible reading tracker","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-15 18:20:05.294873","keyword":"biblechat","country":"US","rank":113,"app_id":6749528117},{"date":"2026-01-15 18:20:09.231262","keyword":"the biblechat","country":"US","rank":170,"app_id":6749528117},{"date":"2026-01-15 18:20:11.677187","keyword":"free bible chat","country":"US","rank":79,"app_id":6749528117},{"date":"2026-01-15 18:20:14.077030","keyword":"daily audio bible","country":"US","rank":122,"app_id":6749528117},{"date":"2026-01-16 12:15:25.326678","keyword":"biblenow","country":"US","rank":2,"app_id":6749528117},{"date":"2026-01-16 12:15:32.457212","keyword":"bedtime bible stories","country":"US","rank":10,"app_id":6749528117},{"date":"2026-01-16 12:15:38.966949","keyword":"bible bedtime stories","country":"US","rank":23,"app_id":6749528117},{"date":"2026-01-16 12:15:45.528731","keyword":"bible sleep","country":"US","rank":20,"app_id":6749528117},{"date":"2026-01-16 12:15:48.886414","keyword":"bible bedtime stories","country":"US","rank":23,"app_id":6749528117},{"date":"2026-01-16 12:15:56.926663","keyword":"bible sleep stories","country":"US","rank":18,"app_id":6749528117},{"date":"2026-01-16 12:15:59.853561","keyword":"bible sleep story","country":"US","rank":22,"app_id":6749528117},{"date":"2026-01-16 12:16:06.689766","keyword":"bible stories bedtime","country":"US","rank":29,"app_id":6749528117},{"date":"2026-01-16 12:16:12.676902","keyword":"bible for sleep","country":"US","rank":28,"app_id":6749528117},{"date":"2026-01-16 12:16:19.737321","keyword":"peaceful bible sleep","country":"US","rank":52,"app_id":6749528117},{"date":"2026-01-16 12:16:26.153453","keyword":"scripture bedtime stories","country":"US","rank":56,"app_id":6749528117},{"date":"2026-01-16 12:16:32.327650","keyword":"peaceful bible audio","country":"US","rank":65,"app_id":6749528117},{"date":"2026-01-16 12:16:38.138732","keyword":"bible relaxation stories","country":"US","rank":40,"app_id":6749528117},{"date":"2026-01-16 12:16:43.857623","keyword":"peaceful bible reading","country":"US","rank":49,"app_id":6749528117},{"date":"2026-01-16 12:16:51.557488","keyword":"bible calm sleep","country":"US","rank":47,"app_id":6749528117},{"date":"2026-01-16 12:16:58.818900","keyword":"bible sleep app","country":"US","rank":53,"app_id":6749528117},{"date":"2026-01-16 12:17:05.785692","keyword":"calming prayer audio","country":"US","rank":45,"app_id":6749528117},{"date":"2026-01-16 12:17:11.775498","keyword":"bible story narration","country":"US","rank":43,"app_id":6749528117},{"date":"2026-01-16 12:17:18.319291","keyword":"kids calming audio bible","country":"US","rank":35,"app_id":6749528117},{"date":"2026-01-16 12:17:24.587916","keyword":"scripture audio stories","country":"US","rank":46,"app_id":6749528117},{"date":"2026-01-16 12:17:31.298990","keyword":"peaceful bible kids app","country":"US","rank":61,"app_id":6749528117},{"date":"2026-01-16 12:17:35.194771","keyword":"healing scripture audio","country":"US","rank":47,"app_id":6749528117},{"date":"2026-01-16 12:17:41.549601","keyword":"calming christian audio","country":"US","rank":29,"app_id":6749528117},{"date":"2026-01-16 12:17:47.358907","keyword":"relaxing bible kids","country":"US","rank":53,"app_id":6749528117},{"date":"2026-01-16 12:17:54.785493","keyword":"calm bible voice","country":"US","rank":60,"app_id":6749528117},{"date":"2026-01-16 12:17:58.020557","keyword":"bible for calm","country":"US","rank":64,"app_id":6749528117},{"date":"2026-01-16 12:18:05.027490","keyword":"bible stories audio","country":"US","rank":71,"app_id":6749528117},{"date":"2026-01-16 12:18:12.317273","keyword":"kids bible narration","country":"US","rank":38,"app_id":6749528117},{"date":"2026-01-16 12:18:19.202627","keyword":"bible sleep stories app","country":"US","rank":82,"app_id":6749528117},{"date":"2026-01-16 12:18:27.208335","keyword":"relaxing bible audio","country":"US","rank":51,"app_id":6749528117},{"date":"2026-01-16 12:18:34.387519","keyword":"guided scripture meditation audio","country":"US","rank":66,"app_id":6749528117},{"date":"2026-01-16 12:18:40.969503","keyword":"peaceful verses","country":"US","rank":69,"app_id":6749528117},{"date":"2026-01-16 12:18:48.513991","keyword":"calming bible app","country":"US","rank":65,"app_id":6749528117},{"date":"2026-01-16 12:18:54.788552","keyword":"bible stories to relax kids","country":"US","rank":57,"app_id":6749528117},{"date":"2026-01-16 12:19:01.920361","keyword":"bible verses sleep audio","country":"US","rank":71,"app_id":6749528117},{"date":"2026-01-16 12:19:09.146191","keyword":"relaxing scripture app","country":"US","rank":71,"app_id":6749528117},{"date":"2026-01-16 12:19:15.358961","keyword":"bible night meditation","country":"US","rank":74,"app_id":6749528117},{"date":"2026-01-16 12:19:23.142472","keyword":"audio bible stories","country":"US","rank":82,"app_id":6749528117},{"date":"2026-01-16 12:19:26.545496","keyword":"bedtime bible audio","country":"US","rank":69,"app_id":6749528117},{"date":"2026-01-16 12:19:32.731711","keyword":"audio bible bedtime","country":"US","rank":68,"app_id":6749528117},{"date":"2026-01-16 12:19:39.801603","keyword":"bible stories for sleep","country":"US","rank":48,"app_id":6749528117},{"date":"2026-01-16 12:19:46.138685","keyword":"bible chat app","country":"US","rank":106,"app_id":6749528117},{"date":"2026-01-16 12:19:53.207243","keyword":"listen to the bible","country":"US","rank":103,"app_id":6749528117},{"date":"2026-01-16 12:20:01.498277","keyword":"bible ai chat","country":"US","rank":50,"app_id":6749528117},{"date":"2026-01-16 12:20:09.329724","keyword":"bible chat gpt","country":"US","rank":51,"app_id":6749528117},{"date":"2026-01-16 12:20:16.930824","keyword":"sleep bible audio","country":"US","rank":60,"app_id":6749528117},{"date":"2026-01-16 12:20:23.689242","keyword":"bible meditation audio","country":"US","rank":88,"app_id":6749528117},{"date":"2026-01-16 12:20:30.151472","keyword":"soothing bible meditation","country":"US","rank":72,"app_id":6749528117},{"date":"2026-01-16 12:20:32.816008","keyword":"bible bedtime app","country":"US","rank":105,"app_id":6749528117},{"date":"2026-01-16 12:20:35.373248","keyword":"bedtime prayer audio","country":"US","rank":103,"app_id":6749528117},{"date":"2026-01-16 12:20:42.545536","keyword":"bible meditation","country":"US","rank":83,"app_id":6749528117},{"date":"2026-01-16 12:20:49.356346","keyword":"relaxing bible app","country":"US","rank":64,"app_id":6749528117},{"date":"2026-01-16 12:20:52.734279","keyword":"personal bible trainer","country":"US","rank":95,"app_id":6749528117},{"date":"2026-01-16 12:21:01.008039","keyword":"bible reading","country":"US","rank":98,"app_id":6749528117},{"date":"2026-01-16 12:21:07.367149","keyword":"kids bible study","country":"US","rank":125,"app_id":6749528117},{"date":"2026-01-16 12:21:13.807679","keyword":"scripture notes","country":"US","rank":102,"app_id":6749528117},{"date":"2026-01-16 12:21:20.119832","keyword":"bible for anxiety","country":"US","rank":70,"app_id":6749528117},{"date":"2026-01-16 12:21:26.597880","keyword":"bible meditation bedtime","country":"US","rank":88,"app_id":6749528117},{"date":"2026-01-16 12:21:32.126328","keyword":"children's bible stories","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-16 12:21:39.161440","keyword":"bible stories for kids","country":"US","rank":114,"app_id":6749528117},{"date":"2026-01-16 12:21:46.748308","keyword":"devotional bible","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-16 12:21:53.671313","keyword":"bible for anxiety relief","country":"US","rank":82,"app_id":6749528117},{"date":"2026-01-16 12:21:56.906363","keyword":"bible meditation for kids","country":"US","rank":80,"app_id":6749528117},{"date":"2026-01-16 12:22:00.513258","keyword":"relaxing bible bedtime kids","country":"US","rank":50,"app_id":6749528117},{"date":"2026-01-16 12:22:07.723260","keyword":"faith ai bible","country":"US","rank":125,"app_id":6749528117},{"date":"2026-01-16 12:22:15.848901","keyword":"the bible chat","country":"US","rank":137,"app_id":6749528117},{"date":"2026-01-16 12:22:22.624771","keyword":"bible chat","country":"US","rank":155,"app_id":6749528117},{"date":"2026-01-16 12:22:29.346274","keyword":"chat with god","country":"US","rank":140,"app_id":6749528117},{"date":"2026-01-16 12:22:31.844663","keyword":"ai bible chat","country":"US","rank":99,"app_id":6749528117},{"date":"2026-01-16 12:22:38.360504","keyword":"haven bible chat","country":"US","rank":69,"app_id":6749528117},{"date":"2026-01-16 12:22:45.541218","keyword":"the bible project","country":"US","rank":119,"app_id":6749528117},{"date":"2026-01-16 12:22:51.814137","keyword":"bible chat: daily devotional","country":"US","rank":999,"app_id":6749528117},{"date":"2026-01-16 12:22:55.760591","keyword":"bsf bible study","country":"US","rank":114,"app_id":6749528117},{"date":"2026-01-16 12:23:02.328280","keyword":"audio bible app free","country":"US","rank":168,"app_id":6749528117},{"date":"2026-01-16 12:23:10.343084","keyword":"bible path","country":"US","rank":127,"app_id":6749528117},{"date":"2026-01-16 12:23:17.401298","keyword":"bibleproject","country":"US","rank":87,"app_id":6749528117},{"date":"2026-01-16 12:23:23.831810","keyword":"bible path: daily devotional","country":"US","rank":104,"app_id":6749528117},{"date":"2026-01-16 12:23:30.204778","keyword":"abide bible sleep meditation","country":"US","rank":125,"app_id":6749528117},{"date":"2026-01-16 12:23:37.931464","keyword":"bible reading tracker","country":"US","rank":148,"app_id":6749528117},{"date":"2026-01-16 12:23:45.389943","keyword":"biblechat","country":"US","rank":146,"app_id":6749528117},{"date":"2026-01-16 12:23:47.883932","keyword":"the biblechat","country":"US","rank":170,"app_id":6749528117},{"date":"2026-01-16 12:23:55.536466","keyword":"free bible chat","country":"US","rank":78,"app_id":6749528117},{"date":"2026-01-16 12:24:02.959981","keyword":"daily audio bible","country":"US","rank":130,"app_id":6749528117}];
@@ -1331,7 +1403,29 @@
             updateDashboard();
         }
         
-        // Restore theme from localStorage
+        function toggleLanguage() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            localStorage.setItem('language', currentLang);
+            
+            // Update flag
+            document.getElementById('lang-flag').textContent = currentLang === 'es' ? '🇪🇸' : '🇬🇧';
+            
+            // Update all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+            
+            // Update select option
+            const option = document.querySelector('#keyword-filter option[value="all"]');
+            if (option) option.textContent = translations[currentLang].allKeywords;
+            
+            lucide.createIcons();
+        }
+        
+        // Restore theme and language from localStorage
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
@@ -1339,6 +1433,12 @@
                 const icon = document.querySelector('.theme-toggle i');
                 icon.setAttribute('data-lucide', 'sun');
                 lucide.createIcons();
+            }
+            
+            const savedLang = localStorage.getItem('language');
+            if (savedLang && savedLang !== 'es') {
+                currentLang = savedLang;
+                toggleLanguage();
             }
         });
     </script>

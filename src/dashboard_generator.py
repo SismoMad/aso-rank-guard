@@ -162,6 +162,7 @@ class InteractiveDashboard:
             -webkit-backdrop-filter: blur(20px);
             box-shadow: var(--shadow-md);
             transition: all 0.3s ease;
+            position: relative;
         }
         
         h1 { 
@@ -551,9 +552,14 @@ class InteractiveDashboard:
 <body>
     <div class="container">
         <header>
-            <button class="theme-toggle" onclick="toggleTheme()">
-                <i data-lucide="moon" style="width: 20px; height: 20px;"></i>
-            </button>
+            <div style="position: absolute; top: 20px; right: 20px; display: flex; gap: 8px;">
+                <button class="theme-toggle" onclick="toggleLanguage()" title="Change language">
+                    <span id="lang-flag" style="font-size: 20px;">🇪🇸</span>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i data-lucide="moon" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
             <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin: 10px 0;">
                 <svg id="logo" width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="32" cy="32" r="28" class="logo-ring" stroke-width="2" fill="none" opacity="0.4"/>
@@ -569,37 +575,37 @@ class InteractiveDashboard:
                 </svg>
                 <h1 class="logo-text" style="margin: 0; font-size: 3em;">RankRadar</h1>
             </div>
-            <p class="subtitle">ASO Intelligence Platform · Real-time Rankings & Insights</p>
+            <p class="subtitle" data-i18n="subtitle">ASO Intelligence Platform · Real-time Rankings & Insights</p>
             
             <div class="controls">
                 <div class="filter-group">
-                    <button class="filter-btn active" onclick="setTimeRange(7)">7 días</button>
-                    <button class="filter-btn" onclick="setTimeRange(14)">14 días</button>
-                    <button class="filter-btn" onclick="setTimeRange(30)">30 días</button>
-                    <button class="filter-btn" onclick="setTimeRange(90)">90 días</button>
+                    <button class="filter-btn active" onclick="setTimeRange(7)" data-i18n="days7">7 días</button>
+                    <button class="filter-btn" onclick="setTimeRange(14)" data-i18n="days14">14 días</button>
+                    <button class="filter-btn" onclick="setTimeRange(30)" data-i18n="days30">30 días</button>
+                    <button class="filter-btn" onclick="setTimeRange(90)" data-i18n="days90">90 días</button>
                 </div>
                 
                 <div class="filter-group">
-                    <label style="color: white;">Desde:</label>
+                    <label style="color: white;" data-i18n="from">Desde:</label>
                     <input type="date" id="date-from" onchange="applyCustomDateRange()">
-                    <label style="color: white;">Hasta:</label>
+                    <label style="color: white;" data-i18n="to">Hasta:</label>
                     <input type="date" id="date-to" onchange="applyCustomDateRange()">
                 </div>
                 
                 <div class="filter-group">
                     <select id="keyword-filter" onchange="filterByKeyword()">
-                        <option value="all">Todas las keywords</option>
+                        <option value="all" data-i18n="allKeywords">Todas las keywords</option>
                     </select>
                 </div>
                 
                 <div class="export-btns">
                     <button class="export-btn" onclick="exportData('csv')">
                         <i data-lucide="download" style="width: 16px; height: 16px;"></i>
-                        CSV
+                        <span data-i18n="exportCSV">CSV</span>
                     </button>
                     <button class="export-btn" onclick="exportData('pdf')">
                         <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
-                        PDF
+                        <span data-i18n="exportPDF">PDF</span>
                     </button>
                 </div>
             </div>
@@ -607,31 +613,31 @@ class InteractiveDashboard:
 
         <div id="loading" class="loading">
             <i data-lucide="loader" style="width: 40px; height: 40px; display: inline-block; animation: spin 1s linear infinite;"></i>
-            <br>Cargando datos...
+            <br><span data-i18n="loading">Cargando datos...</span>
         </div>
 
         <div id="content" style="display: none;">
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-label">Total Keywords</div>
+                    <div class="stat-label" data-i18n="totalKeywords">Total Keywords</div>
                     <div class="stat-value" id="total-keywords">-</div>
-                    <div style="color: var(--text-secondary); margin-top: 10px;">Monitoreadas activamente</div>
+                    <div style="color: var(--text-secondary); margin-top: 10px;" data-i18n="activelyMonitored">Monitoreadas activamente</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Revenue Mensual Est.</div>
+                    <div class="stat-label" data-i18n="monthlyRevenue">Revenue Mensual Est.</div>
                     <div class="stat-value" id="monthly-revenue">$-</div>
                     <div style="color: var(--text-secondary); margin-top: 10px;" id="revenue-change"></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Top 10 Keywords</div>
+                    <div class="stat-label" data-i18n="top10Keywords">Top 10 Keywords</div>
                     <div class="stat-value" id="top-10">-</div>
                     <div style="color: var(--text-secondary); margin-top: 10px;" id="top10-change"></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Visibilidad</div>
+                    <div class="stat-label" data-i18n="visibility">Visibilidad</div>
                     <div class="stat-value" id="visibility">-%</div>
-                    <div style="color: var(--text-secondary); margin-top: 10px;">Keywords en top 100</div>
+                    <div style="color: var(--text-secondary); margin-top: 10px;" data-i18n="keywordsInTop100">Keywords en top 100</div>
                 </div>
             </div>
 
@@ -641,27 +647,27 @@ class InteractiveDashboard:
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('rankings')">
                         <i data-lucide="trending-up" style="width: 20px; height: 20px;"></i>
-                        Rankings
+                        <span data-i18n="rankings">Rankings</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('competitors')">
                         <i data-lucide="users" style="width: 20px; height: 20px;"></i>
-                        Competidores
+                        <span data-i18n="competitors">Competidores</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('discoveries')">
                         <i data-lucide="search" style="width: 20px; height: 20px;"></i>
-                        Descubrimientos
+                        <span data-i18n="discoveries">Descubrimientos</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('costs')">
                         <i data-lucide="dollar-sign" style="width: 20px; height: 20px;"></i>
-                        Análisis de Costos
+                        <span data-i18n="costs">Análisis de Costos</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('patterns')">
                         <i data-lucide="calendar" style="width: 20px; height: 20px;"></i>
-                        Patrones
+                        <span data-i18n="patterns">Patrones</span>
                     </button>
                     <button class="tab-btn" onclick="switchTab('experiments')">
                         <i data-lucide="flask-conical" style="width: 20px; height: 20px;"></i>
-                        A/B Tests
+                        <span data-i18n="experiments">A/B Tests</span>
                     </button>
                 </div>
 
@@ -673,7 +679,7 @@ class InteractiveDashboard:
                 <div class="chart-container">
                     <h2 class="chart-title">
                         <i data-lucide="activity" style="width: 32px; height: 32px;"></i>
-                        Evolución de Rankings
+                        <span data-i18n="rankingsEvolution">Evolución de Rankings</span>
                     </h2>
                     <div style="height: 400px;">
                         <canvas id="rankingsChart"></canvas>
@@ -682,13 +688,13 @@ class InteractiveDashboard:
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
                     <div class="chart-container">
-                        <h2 class="chart-title">Distribución por Ranking</h2>
+                        <h2 class="chart-title" data-i18n="distributionByRanking">Distribución por Ranking</h2>
                         <div style="height: 300px;">
                             <canvas id="distributionChart"></canvas>
                         </div>
                     </div>
                     <div class="chart-container">
-                        <h2 class="chart-title">Top/Bottom Movers</h2>
+                        <h2 class="chart-title" data-i18n="topBottomMovers">Top/Bottom Movers</h2>
                         <div style="height: 300px;">
                             <canvas id="moversChart"></canvas>
                         </div>
@@ -788,6 +794,72 @@ class InteractiveDashboard:
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Translations
+        const translations = {
+            es: {
+                subtitle: 'Plataforma de Inteligencia ASO · Rankings e Insights en Tiempo Real',
+                days7: '7 días',
+                days14: '14 días',
+                days30: '30 días',
+                days90: '90 días',
+                from: 'Desde:',
+                to: 'Hasta:',
+                allKeywords: 'Todas las keywords',
+                loading: 'Cargando datos...',
+                totalKeywords: 'Total Keywords',
+                monthlyRevenue: 'Revenue Mensual Est.',
+                top10Keywords: 'Top 10 Keywords',
+                visibility: 'Visibilidad',
+                activelyMonitored: 'Monitoreadas activamente',
+                keywordsInTop100: 'Keywords en top 100',
+                rankings: 'Rankings',
+                competitors: 'Competidores',
+                discoveries: 'Descubrimientos',
+                costs: 'Costos',
+                patterns: 'Patrones',
+                experiments: 'Experimentos',
+                rankingsEvolution: 'Evolución de Rankings',
+                distributionByRanking: 'Distribución por Ranking',
+                topBottomMovers: 'Top/Bottom Movers',
+                competitorsMonitored: 'Competidores Monitorizados',
+                keywordsDiscovered: 'Keywords Descubiertos',
+                exportCSV: 'CSV',
+                exportPDF: 'PDF'
+            },
+            en: {
+                subtitle: 'ASO Intelligence Platform · Real-time Rankings & Insights',
+                days7: '7 days',
+                days14: '14 days',
+                days30: '30 days',
+                days90: '90 days',
+                from: 'From:',
+                to: 'To:',
+                allKeywords: 'All keywords',
+                loading: 'Loading data...',
+                totalKeywords: 'Total Keywords',
+                monthlyRevenue: 'Est. Monthly Revenue',
+                top10Keywords: 'Top 10 Keywords',
+                visibility: 'Visibility',
+                activelyMonitored: 'Actively monitored',
+                keywordsInTop100: 'Keywords in top 100',
+                rankings: 'Rankings',
+                competitors: 'Competitors',
+                discoveries: 'Discoveries',
+                costs: 'Costs',
+                patterns: 'Patterns',
+                experiments: 'Experiments',
+                rankingsEvolution: 'Rankings Evolution',
+                distributionByRanking: 'Distribution by Ranking',
+                topBottomMovers: 'Top/Bottom Movers',
+                competitorsMonitored: 'Monitored Competitors',
+                keywordsDiscovered: 'Discovered Keywords',
+                exportCSV: 'CSV',
+                exportPDF: 'PDF'
+            }
+        };
+
+        let currentLang = 'es';
 
         // Datos embebidos (generados al crear el dashboard)
         const EMBEDDED_DATA = """ + ranks_data_json + """;
@@ -1340,7 +1412,29 @@ class InteractiveDashboard:
             updateDashboard();
         }
         
-        // Restore theme from localStorage
+        function toggleLanguage() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            localStorage.setItem('language', currentLang);
+            
+            // Update flag
+            document.getElementById('lang-flag').textContent = currentLang === 'es' ? '🇪🇸' : '🇬🇧';
+            
+            // Update all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+            
+            // Update select option
+            const option = document.querySelector('#keyword-filter option[value="all"]');
+            if (option) option.textContent = translations[currentLang].allKeywords;
+            
+            lucide.createIcons();
+        }
+        
+        // Restore theme and language from localStorage
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
@@ -1348,6 +1442,12 @@ class InteractiveDashboard:
                 const icon = document.querySelector('.theme-toggle i');
                 icon.setAttribute('data-lucide', 'sun');
                 lucide.createIcons();
+            }
+            
+            const savedLang = localStorage.getItem('language');
+            if (savedLang && savedLang !== 'es') {
+                currentLang = savedLang;
+                toggleLanguage();
             }
         });
     </script>
