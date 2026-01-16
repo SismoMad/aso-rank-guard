@@ -1,14 +1,17 @@
 # .gitignore para ASO Rank Guard
 
-# Configuración sensible
+# ⚠️ ARCHIVOS SENSIBLES - NUNCA SUBIR A GITHUB
 config/config.yaml
 config/credentials.json
 config/token.json
+CREDENTIALS.md
 .env
 
-# Datos y logs
+# Datos y logs (pueden contener información sensible)
 data/*.csv
+data/ranks*.csv
 logs/*.log
+bot.log
 
 # Python
 __pycache__/

@@ -1,0 +1,63 @@
+# ASO Rank Guard - Configuración de Ejemplo
+# COPIA ESTE ARCHIVO A config.yaml Y RELLENA TUS DATOS
+
+app:
+  id: YOUR_APP_ID_HERE
+  name: "Your App Name"
+  bundle_id: "com.yourapp.bundle"
+
+keywords:
+  - "keyword 1"
+  - "keyword 2"
+  # Añade tus keywords aquí
+
+countries:
+  - US
+
+alerts:
+  drop_threshold: 5
+  rise_threshold: 10
+  
+  smart_alerts:
+    enabled: true
+    pattern_detection: true
+    contextual_insights: true
+  
+  daily_summary:
+    enabled: true
+    time: "18:00"
+    min_changes: 3
+    include_priorities: ["MEDIUM", "LOW"]
+  
+  telegram:
+    enabled: true
+    bot_token: "YOUR_BOT_TOKEN_HERE"
+    chat_id: "YOUR_CHAT_ID_HERE"
+  
+  slack:
+    enabled: false
+    webhook_url: ""
+
+schedule:
+  daily_check_time: "16:00"
+  post_update_checks: [1, 6, 24, 72]
+
+storage:
+  ranks_file: "data/ranks.csv"
+  log_file: "logs/rank_guard.log"
+  retention_days: 90
+
+api:
+  itunes:
+    base_url: "https://itunes.apple.com/search"
+    limit: 250
+    timeout: 10
+  
+  rate_limit:
+    requests_per_minute: 20
+    delay_between_requests: 3
+
+debug:
+  enabled: false
+  verbose_logs: false
+  test_mode: false
