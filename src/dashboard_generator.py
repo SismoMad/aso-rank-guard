@@ -140,7 +140,7 @@ class InteractiveDashboard:
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            padding: 32px;
+            padding: 0;
             min-height: 100vh;
             transition: background 0.3s ease, color 0.3s ease;
             -webkit-font-smoothing: antialiased;
@@ -148,7 +148,14 @@ class InteractiveDashboard:
         
         .container { 
             max-width: 1600px; 
-            margin: 0 auto; 
+            margin: 0 auto;
+            padding: 32px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 !important;
+            }
         }
         
         /* Header estilo Apple */
@@ -522,18 +529,292 @@ class InteractiveDashboard:
         }
         
         /* Responsive */
-        @media (max-width: 768px) {
-            .content-wrapper {
-                grid-template-columns: 1fr;
-            }
-            .tabs {
-                position: static;
-                max-height: none;
-                flex-direction: row;
-                overflow-x: auto;
-            }
+        @media (max-width: 1200px) {
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 !important;
+            }
+            
+            body {
+                padding: 0 !important;
+            }
+            
+            header {
+                border-radius: 0 !important;
+                margin-bottom: 0 !important;
+                padding: 12px 14px !important;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+            }
+            
+            header > div:first-child {
+                top: 10px !important;
+                right: 10px !important;
+                gap: 6px !important;
+            }
+            
+            header svg {
+                width: 28px !important;
+                height: 28px !important;
+            }
+            
+            header h1, .logo-text {
+                font-size: 1.4em !important;
+                margin: 0 !important;
+            }
+            
+            header p, .subtitle {
+                display: none !important;
+            }
+            
+            .theme-toggle {
+                width: 32px !important;
+                height: 32px !important;
+            }
+            
+            .theme-toggle span, .theme-toggle i {
+                font-size: 18px !important;
+                width: 18px !important;
+                height: 18px !important;
+            }
+            
+            /* CONTROLES - Diseño completamente nuevo para móvil */
+            .controls {
+                flex-direction: column !important;
+                gap: 8px !important;
+                margin-top: 10px !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            /* 1. Time range buttons - scroll horizontal */
+            .controls > .filter-group:nth-child(1) {
+                width: 100% !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch;
+                padding: 4px !important;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            
+            .controls > .filter-group:nth-child(1)::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .controls > .filter-group:nth-child(1) .filter-btn {
+                flex: 0 0 auto !important;
+                min-width: 65px !important;
+                padding: 6px 12px !important;
+                font-size: 0.75em !important;
+                white-space: nowrap !important;
+            }
+            
+            /* 2. Date inputs - stack vertical compacto */
+            .controls > .filter-group:nth-child(2) {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 6px !important;
+                padding: 8px !important;
+            }
+            
+            .controls > .filter-group:nth-child(2) label {
+                font-size: 0.7em !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .controls > .filter-group:nth-child(2) input {
+                width: 100% !important;
+                font-size: 14px !important;
+                padding: 6px 8px !important;
+                margin: 0 !important;
+            }
+            
+            /* 3. Keyword selector */
+            .controls > .filter-group:nth-child(3) {
+                width: 100% !important;
+                padding: 4px !important;
+            }
+            
+            .controls > .filter-group:nth-child(3) select {
+                width: 100% !important;
+                font-size: 0.8em !important;
+                padding: 8px !important;
+            }
+            
+            /* 4. Export buttons - horizontal compacto */
+            .controls > .filter-group:nth-child(4) {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 4px !important;
+                gap: 6px !important;
+            }
+            
+            .export-btn {
+                flex: 1 !important;
+                padding: 8px 12px !important;
+                font-size: 0.75em !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 6px !important;
+            }
+            
+            .export-btn i {
+                width: 14px !important;
+                height: 14px !important;
+            }
+            
+            /* Stats cards */
+            #content {
+                padding: 0 !important;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+                margin: 0 !important;
+                padding: 12px !important;
+            }
+            
+            .stat-card {
+                padding: 12px !important;
+                border-radius: 12px !important;
+            }
+            
+            .stat-label {
+                font-size: 0.65em !important;
+            }
+            
+            .stat-value {
+                font-size: 1.4em !important;
+                margin: 4px 0 !important;
+            }
+            
+            .stat-card > div:last-child {
+                font-size: 0.7em !important;
+                margin-top: 4px !important;
+            }
+            
+            /* Content wrapper y tabs */
+            .content-wrapper {
+                grid-template-columns: 1fr !important;
+                padding: 0 !important;
+                gap: 0 !important;
+            }
+            
+            .tabs {
+                position: static !important;
+                width: 100% !important;
+                max-height: none !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                padding: 8px 12px !important;
+                gap: 6px !important;
+                background: var(--bg-card) !important;
+                border-right: none !important;
+                border-bottom: 1px solid var(--border) !important;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .tab-btn {
+                flex: 0 0 auto !important;
+                min-width: 110px !important;
+                padding: 8px 12px !important;
+                font-size: 0.75em !important;
+                border-radius: 8px !important;
+            }
+            
+            .tab-btn i {
+                width: 14px !important;
+                height: 14px !important;
+            }
+            
+            .tab-btn span {
+                font-size: 1em !important;
+            }
+            
+            /* Contenido de tabs */
+            .content {
+                padding: 12px !important;
+            }
+            
+            .chart-container {
+                padding: 12px !important;
+                border-radius: 12px !important;
+                margin-bottom: 12px !important;
+            }
+            
+            .chart-title {
+                font-size: 1em !important;
+                margin-bottom: 12px !important;
+            }
+            
+            .chart-title i {
+                width: 18px !important;
+                height: 18px !important;
+            }
+            
+            /* Tablas responsive */
+            table {
+                font-size: 0.75em !important;
+            }
+            
+            th, td {
+                padding: 6px 4px !important;
+            }
+            
+            /* Cards dentro de tabs */
+            .chart-container .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Inputs y selects generales */
+            input, select, button {
+                font-size: 16px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.2em;
+            }
+            
+            .theme-toggle {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .tab-btn {
+                min-width: 100px;
+                padding: 8px 12px;
+            }
+            
+            .stat-card h3 {
+                font-size: 0.85em;
+            }
+            
+            .stat-card .value {
+                font-size: 1.8em;
+            }
+            
+            .filter-btn {
+                font-size: 0.8em;
+                padding: 6px 10px;
             }
         }
     </style>
