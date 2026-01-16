@@ -1,16 +1,38 @@
 # 🛡️ ASO Rank Guard
 
-**Herramienta personal de monitorización de rankings en App Store para indie developers**
+> **Sistema profesional de monitorización ASO 24/7** para App Store  
+> Tracking automático + Alertas inteligentes + Dashboard web + API REST
 
-Rastreador automático de keywords + alertas inteligentes vía Telegram para tu app **Audio Bible Stories & Chat** (BibleNow, id6749528117)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![Status](https://img.shields.io/badge/status-production-brightgreen.svg)](https://github.com/SismoMad/aso-rank-guard)
+
+Alternativa **gratuita** y **open-source** a AppTweak ($50/mes), Sensor Tower ($300/mes) y App Annie ($500/mes).
+
+**Para:** Indie developers y startups que necesitan ASO profesional sin presupuesto  
+**Caso de uso:** Monitorizar keywords de tu app iOS/Android en App Store
 
 ---
 
 ## 🎯 ¿Qué hace ASO Rank Guard?
 
-Monitoriza **automáticamente** el ranking de tu app en el App Store para 10-20 keywords clave, detecta caídas/subidas importantes (>5 posiciones) y te envía **alertas inmediatas** por Telegram.
+Sistema completo de **App Store Optimization** que:
 
-**100% gratis, ético y diseñado para indie developers** que no pueden pagar $50-300/mes en tools profesionales (AppTweak, Sensor Tower, etc.)
+1. 📊 **Trackea rankings** de keywords automáticamente (diario/horario configurable)
+2. 🔔 **Alerta vía Telegram** solo cuando hay cambios significativos
+3. 🌐 **Dashboard web** con gráficos profesionales y datos reales de ASO
+4. ⚡ **API REST** para integrar con tus propias herramientas
+5. 🤖 **Bot interactivo** para ejecutar comandos desde el móvil
+6. 📈 **Análisis experto** con insights accionables y scoring 0-100
+
+**100% gratis, open-source y self-hosted**. Ideal para indie developers que no pueden pagar $300+/mes en SaaS.
+
+### Demo
+
+![Dashboard Demo](https://via.placeholder.com/800x400/1a1a2e/ffffff?text=Dashboard+Preview)
+
+**Live Demo:** [http://194.164.160.111](http://194.164.160.111) (requiere autenticación)
 
 ### Características principales
 
