@@ -1,0 +1,38 @@
+# ASO Rank Guard - Requirements
+
+# Core dependencies
+requests>=2.31.0
+pandas>=2.0.0
+pyyaml>=6.0.0
+python-dateutil>=2.8.2
+
+# Scheduling
+schedule>=1.2.0
+APScheduler>=3.10.0
+
+# Telegram alerts
+python-telegram-bot>=20.0
+
+# Google Trends (optional but recommended)
+pytrends>=4.9.0
+
+# Google Calendar API (optional)
+google-api-python-client>=2.0.0
+google-auth-httplib2>=0.1.0
+google-auth-oauthlib>=1.0.0
+
+# OpenAI for AI insights (optional)
+openai>=1.0.0
+
+# Slack alerts (optional - uses requests)
+# No extra package needed
+
+# Development tools (optional)
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0
+
+# API REST y Web Dashboard
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+slowapi
