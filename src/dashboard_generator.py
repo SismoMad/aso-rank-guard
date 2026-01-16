@@ -940,14 +940,18 @@ class InteractiveDashboard:
                     <button class="filter-btn" onclick="setTimeRange(90)" data-i18n="days90">90 días</button>
                 </div>
                 
-                <div class="filter-group date-range-group">
-                    <div class="date-input-wrapper">
-                        <label data-i18n="from">Desde:</label>
-                        <input type="date" id="date-from" onchange="applyCustomDateRange()">
-                    </div>
-                    <div class="date-input-wrapper">
-                        <label data-i18n="to">Hasta:</label>
-                        <input type="date" id="date-to" onchange="applyCustomDateRange()">
+                <div class="filter-group search-group" style="flex: 1; max-width: 500px;">
+                    <div style="position: relative; width: 100%;">
+                        <i data-lucide="search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: #8E8E93;"></i>
+                        <input type="text" 
+                               id="keyword-search" 
+                               placeholder="🔍 Buscar keyword (ej: bible, chat, stories...)" 
+                               oninput="searchKeyword()"
+                               style="width: 100%; padding: 14px 16px 14px 48px; border: 2px solid #E5E5EA; border-radius: 14px; font-size: 16px; font-weight: 500; transition: all 0.2s; background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <div id="search-result" style="position: absolute; top: 100%; left: 0; right: 0; margin-top: 10px; padding: 16px 20px; background: var(--card-bg); border: 2px solid #34C759; border-radius: 14px; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 1000;">
+                            <div style="font-weight: 600; font-size: 15px; color: var(--text-secondary); margin-bottom: 6px;" id="search-keyword"></div>
+                            <div style="font-size: 32px; font-weight: 800; color: #007AFF;" id="search-rank"></div>
+                        </div>
                     </div>
                 </div>
                 
@@ -2175,6 +2179,36 @@ class InteractiveDashboard:
             });
             event.target.classList.add('active');
             updateDashboard();
+        }
+        
+        function searchKeyword() {
+            const input = document.getElementById('keyword-search');
+            const query = input.value.toLowerCase().trim();
+            const resultDiv = document.getElementById('search-result');
+            
+            if (query.length === 0) {
+                resultDiv.style.display = 'none';
+                input.style.borderColor = '#E5E5EA';
+                return;
+            }
+            
+            // Buscar en los datos filtrados actuales
+            const dataToSearch = filteredData || currentData;
+            const matches = dataToSearch.filter(d => 
+                d.keyword.toLowerCase().includes(query)
+            );
+            
+            if (matches.length > 0) {
+                // Mostrar la primera coincidencia (la más reciente)
+                const match = matches[0];
+                document.getElementById('search-keyword').textContent = match.keyword;
+                document.getElementById('search-rank').textContent = '#' + match.rank;
+                resultDiv.style.display = 'block';
+                input.style.borderColor = '#34C759';
+            } else {
+                resultDiv.style.display = 'none';
+                input.style.borderColor = '#FF3B30';
+            }
         }
 
         function exportData(format) {
