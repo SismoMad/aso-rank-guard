@@ -661,6 +661,10 @@ class InteractiveDashboard:
                         <i data-lucide="flask-conical" style="width: 20px; height: 20px;"></i>
                         <span data-i18n="experiments">A/B Tests</span>
                     </button>
+                    <button class="tab-btn" onclick="switchTab('alerts')">
+                        <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+                        <span data-i18n="alerts">Alertas</span>
+                    </button>
                 </div>
 
                 <!-- Tabs Content -->
@@ -778,6 +782,124 @@ class InteractiveDashboard:
                 </div>
             </div>
             
+            <!-- Tab: Alerts Config -->
+            <div id="tab-alerts" class="tab-content">
+                <div class="chart-container">
+                    <h2 class="chart-title">
+                        <i data-lucide="bell" style="width: 32px; height: 32px;"></i>
+                        Configuración de Alertas
+                    </h2>
+                    <div id="alerts-content">
+                        <div style="max-width: 800px; margin: 0 auto;">
+                            <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 16px; border-radius: 4px; margin-bottom: 30px;">
+                                <p style="margin: 0; font-size: 0.9em;">
+                                    <strong>💡 Próximamente:</strong> Configuración directa desde el dashboard. Por ahora, edita <code>config/config.yaml</code> manualmente.
+                                </p>
+                            </div>
+                            
+                            <h3 style="margin-bottom: 20px;">📱 Telegram Alerts</h3>
+                            
+                            <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; margin-bottom: 20px;">
+                                <div style="margin-bottom: 20px;">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Bot Token</label>
+                                    <input id="telegram-token" type="text" placeholder="8531462519:AAFvX5PPyB177DUzy..." 
+                                           style="width: 100%; padding: 12px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: monospace;">
+                                    <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                                        Obtén el token desde <a href="https://t.me/BotFather" target="_blank" style="color: var(--primary);">@BotFather</a>
+                                    </small>
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Chat ID</label>
+                                    <input id="telegram-chatid" type="text" placeholder="722751828" 
+                                           style="width: 100%; padding: 12px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: monospace;">
+                                    <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                                        Obtén tu Chat ID desde <a href="https://t.me/userinfobot" target="_blank" style="color: var(--primary);">@userinfobot</a>
+                                    </small>
+                                </div>
+                                
+                                <button onclick="saveAndCopyTelegramConfig()" style="background: var(--primary); color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%;">
+                                    💾 Guardar y Copiar Configuración
+                                </button>
+                                
+                                <div id="config-output" style="display: none; margin-top: 20px; padding: 16px; background: var(--bg-primary); border-radius: 8px; font-family: monospace; font-size: 0.85em; white-space: pre-wrap;"></div>
+                            </div>
+                            
+                            <h3 style="margin: 30px 0 20px 0;">🎯 Tipos de Alertas</h3>
+                            
+                            <div style="display: grid; gap: 16px;">
+                                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; display: flex; gap: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: #ef4444;"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">CRITICAL - Inmediato</div>
+                                        <div style="font-size: 0.9em; color: var(--text-secondary);">
+                                            Caídas ≥ 20 posiciones en TOP keywords, bugs, app eliminada
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; display: flex; gap: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(249, 115, 22, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <i data-lucide="trending-down" style="width: 20px; height: 20px; color: #f97316;"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">HIGH - Importante</div>
+                                        <div style="font-size: 0.9em; color: var(--text-secondary);">
+                                            Caídas 10-19 posiciones, salida del TOP 10, nuevos competidores fuertes
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; display: flex; gap: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <i data-lucide="info" style="width: 20px; height: 20px; color: #3b82f6;"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">MEDIUM - Resumen Diario</div>
+                                        <div style="font-size: 0.9em; color: var(--text-secondary);">
+                                            Cambios 5-9 posiciones, keywords estables, movimientos normales
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; display: flex; gap: 16px;">
+                                    <div style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <i data-lucide="trending-up" style="width: 20px; height: 20px; color: #10b981;"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">CELEBRATION - Siempre</div>
+                                        <div style="font-size: 0.9em; color: var(--text-secondary);">
+                                            Nuevos TOP 3, subidas ≥ 15 posiciones, hitos importantes
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; margin-top: 30px;">
+                                <h4 style="margin: 0 0 16px 0;">📋 Comando para config.yaml</h4>
+                                <pre style="background: var(--bg-primary); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.85em;"><code>alerts:
+  telegram:
+    enabled: true
+    bot_token: "TU_BOT_TOKEN"
+    chat_id: "TU_CHAT_ID"
+  
+  smart_alerts:
+    enabled: true
+    pattern_detection: true
+    contextual_insights: true
+  
+  daily_summary:
+    enabled: true
+    time: "18:00"
+    min_changes: 3</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
                 </div> <!-- End tabs-content -->
             </div> <!-- End content-wrapper -->
         </div> <!-- End content -->
@@ -811,6 +933,7 @@ class InteractiveDashboard:
                 costs: 'Costos',
                 patterns: 'Patrones',
                 experiments: 'Experimentos',
+                alerts: 'Alertas',
                 rankingsEvolution: 'Evolución de Rankings',
                 distributionByRanking: 'Distribución por Ranking',
                 topBottomMovers: 'Top/Bottom Movers',
@@ -841,6 +964,7 @@ class InteractiveDashboard:
                 costs: 'Costs',
                 patterns: 'Patterns',
                 experiments: 'Experiments',
+                alerts: 'Alerts',
                 rankingsEvolution: 'Rankings Evolution',
                 distributionByRanking: 'Distribution by Ranking',
                 topBottomMovers: 'Top/Bottom Movers',
@@ -896,41 +1020,152 @@ class InteractiveDashboard:
         function loadCompetitorsData() {
             try {
                 if (COMPETITORS_DATA && COMPETITORS_DATA.length > 0) {
-                    // Mostrar competidores en la tab
                     const container = document.getElementById('competitors-content');
                     if (container) {
-                        const uniqueCompetitors = [...new Set(COMPETITORS_DATA.map(c => c.app_id))];
+                        // FILTRAR TU PROPIA APP (6749528117) - convertir ambos a string para comparar
+                        const YOUR_APP_ID = '6749528117';
+                        const competitorData = COMPETITORS_DATA.filter(c => String(c.app_id) !== YOUR_APP_ID);
+                        
+                        if (competitorData.length === 0) {
+                            container.innerHTML = '<p style="color: var(--text-secondary);">No hay competidores detectados en tus keywords</p>';
+                            return;
+                        }
+                        
+                        // Agrupar por competidor
+                        const competitorMap = {};
+                        competitorData.forEach(c => {
+                            if (!competitorMap[c.app_id]) {
+                                competitorMap[c.app_id] = {
+                                    name: c.app_name,
+                                    rating: c.rating,
+                                    keywords: [],
+                                    positions: [],
+                                    top3Keywords: [],
+                                    top10Keywords: []
+                                };
+                            }
+                            competitorMap[c.app_id].keywords.push(c.keyword);
+                            competitorMap[c.app_id].positions.push(c.position);
+                            
+                            // Guardar keywords donde rankean TOP
+                            if (c.position <= 3) {
+                                competitorMap[c.app_id].top3Keywords.push(c.keyword);
+                            }
+                            if (c.position <= 10) {
+                                competitorMap[c.app_id].top10Keywords.push(c.keyword);
+                            }
+                        });
+                        
+                        // Calcular métricas + threat score
+                        const competitors = Object.entries(competitorMap).map(([id, data]) => {
+                            const avgPosition = (data.positions.reduce((a,b) => a+b, 0) / data.positions.length);
+                            const top3Count = data.positions.filter(p => p <= 3).length;
+                            const top10Count = data.positions.filter(p => p <= 10).length;
+                            
+                            // THREAT SCORE: cuanto más dominen en TOP positions, mayor amenaza
+                            // Ponderado: TOP 3 vale 3x, TOP 10 vale 1x, posición promedio baja suma
+                            const threatScore = (top3Count * 3) + (top10Count * 1) + (100 - avgPosition);
+                            
+                            return {
+                                id,
+                                name: data.name,
+                                rating: data.rating,
+                                keywordCount: data.keywords.length,
+                                keywordsList: data.keywords,  // Lista completa de keywords
+                                avgPosition: avgPosition.toFixed(1),
+                                top3: top3Count,
+                                top10: top10Count,
+                                threatScore: threatScore.toFixed(1)
+                            };
+                        }).sort((a, b) => b.threatScore - a.threatScore);
+                        
                         container.innerHTML = `
-                            <h3>📊 Competidores Monitorizados: ${uniqueCompetitors.length}</h3>
-                            <div style="overflow-x: auto;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <thead>
-                                        <tr style="background: var(--bg-card);">
-                                            <th style="padding: 8px; text-align: left;">App</th>
-                                            <th style="padding: 8px; text-align: left;">Keyword</th>
-                                            <th style="padding: 8px;">Position</th>
-                                            <th style="padding: 8px;">Rating</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${COMPETITORS_DATA.slice(0, 50).map(c => `
-                                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                                <td style="padding: 8px;">${c.app_name || 'N/A'}</td>
-                                                <td style="padding: 8px; font-size: 0.9em;">${c.keyword}</td>
-                                                <td style="padding: 8px; text-align: center;">#${c.position}</td>
-                                                <td style="padding: 8px; text-align: center;">
-                                                    <span style="display: inline-flex; align-items: center; gap: 4px;">
-                                                        <i data-lucide="star" style="width: 16px; height: 16px; color: #fbbf24;"></i>
-                                                        ${parseFloat(c.rating || 0).toFixed(1)}
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 30px;">
+                                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                                    <div style="color: var(--text-secondary); font-size: 0.85em; margin-bottom: 8px;">COMPETIDORES</div>
+                                    <div style="font-size: 2.5em; font-weight: 700; color: var(--primary);">${competitors.length}</div>
+                                    <div style="color: var(--text-secondary); margin-top: 8px; font-size: 0.9em;">Apps en tus keywords</div>
+                                </div>
+                                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                                    <div style="color: var(--text-secondary); font-size: 0.85em; margin-bottom: 8px;">AMENAZA #1</div>
+                                    <div style="font-size: 1.3em; font-weight: 600; margin: 8px 0;">${competitors[0]?.name?.substring(0, 20) || 'N/A'}</div>
+                                    <div style="color: var(--danger); font-size: 0.9em;">${competitors[0]?.top3 || 0} veces en TOP 3</div>
+                                </div>
+                                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                                    <div style="color: var(--text-secondary); font-size: 0.85em; margin-bottom: 8px;">MEJOR POSICIONADO</div>
+                                    <div style="font-size: 1.3em; font-weight: 600; margin: 8px 0;">${competitors.sort((a,b) => a.avgPosition - b.avgPosition)[0]?.name?.substring(0, 20) || 'N/A'}</div>
+                                    <div style="color: var(--success); font-size: 0.9em;">Avg rank: #${competitors.sort((a,b) => a.avgPosition - b.avgPosition)[0]?.avgPosition || 'N/A'}</div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; padding: 16px; border-radius: 4px; margin-bottom: 24px;">
+                                <p style="margin: 0; color: var(--text-primary); font-size: 0.9em;">
+                                    <strong>📊 Ranking por Amenaza:</strong> Ordenados por dominancia real en tus keywords (TOP 3 × 3 pts + TOP 10 × 1 pt + mejor ranking promedio)
+                                </p>
+                            </div>
+                            
+                            <h3 style="margin: 30px 0 20px 0; display: flex; align-items: center; gap: 10px;">
+                                <i data-lucide="trophy" style="width: 24px; height: 24px; color: var(--primary);"></i>
+                                Ranking Competitivo
+                            </h3>
+                            
+                            <div style="display: grid; gap: 12px;">
+                                ${competitors.slice(0, 10).map((comp, index) => `
+                                    <div style="background: var(--bg-card); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
+                                        <div style="display: grid; grid-template-columns: 40px 1fr auto auto auto auto; gap: 16px; align-items: center; margin-bottom: 12px;">
+                                            <div style="width: 36px; height: 36px; border-radius: 50%; background: ${index < 3 ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'var(--bg-secondary)'}; display: flex; align-items: center; justify-content: center; font-weight: 700; color: ${index < 3 ? '#fff' : 'var(--text-secondary)'};">
+                                                ${index + 1}
+                                            </div>
+                                            <div>
+                                                <div style="font-weight: 600; margin-bottom: 4px;">${comp.name}</div>
+                                                <div style="display: flex; gap: 12px; font-size: 0.85em; color: var(--text-secondary);">
+                                                    <span>${comp.keywordCount} keywords</span>
+                                                    <span>·</span>
+                                                    <span style="display: flex; align-items: center; gap: 4px;">
+                                                        <i data-lucide="star" style="width: 14px; height: 14px; color: #fbbf24;"></i>
+                                                        ${parseFloat(comp.rating || 0).toFixed(1)}
                                                     </span>
-                                                </td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
+                                                </div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.8em; font-weight: 700; color: #ef4444;">${comp.top3}</div>
+                                                <div style="font-size: 0.75em; color: var(--text-secondary);">TOP 3</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.8em; font-weight: 700; color: #f59e0b;">${comp.top10}</div>
+                                                <div style="font-size: 0.75em; color: var(--text-secondary);">TOP 10</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.3em; font-weight: 600;">Ø #${comp.avgPosition}</div>
+                                                <div style="font-size: 0.75em; color: var(--text-secondary);">Avg Rank</div>
+                                            </div>
+                                            <div style="text-align: center; background: ${index < 3 ? 'rgba(239, 68, 68, 0.1)' : 'var(--bg-secondary)'}; padding: 8px 12px; border-radius: 8px;">
+                                                <div style="font-size: 1.5em; font-weight: 700; color: ${index < 3 ? '#ef4444' : 'var(--text-primary)'};">${comp.threatScore}</div>
+                                                <div style="font-size: 0.7em; color: var(--text-secondary);">THREAT</div>
+                                            </div>
+                                        </div>
+                                        <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+                                            <div style="font-size: 0.8em; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500;">
+                                                <i data-lucide="tag" style="width: 12px; height: 12px;"></i>
+                                                Keywords Compartidas:
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                                ${comp.keywordsList.slice(0, 10).map(kw => `
+                                                    <span style="background: var(--bg-secondary); padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">
+                                                        ${kw}
+                                                    </span>
+                                                `).join('')}
+                                                ${comp.keywordsList.length > 10 ? `
+                                                    <span style="color: var(--text-secondary); padding: 4px 8px; font-size: 0.8em;">
+                                                        +${comp.keywordsList.length - 10} más
+                                                    </span>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
                             </div>
                         `;
-                        // Reinitialize Lucide icons for new content
                         setTimeout(() => lucide.createIcons(), 100);
                     }
                 }
@@ -944,42 +1179,122 @@ class InteractiveDashboard:
                 if (DISCOVERIES_DATA && DISCOVERIES_DATA.length > 0) {
                     const container = document.getElementById('discoveries-content');
                     if (container) {
-                        const topDiscoveries = DISCOVERIES_DATA
+                        // Categorizar oportunidades
+                        const quickWins = DISCOVERIES_DATA.filter(d => 
+                            d.difficulty === 'low' && (d.opportunity_score || 0) >= 50
+                        );
+                        const highPotential = DISCOVERIES_DATA.filter(d => 
+                            (d.estimated_volume || 0) > 100 && (d.opportunity_score || 0) >= 60
+                        );
+                        const topScore = DISCOVERIES_DATA
                             .sort((a, b) => (b.opportunity_score || 0) - (a.opportunity_score || 0))
-                            .slice(0, 50);
+                            .slice(0, 10);
+                        
+                        // Agrupar por fuente
+                        const sourceGroups = {};
+                        DISCOVERIES_DATA.forEach(d => {
+                            const source = d.source || 'unknown';
+                            if (!sourceGroups[source]) sourceGroups[source] = [];
+                            sourceGroups[source].push(d);
+                        });
+                        
+                        // Mejor keyword por score
+                        const bestKeyword = DISCOVERIES_DATA.reduce((best, curr) => 
+                            (curr.opportunity_score || 0) > (best.opportunity_score || 0) ? curr : best
+                        , DISCOVERIES_DATA[0]);
                         
                         container.innerHTML = `
-                            <h3>🔍 Keywords Descubiertos: ${DISCOVERIES_DATA.length}</h3>
-                            <p style="color: var(--text-secondary);">Top oportunidades ordenadas por score</p>
-                            <div style="overflow-x: auto; margin-top: 20px;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <thead>
-                                        <tr style="background: var(--bg-card);">
-                                            <th style="padding: 8px; text-align: left;">Keyword</th>
-                                            <th style="padding: 8px;">Score</th>
-                                            <th style="padding: 8px;">Volumen</th>
-                                            <th style="padding: 8px;">Dificultad</th>
-                                            <th style="padding: 8px;">Fuente</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${topDiscoveries.map(d => `
-                                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                                <td style="padding: 8px;">${d.keyword}</td>
-                                                <td style="padding: 8px; text-align: center;">
-                                                    <span style="background: ${d.opportunity_score > 70 ? '#10b981' : d.opportunity_score > 50 ? '#f59e0b' : '#6b7280'}; padding: 4px 8px; border-radius: 4px;">
-                                                        ${d.opportunity_score || 0}
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 24px; border-radius: 12px; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                        <i data-lucide="target" style="width: 24px; height: 24px;"></i>
+                                        <span style="font-size: 0.9em; opacity: 0.9;">Quick Wins</span>
+                                    </div>
+                                    <div style="font-size: 2.5em; font-weight: 700; margin: 8px 0;">${quickWins.length}</div>
+                                    <div style="font-size: 0.85em; opacity: 0.9;">Fáciles de rankear</div>
+                                </div>
+                                
+                                <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 24px; border-radius: 12px; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                        <i data-lucide="trending-up" style="width: 24px; height: 24px;"></i>
+                                        <span style="font-size: 0.9em; opacity: 0.9;">Alto Potencial</span>
+                                    </div>
+                                    <div style="font-size: 2.5em; font-weight: 700; margin: 8px 0;">${highPotential.length}</div>
+                                    <div style="font-size: 0.85em; opacity: 0.9;">Volumen > 100</div>
+                                </div>
+                                
+                                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 24px; border-radius: 12px; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                        <i data-lucide="lightbulb" style="width: 24px; height: 24px;"></i>
+                                        <span style="font-size: 0.9em; opacity: 0.9;">Mejor Oportunidad</span>
+                                    </div>
+                                    <div style="font-size: 1.3em; font-weight: 600; margin: 8px 0; line-height: 1.3;">${bestKeyword.keyword}</div>
+                                    <div style="font-size: 0.85em; opacity: 0.9;">Score: ${bestKeyword.opportunity_score}</div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
+                                    <i data-lucide="award" style="width: 20px; height: 20px; color: #f59e0b;"></i>
+                                    Top 10 Oportunidades
+                                </h3>
+                                <div style="display: grid; gap: 12px;">
+                                    ${topScore.map((d, idx) => `
+                                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg-primary); border-radius: 8px; border-left: 3px solid ${idx < 3 ? '#f59e0b' : 'transparent'};">
+                                            <div style="flex: 1;">
+                                                <div style="display: flex; align-items: center; gap: 12px;">
+                                                    <span style="font-size: 1.5em; font-weight: 700; color: ${idx < 3 ? '#f59e0b' : 'var(--text-secondary)'}; min-width: 30px;">
+                                                        ${idx < 3 ? ['🥇','🥈','🥉'][idx] : (idx + 1)}
                                                     </span>
-                                                </td>
-                                                <td style="padding: 8px; text-align: center;">${d.estimated_volume || 'N/A'}</td>
-                                                <td style="padding: 8px; text-align: center;">${d.difficulty || 'N/A'}</td>
-                                                <td style="padding: 8px; font-size: 0.85em;">${d.source || 'N/A'}</td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
+                                                    <div style="flex: 1;">
+                                                        <div style="font-weight: 500; margin-bottom: 4px;">${d.keyword}</div>
+                                                        <div style="display: flex; gap: 16px; font-size: 0.85em; color: var(--text-secondary);">
+                                                            <span>📊 Vol: ${d.estimated_volume || 'N/A'}</span>
+                                                            <span>🎯 Diff: ${d.difficulty || 'N/A'}</span>
+                                                            <span>📍 ${d.source || 'N/A'}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style="text-align: center; min-width: 80px;">
+                                                <div style="font-size: 1.8em; font-weight: 700; background: ${d.opportunity_score > 70 ? 'linear-gradient(135deg, #10b981, #059669)' : d.opportunity_score > 50 ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'linear-gradient(135deg, #6b7280, #4b5563)'}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                                                    ${d.opportunity_score || 0}
+                                                </div>
+                                                <div style="font-size: 0.75em; color: var(--text-secondary);">SCORE</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <div style="background: var(--bg-card); padding: 24px; border-radius: 12px;">
+                                <h3 style="margin: 0 0 16px 0; display: flex; align-items: center; gap: 10px;">
+                                    <i data-lucide="layers" style="width: 20px; height: 20px; color: #3b82f6;"></i>
+                                    Keywords por Fuente
+                                </h3>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;">
+                                    ${Object.entries(sourceGroups)
+                                        .sort((a, b) => b[1].length - a[1].length)
+                                        .slice(0, 6)
+                                        .map(([source, keywords]) => `
+                                        <div style="background: var(--bg-primary); padding: 16px; border-radius: 8px; text-align: center;">
+                                            <div style="font-size: 2em; font-weight: 700; color: var(--primary);">${keywords.length}</div>
+                                            <div style="font-size: 0.85em; color: var(--text-secondary); margin-top: 4px;">${source.replace(/_/g, ' ')}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div style="margin-top: 20px; padding: 16px; background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; border-radius: 4px;">
+                                    <p style="margin: 0; color: var(--text-primary); font-size: 0.9em;">
+                                        <strong>💡 Recomendación:</strong> Enfócate primero en las <strong>${quickWins.length} Quick Wins</strong> (baja dificultad, score ≥50). Son las más fáciles de rankear y pueden darte resultados rápidos.
+                                    </p>
+                                </div>
                             </div>
                         `;
+                        
+                        // Re-initialize Lucide icons
+                        if (typeof lucide !== 'undefined') {
+                            lucide.createIcons();
+                        }
                     }
                 }
             } catch (e) {
@@ -1234,9 +1549,19 @@ class InteractiveDashboard:
                         },
                         x: {
                             type: 'time',
+                            time: {
+                                minUnit: 'day',
+                                displayFormats: {
+                                    day: 'dd MMM',
+                                    hour: 'dd MMM HH:mm'
+                                },
+                                tooltipFormat: 'dd MMM yyyy HH:mm'
+                            },
                             ticks: { 
                                 color: document.body.classList.contains('dark-mode') ? '#AEAEB2' : '#48484A',
-                                font: { size: 12 }
+                                font: { size: 12 },
+                                maxRotation: 45,
+                                minRotation: 0
                             },
                             grid: { 
                                 color: document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
@@ -1361,6 +1686,19 @@ class InteractiveDashboard:
             document.getElementById(`tab-${tabName}`).classList.add('active');
             event.target.classList.add('active');
             
+            // Si es la pestaña de alertas, cargar valores guardados
+            if (tabName === 'alerts') {
+                const savedToken = localStorage.getItem('telegram_token');
+                const savedChatId = localStorage.getItem('telegram_chatid');
+                
+                if (savedToken) {
+                    document.getElementById('telegram-token').value = savedToken;
+                }
+                if (savedChatId) {
+                    document.getElementById('telegram-chatid').value = savedChatId;
+                }
+            }
+            
             lucide.createIcons();
         }
 
@@ -1402,6 +1740,49 @@ class InteractiveDashboard:
             
             // Recreate charts with new colors
             updateDashboard();
+        }
+        
+        function saveAndCopyTelegramConfig() {
+            const token = document.getElementById('telegram-token').value;
+            const chatId = document.getElementById('telegram-chatid').value;
+            
+            if (!token || !chatId) {
+                alert('⚠️ Por favor completa ambos campos (Bot Token y Chat ID)');
+                return;
+            }
+            
+            // Guardar en localStorage
+            localStorage.setItem('telegram_token', token);
+            localStorage.setItem('telegram_chatid', chatId);
+            
+            // Generar configuración YAML
+            const yamlConfig = `alerts:
+  telegram:
+    enabled: true
+    bot_token: "${token}"
+    chat_id: "${chatId}"
+  
+  smart_alerts:
+    enabled: true
+    pattern_detection: true
+    contextual_insights: true
+  
+  daily_summary:
+    enabled: true
+    time: "18:00"
+    min_changes: 3`;
+            
+            // Mostrar y copiar al portapapeles
+            const output = document.getElementById('config-output');
+            output.textContent = yamlConfig;
+            output.style.display = 'block';
+            
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(yamlConfig).then(() => {
+                alert('✅ Configuración copiada al portapapeles!\\n\\nAhora pega esto en config/config.yaml');
+            }).catch(() => {
+                alert('⚠️ No se pudo copiar automáticamente. Copia manualmente el texto de abajo.');
+            });
         }
         
         function toggleLanguage() {
