@@ -1,0 +1,9 @@
+ASO Rank Guard PRO - Run Summary
+Date: 2026-01-16 12:26:08.342207
+
+ranks: {'status': 'success', 'keywords_tracked': 83, 'changes': 30}
+competitors: {'status': 'success', 'competitors_tracked': 51, 'changes': 0}
+discovery: {'status': 'success', 'total_discovered': 491, 'top_opportunities': 20}
+patterns: {'status': 'success', 'keywords_analyzed': 82, 'weekly_patterns': 0, 'monthly_patterns': 0, 'trends': 0}
+costs: {'status': 'success', 'monthly_revenue': 0.0, 'yearly_revenue': 0.0, 'daily_impressions': 0}
+dashboard: {'status': 'success', 'file_path': 'web/dashboard-interactive.html'}

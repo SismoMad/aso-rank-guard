@@ -36,6 +36,7 @@ Sistema completo de **App Store Optimization** que:
 
 ### Características principales
 
+#### Core Features
 ✅ **Monitorización automática 24/7** de keywords en múltiples países (ES, US, MX, etc.)  
 📊 **Histórico en CSV** fácil de analizar en Excel  
 🚨 **Alertas Telegram** solo cuando hay cambios reales (sin spam)  
@@ -46,7 +47,17 @@ Sistema completo de **App Store Optimization** que:
 📈 **Análisis competitivo** (canibalización, business impact)  
 🔮 **Tareas accionables** (formato backlog con expected impact)  
 ⏰ **Checks automáticos** diarios a la hora que elijas  
-📱 **Reportes profesionales** con evidencia numérica  
+📱 **Reportes profesionales** con evidencia numérica
+
+#### 🆕 PRO Features (v2.0)
+🎯 **Competitor Tracking** - Monitoriza top 5 competidores por keyword, detecta por qué caes  
+🧪 **A/B Testing Tracker** - Mide impacto real de cambios ASO con experimentos  
+🔍 **Keyword Discovery** - Descubre automáticamente nuevas oportunidades (Apple Suggest + competidores + long-tail)  
+📅 **Seasonal Patterns** - Detecta tendencias semanales/mensuales y predice movimientos  
+📊 **Interactive Dashboard** - Gráficos dinámicos con filtros, comparativas y exports  
+💰 **Cost Calculator** - Calcula revenue estimado, opportunity costs y ROI de optimizaciones
+
+📖 **[Ver documentación completa de PRO Features →](NUEVAS_FEATURES_PRO.md)**  
 
 ---
 
@@ -127,6 +138,7 @@ Deberías ver:
 
 ### Comandos Disponibles
 
+#### Core Commands
 ```bash
 ./run.sh track       # Solo tracking de keywords
 ./run.sh monitor     # Tracking + análisis experto a Telegram
@@ -134,6 +146,34 @@ Deberías ver:
 ./run.sh status      # Ver últimos resultados
 ./run.sh test        # Probar Telegram
 ./run.sh schedule    # Iniciar scheduler automático
+```
+
+#### 🆕 PRO Commands (v2.0)
+```bash
+python run_pro.py    # Ejecutar TODAS las features PRO en un comando
+                     # ✅ Rankings + Competidores + Discoveries + Patrones + Dashboard
+
+# Módulos individuales:
+python -c "from src.competitor_tracker import CompetitorTracker; ..."
+python -c "from src.keyword_discovery import KeywordDiscoveryEngine; ..."
+python -c "from src.ab_testing_tracker import ABTestingTracker; ..."
+python -c "from src.seasonal_patterns import SeasonalPatternsDetector; ..."
+python -c "from src.cost_calculator import CostCalculator; ..."
+```
+
+**Quick Start PRO:**
+```bash
+# Ejecutar monitoring completo
+python run_pro.py
+
+# Ver dashboard interactivo
+open web/dashboard-interactive.html
+
+# Ver keywords descubiertas
+head data/keyword_discoveries.csv
+
+# Ver análisis de costos
+cat logs/last_run_summary.txt
 ```
 
 ### 🎓 Análisis Experto (NUEVO - PRO VERSION)
