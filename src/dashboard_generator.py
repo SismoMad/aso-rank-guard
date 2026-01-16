@@ -1979,6 +1979,10 @@ class InteractiveDashboard:
                 });
             });
             
+            // Detectar si solo hay una fecha (vista de "Hoy")
+            const allDates = [...new Set(dataToUse.map(d => d.date.split(' ')[0]))];
+            const isSingleDay = allDates.length === 1;
+            
             // Take top 5 keywords by best rank
             const top5 = Object.entries(keywordData)
                 .map(([keyword, data]) => ({
@@ -1988,12 +1992,25 @@ class InteractiveDashboard:
                 .sort((a, b) => a.bestRank - b.bestRank)
                 .slice(0, 5);
             
+            // Colores vibrantes y contrastados
+            const colors = [
+                '#FF3B30', // Rojo vibrante
+                '#FF9500', // Naranja
+                '#34C759', // Verde
+                '#007AFF', // Azul
+                '#AF52DE'  // Púrpura
+            ];
+            
             const datasets = top5.map((item, index) => ({
                 label: item.keyword,
                 data: keywordData[item.keyword].map(d => ({ x: d.date, y: d.rank })),
-                borderColor: `hsl(${index * 60}, 70%, 60%)`,
-                backgroundColor: `hsla(${index * 60}, 70%, 60%, 0.1)`,
-                tension: 0.4
+                borderColor: colors[index],
+                backgroundColor: colors[index],
+                tension: 0.4,
+                pointRadius: isSingleDay ? 10 : 4,
+                pointHoverRadius: isSingleDay ? 12 : 6,
+                borderWidth: isSingleDay ? 0 : 3,
+                showLine: !isSingleDay
             }));
             
             if (charts.rankings) charts.rankings.destroy();
