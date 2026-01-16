@@ -1,0 +1,184 @@
+app:
+  id: 6749528117
+  name: Audio Bible Stories & Chat
+  bundle_id: com.biblenow.app
+keywords:
+- abide bible sleep meditation
+- ai bible chat
+- audio bible app free
+- audio bible bedtime
+- audio bible stories
+- bedtime bible audio
+- bedtime bible stories
+- bedtime prayer audio
+- bible ai chat
+- bible bedtime app
+- bible bedtime stories
+- bible calm sleep
+- bible chat
+- bible chat app
+- bible chat gpt
+- 'bible chat: daily devotional'
+- bible for anxiety
+- bible for anxiety relief
+- bible for calm
+- bible for sleep
+- bible meditation
+- bible meditation audio
+- bible meditation bedtime
+- bible meditation for kids
+- bible night meditation
+- bible path
+- 'bible path: daily devotional'
+- bible reading
+- bible reading tracker
+- bible relaxation stories
+- bible sleep
+- bible sleep app
+- bible sleep stories
+- bible sleep stories app
+- bible sleep story
+- bible stories audio
+- bible stories bedtime
+- bible stories for kids
+- bible stories for sleep
+- bible stories to relax kids
+- bible story narration
+- bible verses sleep audio
+- biblechat
+- biblenow
+- bibleproject
+- bsf bible study
+- calm bible voice
+- calming bible app
+- calming christian audio
+- calming prayer audio
+- chat with god
+- children's bible stories
+- daily audio bible
+- devotional bible
+- faith ai bible
+- free bible chat
+- guided scripture meditation audio
+- haven bible chat
+- healing scripture audio
+- kids bible narration
+- kids bible study
+- kids calming audio bible
+- listen to the bible
+- peaceful bible audio
+- peaceful bible kids app
+- peaceful bible reading
+- peaceful bible sleep
+- peaceful verses
+- personal bible trainer
+- relaxing bible app
+- relaxing bible audio
+- relaxing bible bedtime kids
+- relaxing bible kids
+- relaxing scripture app
+- scripture audio stories
+- scripture bedtime stories
+- scripture notes
+- sleep bible audio
+- soothing bible meditation
+- the bible chat
+- the bible project
+- the biblechat
+countries:
+- US
+alerts:
+  drop_threshold: 5
+  rise_threshold: 10
+  smart_alerts:
+    enabled: true
+    pattern_detection: true
+    contextual_insights: true
+  daily_summary:
+    enabled: true
+    time: '18:00'
+    min_changes: 3
+    include_priorities:
+    - MEDIUM
+    - LOW
+  telegram:
+    enabled: true
+    bot_token: YOUR_BOT_TOKEN_HERE
+    chat_id: YOUR_CHAT_ID_HERE
+  slack:
+    enabled: false
+    webhook_url: ''
+schedule:
+  daily_check_time: '16:00'
+  post_update_checks:
+  - 1
+  - 6
+  - 24
+  - 72
+google_calendar:
+  enabled: false
+  credentials_file: config/credentials.json
+  token_file: config/token.json
+  calendar_id: primary
+  update_keywords:
+  - app update
+  - app-update
+  - nueva version
+  - update biblenow
+trends:
+  google_trends:
+    enabled: false
+    region: US
+  ai_analysis:
+    enabled: false
+    api_key: ''
+    model: gpt-4o-mini
+pro_features:
+  competitor_tracking:
+    enabled: true
+    track_top_n: 5
+    update_frequency: daily
+  keyword_discovery:
+    enabled: true
+    auto_discover: true
+    sources:
+    - apple_suggest
+    - competitors
+    - long_tail
+    min_opportunity_score: 50
+  ab_testing:
+    enabled: true
+    auto_detect_changes: true
+  seasonal_analysis:
+    enabled: true
+    min_history_days: 14
+    predict_movements: true
+  cost_analysis:
+    enabled: true
+    business_metrics:
+      avg_cvr: 0.03
+      avg_retention_d1: 0.4
+      avg_retention_d7: 0.15
+      avg_arpu_monthly: 2.5
+      avg_ltv_6months: 12.0
+  dashboard:
+    enabled: true
+    auto_refresh: true
+    refresh_interval_minutes: 60
+    include_all_features: true
+storage:
+  ranks_file: data/ranks.csv
+  log_file: logs/rank_guard.log
+  retention_days: 90
+api:
+  itunes:
+    base_url: https://itunes.apple.com/search
+    limit: 250
+    timeout: 10
+  rate_limit:
+    requests_per_minute: 20
+    delay_between_requests: 3
+debug:
+  enabled: false
+  verbose_logs: false
+  test_mode: false
