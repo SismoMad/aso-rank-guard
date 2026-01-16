@@ -962,6 +962,10 @@ class InteractiveDashboard:
                 </div>
                 
                 <div class="filter-group export-group">
+                    <button class="export-btn" onclick="openKeywordsManager()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+                        <span>Gestionar Keywords</span>
+                    </button>
                     <button class="export-btn" onclick="exportData('csv')">
                         <i data-lucide="download" style="width: 16px; height: 16px;"></i>
                         <span data-i18n="exportCSV">CSV</span>
@@ -1301,6 +1305,82 @@ class InteractiveDashboard:
             </div> <!-- End content-wrapper -->
         </div> <!-- End content -->
     </div> <!-- End container -->
+
+    <!-- Modal: Keywords Manager -->
+    <div id="keywords-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 10000; backdrop-filter: blur(4px);" onclick="if(event.target === this) closeKeywordsManager()">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 20px; padding: 0; max-width: 900px; width: 90%; max-height: 90vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
+            
+            <!-- Header -->
+            <div style="padding: 28px 32px; border-bottom: 1px solid #F0F0F5; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 22px; font-weight: 700; color: #1D1D1F;">⚙️ Gestionar Keywords</h2>
+                <button onclick="closeKeywordsManager()" style="background: #F0F0F5; color: #8E8E93; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#E5E5EA'" onmouseout="this.style.background='#F0F0F5'">×</button>
+            </div>
+            
+            <!-- Content -->
+            <div style="padding: 32px; overflow-y: auto; max-height: calc(90vh - 96px);">
+                
+                <!-- Stats rápidos -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px;">
+                    <div style="background: #F9F9FB; padding: 20px; border-radius: 14px; text-align: center; border: 1px solid #F0F0F5;">
+                        <div style="font-size: 36px; font-weight: 800; color: #1D1D1F;" id="kw-count">0</div>
+                        <div style="font-size: 13px; color: #8E8E93; font-weight: 600;">Total Keywords</div>
+                    </div>
+                    <div style="background: #F9F9FB; padding: 20px; border-radius: 14px; text-align: center; border: 1px solid #F0F0F5;">
+                        <div style="font-size: 36px; font-weight: 800; color: #007AFF;" id="kw-local-count">0</div>
+                        <div style="font-size: 13px; color: #8E8E93; font-weight: 600;">Añadidas localmente</div>
+                    </div>
+                </div>
+                
+                <!-- Añadir nueva keyword -->
+                <div style="margin-bottom: 28px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1D1D1F; font-size: 14px;">Añadir nueva keyword</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="new-keyword-input" placeholder="Ej: bible chat, sleep stories..." 
+                               style="flex: 1; padding: 14px 18px; border: 2px solid #E5E5EA; border-radius: 12px; font-size: 15px; background: white; color: #1D1D1F; transition: border-color 0.2s;" onfocus="this.style.borderColor='#007AFF'" onblur="this.style.borderColor='#E5E5EA'"
+                               onkeypress="if(event.key === 'Enter') addKeyword()">
+                        <button onclick="addKeyword()" style="background: #34C759; color: white; padding: 14px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; font-size: 15px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            ➕ Añadir
+                        </button>
+                        <button onclick="downloadKeywordsConfig()" style="background: #007AFF; color: white; padding: 14px 24px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; font-size: 15px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            💾 Descargar
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Lista de keywords -->
+                <div>
+                    <h3 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 600; color: #1D1D1F;">📋 Todas las Keywords</h3>
+                    <div id="keywords-list" style="max-height: 400px; overflow-y: auto; border: 1px solid #E5E5EA; border-radius: 14px; background: white;">
+                        <!-- Se llenará con JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Info importante -->
+                <div style="background: #E3F2FD; border: 1px solid #90CAF9; padding: 14px 18px; border-radius: 12px; font-size: 13px; margin-top: 24px; color: #1565C0;">
+                    <p style="margin: 0 0 8px 0;">
+                        <strong>💡 Cómo añadir keywords:</strong>
+                    </p>
+                    <ol style="margin: 0; padding-left: 20px;">
+                        <li>Escribe la keyword y haz clic en "➕ Añadir"</li>
+                        <li>Se mostrará un comando - cópialo</li>
+                        <li>Abre Terminal en tu Mac (⌘+Espacio → "Terminal")</li>
+                        <li>Pega el comando (⌘+V) y pulsa Enter</li>
+                    </ol>
+                </div>
+                
+                <!-- Comando para copiar (oculto por defecto) -->
+                <div id="command-box" style="display: none; background: #1D1D1F; color: #00FF00; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 13px; margin-top: 16px; position: relative;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #FFFFFF; font-weight: 600;">📋 Ejecuta este comando:</span>
+                        <button onclick="copyCommand()" style="background: #34C759; color: white; padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                            Copiar
+                        </button>
+                    </div>
+                    <div id="command-text" style="word-break: break-all;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Initialize Lucide icons
@@ -2396,6 +2476,166 @@ Keywords Top 10:
             localStorage.setItem('experiments', JSON.stringify(filtered));
             loadExperimentsData();
         }
+        
+        function openKeywordsManager() {
+            document.getElementById('keywords-modal').style.display = 'block';
+            loadKeywordsList();
+        }
+        
+        function closeKeywordsManager() {
+            document.getElementById('keywords-modal').style.display = 'none';
+        }
+        
+        function loadKeywordsList() {
+            // Obtener keywords únicas de los datos actuales
+            const keywords = [...new Set(EMBEDDED_DATA.map(d => d.keyword))].sort();
+            
+            // Cargar keywords añadidas localmente
+            const localKeywords = JSON.parse(localStorage.getItem('local_keywords') || '[]');
+            
+            // Combinar y eliminar duplicados
+            const allKeywords = [...new Set([...keywords, ...localKeywords])].sort();
+            
+            document.getElementById('kw-count').textContent = allKeywords.length;
+            document.getElementById('kw-local-count').textContent = localKeywords.length;
+            
+            const listContainer = document.getElementById('keywords-list');
+            
+            if (allKeywords.length === 0) {
+                listContainer.innerHTML = '<div style="padding: 60px 20px; text-align: center; color: #8E8E93; font-size: 14px;">No hay keywords trackeadas</div>';
+                return;
+            }
+            
+            listContainer.innerHTML = allKeywords.map((kw, index) => {
+                const isLocal = localKeywords.includes(kw);
+                const safeKw = kw.replace(/"/g, '&quot;');
+                const isLast = index === allKeywords.length - 1;
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; background: white; ${!isLast ? 'border-bottom: 1px solid #F0F0F5;' : ''} transition: background 0.15s;" onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='white'">
+                        <div style="flex: 1; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-weight: 500; font-size: 14px; color: #1D1D1F;">${kw}</span>
+                            ${isLocal ? '<span style="background: #34C759; color: white; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">NUEVA</span>' : ''}
+                        </div>
+                        ${isLocal ? `
+                            <button onclick='removeKeyword("${safeKw}")' style="background: #FF3B30; color: white; padding: 6px 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                                🗑️ Eliminar
+                            </button>
+                        ` : `
+                            <span style="color: #8E8E93; font-size: 11px; padding: 4px 10px; background: #F0F0F5; border-radius: 6px; font-weight: 600;">config.yaml</span>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function addKeyword() {
+            const input = document.getElementById('new-keyword-input');
+            const keyword = input.value.trim().toLowerCase();
+            
+            if (!keyword) {
+                alert('⚠️ Escribe una keyword');
+                return;
+            }
+            
+            // Verificar si ya existe
+            const allKeywords = [...new Set(EMBEDDED_DATA.map(d => d.keyword))];
+            const localKeywords = JSON.parse(localStorage.getItem('local_keywords') || '[]');
+            
+            if (allKeywords.includes(keyword) || localKeywords.includes(keyword)) {
+                alert('⚠️ Esta keyword ya está en la lista');
+                return;
+            }
+            
+            // Añadir a localStorage
+            localKeywords.push(keyword);
+            localStorage.setItem('local_keywords', JSON.stringify(localKeywords));
+            
+            input.value = '';
+            loadKeywordsList();
+            
+            // Mostrar comando
+            const command = `cd /Users/javi/aso-rank-guard && python3 add_keywords.py "${keyword}"`;
+            document.getElementById('command-text').textContent = command;
+            document.getElementById('command-box').style.display = 'block';
+            
+            // Scroll al comando
+            document.getElementById('command-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            alert('✅ Keyword "' + keyword + '" añadida!\\n\\n🔽 Mira abajo para copiar el comando');
+        }
+        
+        function copyCommand() {
+            const commandText = document.getElementById('command-text').textContent;
+            
+            // Método 1: clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(commandText).then(() => {
+                    alert('✅ Comando copiado al portapapeles!\\n\\nAhora:\\n1. Abre Terminal (⌘+Espacio → "Terminal")\\n2. Pega el comando (⌘+V)\\n3. Pulsa Enter');
+                }).catch(() => {
+                    // Fallback
+                    copyCommandFallback(commandText);
+                });
+            } else {
+                copyCommandFallback(commandText);
+            }
+        }
+        
+        function copyCommandFallback(text) {
+            // Método alternativo: crear textarea temporal
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ Comando copiado!\\\\n\\\\nAhora:\\\\n1. Abre Terminal (⌘+Espacio → "Terminal")\\\\n2. Pega el comando (⌘+V)\\\\n3. Pulsa Enter');
+            } catch (err) {
+                document.body.removeChild(textarea);
+                alert('❌ No se pudo copiar automáticamente.\\\\n\\\\nCopia manualmente:\\\\n\\\\n' + text);
+            }
+        }
+        
+        function removeKeyword(keyword) {
+            if (!confirm(`¿Seguro que quieres eliminar "${keyword}"?`)) return;
+            
+            const localKeywords = JSON.parse(localStorage.getItem('local_keywords') || '[]');
+            const filtered = localKeywords.filter(kw => kw !== keyword);
+            localStorage.setItem('local_keywords', JSON.stringify(filtered));
+            
+            loadKeywordsList();
+        }
+        
+        function downloadKeywordsConfig() {
+            // Obtener todas las keywords
+            const keywords = [...new Set(EMBEDDED_DATA.map(d => d.keyword))];
+            const localKeywords = JSON.parse(localStorage.getItem('local_keywords') || '[]');
+            const allKeywords = [...new Set([...keywords, ...localKeywords])].sort();
+            
+            // Generar YAML
+            const yaml = `# ASO Rank Guard - Keywords Configuration
+# Total: ${allKeywords.length} keywords
+
+keywords:
+${allKeywords.map(kw => `  - "${kw}"`).join('\\n')}
+
+# Añade esta sección 'keywords:' a tu config/config.yaml
+# (reemplaza la sección existente)
+`;
+            
+            // Descargar
+            const blob = new Blob([yaml], { type: 'text/yaml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'keywords-updated.yaml';
+            a.click();
+            
+            alert('✅ Config descargada!\\n\\nPasos siguientes:\\n1. Abre keywords-updated.yaml\\n2. Copia la sección \\'keywords:\\'\\n3. Reemplázala en config/config.yaml\\n4. Ejecuta el tracker de nuevo');
+        }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -2495,6 +2735,7 @@ Keywords Top 10:
             }
         });
     </script>
+
 </body>
 </html>"""
         
