@@ -443,6 +443,17 @@
         }
         
         /* Responsive */
+        /* Date input wrappers for mobile */
+        .date-input-wrapper {
+            display: contents;
+        }
+        
+        .date-range-group label {
+            color: var(--text-primary);
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
         @media (max-width: 1200px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -450,195 +461,193 @@
         }
         
         @media (max-width: 768px) {
-            .container {
-                padding: 0 !important;
-            }
-            
+            /* Reset body and container */
             body {
                 padding: 0 !important;
             }
             
+            .container {
+                padding: 0 !important;
+            }
+            
+            /* Header mobile */
             header {
                 border-radius: 0 !important;
+                padding: 10px 12px !important;
                 margin-bottom: 0 !important;
-                padding: 12px 14px !important;
                 position: sticky;
                 top: 0;
                 z-index: 1000;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
             }
             
             header > div:first-child {
-                top: 10px !important;
-                right: 10px !important;
-                gap: 6px !important;
+                top: 8px !important;
+                right: 8px !important;
+                gap: 4px !important;
             }
             
-            header svg {
-                width: 28px !important;
-                height: 28px !important;
+            header svg, #logo {
+                width: 24px !important;
+                height: 24px !important;
             }
             
             header h1, .logo-text {
-                font-size: 1.4em !important;
-                margin: 0 !important;
+                font-size: 1.2em !important;
             }
             
-            header p, .subtitle {
+            .subtitle {
                 display: none !important;
             }
             
             .theme-toggle {
-                width: 32px !important;
-                height: 32px !important;
+                width: 30px !important;
+                height: 30px !important;
             }
             
-            .theme-toggle span, .theme-toggle i {
-                font-size: 18px !important;
-                width: 18px !important;
-                height: 18px !important;
+            .theme-toggle span {
+                font-size: 16px !important;
             }
             
-            /* CONTROLES - Diseño completamente nuevo para móvil */
+            .theme-toggle i {
+                width: 16px !important;
+                height: 16px !important;
+            }
+            
+            /* Controls mobile - completamente rediseñado */
             .controls {
                 flex-direction: column !important;
-                gap: 8px !important;
-                margin-top: 10px !important;
+                gap: 6px !important;
+                margin-top: 8px !important;
                 flex-wrap: nowrap !important;
             }
             
-            /* 1. Time range buttons - scroll horizontal */
-            .controls > .filter-group:nth-child(1) {
+            /* Time range - horizontal scroll */
+            .time-range-group {
                 width: 100% !important;
+                padding: 3px !important;
                 overflow-x: auto !important;
-                overflow-y: hidden !important;
                 -webkit-overflow-scrolling: touch;
-                padding: 4px !important;
                 scrollbar-width: none;
-                -ms-overflow-style: none;
             }
             
-            .controls > .filter-group:nth-child(1)::-webkit-scrollbar {
+            .time-range-group::-webkit-scrollbar {
                 display: none;
             }
             
-            .controls > .filter-group:nth-child(1) .filter-btn {
+            .time-range-group .filter-btn {
                 flex: 0 0 auto !important;
-                min-width: 65px !important;
-                padding: 6px 12px !important;
-                font-size: 0.75em !important;
-                white-space: nowrap !important;
-            }
-            
-            /* 2. Date inputs - stack vertical compacto */
-            .controls > .filter-group:nth-child(2) {
-                flex-direction: column !important;
-                align-items: stretch !important;
-                gap: 6px !important;
-                padding: 8px !important;
-            }
-            
-            .controls > .filter-group:nth-child(2) label {
+                min-width: 58px !important;
+                padding: 5px 10px !important;
                 font-size: 0.7em !important;
-                margin: 0 !important;
-                padding: 0 !important;
             }
             
-            .controls > .filter-group:nth-child(2) input {
-                width: 100% !important;
-                font-size: 14px !important;
-                padding: 6px 8px !important;
-                margin: 0 !important;
-            }
-            
-            /* 3. Keyword selector */
-            .controls > .filter-group:nth-child(3) {
-                width: 100% !important;
+            /* Date range - diseño mejorado */
+            .date-range-group {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
                 padding: 4px !important;
+                gap: 4px !important;
             }
             
-            .controls > .filter-group:nth-child(3) select {
-                width: 100% !important;
-                font-size: 0.8em !important;
-                padding: 8px !important;
-            }
-            
-            /* 4. Export buttons - horizontal compacto */
-            .controls > .filter-group:nth-child(4) {
-                width: 100% !important;
-                justify-content: center !important;
-                padding: 4px !important;
-                gap: 6px !important;
-            }
-            
-            .export-btn {
-                flex: 1 !important;
-                padding: 8px 12px !important;
-                font-size: 0.75em !important;
+            .date-input-wrapper {
                 display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 6px !important;
+                flex-direction: column !important;
+                gap: 2px !important;
+            }
+            
+            .date-input-wrapper label {
+                font-size: 0.65em !important;
+                color: var(--text-secondary) !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.5px !important;
+            }
+            
+            .date-input-wrapper input {
+                width: 100% !important;
+                font-size: 12px !important;
+                padding: 5px 4px !important;
+            }
+            
+            /* Keyword selector */
+            .keyword-group {
+                width: 100% !important;
+                padding: 3px !important;
+            }
+            
+            .keyword-group select {
+                width: 100% !important;
+                font-size: 0.75em !important;
+                padding: 6px !important;
+            }
+            
+            /* Export buttons */
+            .export-group {
+                width: 100% !important;
+                padding: 3px !important;
+                gap: 4px !important;
+            }
+            
+            .export-group .export-btn {
+                flex: 1 !important;
+                font-size: 0.7em !important;
+                padding: 6px 8px !important;
+                gap: 4px !important;
             }
             
             .export-btn i {
-                width: 14px !important;
-                height: 14px !important;
+                width: 12px !important;
+                height: 12px !important;
             }
             
-            /* Stats cards */
+            /* Content */
             #content {
                 padding: 0 !important;
             }
             
+            /* Stats grid - 2 columns */
             .stats-grid {
                 grid-template-columns: 1fr 1fr !important;
-                gap: 8px !important;
-                margin: 0 !important;
-                padding: 12px !important;
+                gap: 6px !important;
+                padding: 10px !important;
+                margin-bottom: 0 !important;
             }
             
             .stat-card {
-                padding: 12px !important;
-                border-radius: 12px !important;
+                padding: 10px !important;
             }
             
             .stat-label {
-                font-size: 0.65em !important;
+                font-size: 0.6em !important;
             }
             
             .stat-value {
-                font-size: 1.4em !important;
-                margin: 4px 0 !important;
+                font-size: 1.3em !important;
+                margin: 2px 0 !important;
             }
             
             .stat-card > div:last-child {
-                font-size: 0.7em !important;
-                margin-top: 4px !important;
+                font-size: 0.65em !important;
+                margin-top: 2px !important;
             }
             
-            /* Content wrapper y tabs */
+            /* Content wrapper and tabs */
             .content-wrapper {
                 grid-template-columns: 1fr !important;
-                padding: 0 !important;
                 gap: 0 !important;
+                padding: 0 !important;
             }
             
             .tabs {
                 position: static !important;
                 width: 100% !important;
-                max-height: none !important;
                 flex-direction: row !important;
                 overflow-x: auto !important;
-                overflow-y: hidden !important;
-                padding: 8px 12px !important;
-                gap: 6px !important;
-                background: var(--bg-card) !important;
-                border-right: none !important;
-                border-bottom: 1px solid var(--border) !important;
                 -webkit-overflow-scrolling: touch;
+                padding: 6px 10px !important;
+                gap: 4px !important;
+                border-bottom: 1px solid var(--border) !important;
+                border-right: none !important;
                 scrollbar-width: none;
-                -ms-overflow-style: none;
             }
             
             .tabs::-webkit-scrollbar {
@@ -647,59 +656,131 @@
             
             .tab-btn {
                 flex: 0 0 auto !important;
-                min-width: 110px !important;
-                padding: 8px 12px !important;
-                font-size: 0.75em !important;
-                border-radius: 8px !important;
+                min-width: 95px !important;
+                padding: 6px 10px !important;
+                font-size: 0.7em !important;
             }
             
             .tab-btn i {
-                width: 14px !important;
-                height: 14px !important;
+                width: 12px !important;
+                height: 12px !important;
             }
             
-            .tab-btn span {
-                font-size: 1em !important;
-            }
-            
-            /* Contenido de tabs */
+            /* Tab content */
             .content {
-                padding: 12px !important;
+                padding: 10px !important;
             }
             
             .chart-container {
-                padding: 12px !important;
-                border-radius: 12px !important;
-                margin-bottom: 12px !important;
+                padding: 10px !important;
+                margin-bottom: 10px !important;
             }
             
             .chart-title {
-                font-size: 1em !important;
-                margin-bottom: 12px !important;
+                font-size: 0.95em !important;
+                margin-bottom: 10px !important;
             }
             
             .chart-title i {
-                width: 18px !important;
-                height: 18px !important;
+                width: 16px !important;
+                height: 16px !important;
             }
             
-            /* Tablas responsive */
+            /* Tables */
             table {
-                font-size: 0.75em !important;
+                font-size: 0.65em !important;
+                display: block !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            thead {
+                display: table-header-group !important;
+            }
+            
+            tbody {
+                display: table-row-group !important;
+            }
+            
+            tr {
+                display: table-row !important;
             }
             
             th, td {
-                padding: 6px 4px !important;
+                padding: 4px 2px !important;
+                font-size: 0.9em !important;
+                white-space: nowrap !important;
             }
             
-            /* Cards dentro de tabs */
-            .chart-container .stats-grid {
+            th {
+                position: sticky !important;
+                top: 0 !important;
+                background: var(--bg-card) !important;
+                z-index: 10 !important;
+            }
+            
+            /* Grids dentro de tabs - todo 1 columna */
+            .chart-container div[style*="grid-template-columns"] {
                 grid-template-columns: 1fr !important;
+                gap: 8px !important;
             }
             
-            /* Inputs y selects generales */
-            input, select, button {
-                font-size: 16px !important;
+            /* Cards de competidores */
+            .chart-container div[style*="grid-template-columns: 40px"] {
+                grid-template-columns: 30px 1fr !important;
+                gap: 8px !important;
+                font-size: 0.85em !important;
+            }
+            
+            /* Keywords tags en competidores */
+            .chart-container div[style*="flex-wrap: wrap"] span {
+                font-size: 0.7em !important;
+                padding: 2px 6px !important;
+            }
+            
+            /* Ocultar columnas menos importantes en tablas */
+            table th:nth-child(n+5),
+            table td:nth-child(n+5) {
+                display: none !important;
+            }
+            
+            /* Competidores - cards compactas */
+            #competitors-content > div > div {
+                padding: 10px !important;
+                margin-bottom: 8px !important;
+            }
+            
+            #competitors-content h3 {
+                font-size: 0.9em !important;
+            }
+            
+            /* Stats dentro de competidores */
+            #competitors-content div[style*="font-size: 2.5em"] {
+                font-size: 1.6em !important;
+            }
+            
+            #competitors-content div[style*="font-size: 1.3em"] {
+                font-size: 1em !important;
+            }
+            
+            /* Discoveries content */
+            #discoveries-content div[style*="padding: 24px"] {
+                padding: 12px !important;
+            }
+            
+            #discoveries-content div[style*="font-size: 2em"] {
+                font-size: 1.3em !important;
+            }
+            
+            /* Rankings chart */
+            #rankingChart {
+                height: 250px !important;
+            }
+            
+            /* Responsive canvas */
+            canvas {
+                max-width: 100% !important;
+                height: auto !important;
             }
         }
         
@@ -765,27 +846,31 @@
             <p class="subtitle" data-i18n="subtitle">ASO Intelligence Platform · Real-time Rankings & Insights</p>
             
             <div class="controls">
-                <div class="filter-group">
+                <div class="filter-group time-range-group">
                     <button class="filter-btn active" onclick="setTimeRange(7)" data-i18n="days7">7 días</button>
                     <button class="filter-btn" onclick="setTimeRange(14)" data-i18n="days14">14 días</button>
                     <button class="filter-btn" onclick="setTimeRange(30)" data-i18n="days30">30 días</button>
                     <button class="filter-btn" onclick="setTimeRange(90)" data-i18n="days90">90 días</button>
                 </div>
                 
-                <div class="filter-group" style="align-items: center;">
-                    <label style="color: var(--text-primary); font-size: 0.9em; font-weight: 500;" data-i18n="from">Desde:</label>
-                    <input type="date" id="date-from" onchange="applyCustomDateRange()">
-                    <label style="color: var(--text-primary); font-size: 0.9em; font-weight: 500;" data-i18n="to">Hasta:</label>
-                    <input type="date" id="date-to" onchange="applyCustomDateRange()">
+                <div class="filter-group date-range-group">
+                    <div class="date-input-wrapper">
+                        <label data-i18n="from">Desde:</label>
+                        <input type="date" id="date-from" onchange="applyCustomDateRange()">
+                    </div>
+                    <div class="date-input-wrapper">
+                        <label data-i18n="to">Hasta:</label>
+                        <input type="date" id="date-to" onchange="applyCustomDateRange()">
+                    </div>
                 </div>
                 
-                <div class="filter-group">
+                <div class="filter-group keyword-group">
                     <select id="keyword-filter" onchange="filterByKeyword()">
                         <option value="all" data-i18n="allKeywords">Todas las keywords</option>
                     </select>
                 </div>
                 
-                <div class="filter-group">
+                <div class="filter-group export-group">
                     <button class="export-btn" onclick="exportData('csv')">
                         <i data-lucide="download" style="width: 16px; height: 16px;"></i>
                         <span data-i18n="exportCSV">CSV</span>
