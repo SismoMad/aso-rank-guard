@@ -933,7 +933,8 @@ class InteractiveDashboard:
             
             <div class="controls">
                 <div class="filter-group time-range-group">
-                    <button class="filter-btn active" onclick="setTimeRange(7)" data-i18n="days7">7 días</button>
+                    <button class="filter-btn active" onclick="setTimeRange(1)" data-i18n="today">Hoy</button>
+                    <button class="filter-btn" onclick="setTimeRange(7)" data-i18n="days7">7 días</button>
                     <button class="filter-btn" onclick="setTimeRange(14)" data-i18n="days14">14 días</button>
                     <button class="filter-btn" onclick="setTimeRange(30)" data-i18n="days30">30 días</button>
                     <button class="filter-btn" onclick="setTimeRange(90)" data-i18n="days90">90 días</button>
@@ -980,12 +981,12 @@ class InteractiveDashboard:
                 <div class="stat-card">
                     <div class="stat-label" data-i18n="totalKeywords">Total Keywords</div>
                     <div class="stat-value" id="total-keywords">-</div>
-                    <div style="color: var(--text-secondary); margin-top: 10px;" data-i18n="activelyMonitored">Monitoreadas activamente</div>
+                    <div style="color: var(--text-secondary); margin-top: 10px;" id="keyword-change">Monitoreadas activamente</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label" data-i18n="monthlyRevenue">Revenue Mensual Est.</div>
-                    <div class="stat-value" id="monthly-revenue">$-</div>
-                    <div style="color: var(--text-secondary); margin-top: 10px;" id="revenue-change"></div>
+                    <div class="stat-label" data-i18n="avgRanking">Ranking Promedio</div>
+                    <div class="stat-value" id="avg-ranking">#-</div>
+                    <div style="color: var(--text-secondary); margin-top: 10px;" id="avg-change">Todas las keywords</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label" data-i18n="top10Keywords">Top 10 Keywords</div>
@@ -995,7 +996,7 @@ class InteractiveDashboard:
                 <div class="stat-card">
                     <div class="stat-label" data-i18n="visibility">Visibilidad</div>
                     <div class="stat-value" id="visibility">-%</div>
-                    <div style="color: var(--text-secondary); margin-top: 10px;" data-i18n="keywordsInTop100">Keywords en top 100</div>
+                    <div style="color: var(--text-secondary); margin-top: 10px;" id="visibility-change">Keywords en top 100</div>
                 </div>
             </div>
 
@@ -1319,7 +1320,7 @@ class InteractiveDashboard:
                 allKeywords: 'All keywords',
                 loading: 'Loading data...',
                 totalKeywords: 'Total Keywords',
-                monthlyRevenue: 'Est. Monthly Revenue',
+                avgRanking: 'Ranking Promedio',
                 top10Keywords: 'Top 10 Keywords',
                 visibility: 'Visibility',
                 activelyMonitored: 'Actively monitored',
@@ -1351,7 +1352,8 @@ class InteractiveDashboard:
         const EXPERIMENTS_DATA = """ + experiments_data_json + """;
 
         let currentData = null;
-        let currentTimeRange = 7;
+        let filteredData = null; // Datos filtrados según el rango de tiempo
+        let currentTimeRange = 1;
         let charts = {};
 
         // Load data on page load
@@ -1839,20 +1841,116 @@ class InteractiveDashboard:
         }
 
         function updateDashboard() {
-            if (!currentData) return;
+            if (!EMBEDDED_DATA || EMBEDDED_DATA.length === 0) return;
             
-            // Update stats
-            const uniqueKeywords = [...new Set(currentData.map(d => d.keyword))];
-            document.getElementById('total-keywords').textContent = uniqueKeywords.length;
+            // Extraer solo la parte de la fecha (sin timestamps)
+            const allDates = [...new Set(EMBEDDED_DATA.map(d => d.date.split(' ')[0]))].sort();
             
-            // Top 10 count
-            const top10 = currentData.filter(d => parseInt(d.rank) <= 10).length;
-            document.getElementById('top-10').textContent = top10;
+            console.log('Total datos embebidos:', EMBEDDED_DATA.length);
+            console.log('Fechas disponibles:', allDates);
+            console.log('currentTimeRange:', currentTimeRange);
             
-            // Visibility
-            const inTop100 = currentData.filter(d => parseInt(d.rank) <= 100).length;
-            const visibility = (inTop100 / currentData.length * 100).toFixed(1);
-            document.getElementById('visibility').textContent = visibility;
+            if (allDates.length === 0) return;
+            
+            let latestRanks, prevRanks, hasComparison = false;
+            
+            if (currentTimeRange === 1) {
+                // HOY vs AYER (última ejecución vs anterior)
+                const latestDate = allDates[allDates.length - 1];
+                const prevDate = allDates.length >= 2 ? allDates[allDates.length - 2] : null;
+                
+                latestRanks = EMBEDDED_DATA.filter(d => d.date.startsWith(latestDate));
+                prevRanks = prevDate ? EMBEDDED_DATA.filter(d => d.date.startsWith(prevDate)) : [];
+                hasComparison = prevRanks.length > 0;
+                
+                // Actualizar filteredData para los gráficos
+                filteredData = latestRanks;
+                
+                console.log('HOY - latestDate:', latestDate, 'registros:', latestRanks.length);
+                console.log('AYER - prevDate:', prevDate, 'registros:', prevRanks.length);
+            } else {
+                // 7, 14, 30, 90 días: tomar todas las fechas disponibles (tenemos pocas fechas)
+                // Por ahora, usar todas las fechas disponibles para cualquier rango > 1
+                latestRanks = EMBEDDED_DATA;
+                prevRanks = [];
+                hasComparison = false;
+                
+                // Actualizar filteredData para los gráficos
+                filteredData = EMBEDDED_DATA;
+                
+                console.log('Período ' + currentTimeRange + ' días - usando todos los datos:', latestRanks.length);
+            }
+            
+            // 1. Total Keywords (keywords ÚNICAS del período)
+            const latestKeywords = [...new Set(latestRanks.map(d => d.keyword))];
+            console.log('Keywords únicas:', latestKeywords.length);
+            document.getElementById('total-keywords').textContent = latestKeywords.length;
+            
+            if (hasComparison) {
+                const prevKeywords = [...new Set(prevRanks.map(d => d.keyword))];
+                const keywordChange = latestKeywords.length - prevKeywords.length;
+                const changeEl = document.getElementById('keyword-change');
+                if (keywordChange > 0) {
+                    changeEl.innerHTML = '<span style="color: #34C759">↑ +' + keywordChange + ' nuevas</span>';
+                } else if (keywordChange < 0) {
+                    changeEl.innerHTML = '<span style="color: #FF3B30">↓ ' + keywordChange + ' perdidas</span>';
+                } else {
+                    changeEl.innerHTML = '<span style="color: var(--text-secondary)">Sin cambios</span>';
+                }
+            }
+            
+            // 2. Top 10 count (usar SOLO última fecha)
+            const latestTop10 = latestRanks.filter(d => parseInt(d.rank) <= 10).length;
+            document.getElementById('top-10').textContent = latestTop10;
+            
+            if (hasComparison) {
+                const prevTop10 = prevRanks.filter(d => parseInt(d.rank) <= 10).length;
+                const top10Change = latestTop10 - prevTop10;
+                const changeEl = document.getElementById('top10-change');
+                if (top10Change > 0) {
+                    changeEl.innerHTML = '<span style="color: #34C759">↑ +' + top10Change + ' vs anterior</span>';
+                } else if (top10Change < 0) {
+                    changeEl.innerHTML = '<span style="color: #FF3B30">↓ ' + top10Change + ' vs anterior</span>';
+                } else {
+                    changeEl.innerHTML = '<span style="color: var(--text-secondary)">Sin cambios</span>';
+                }
+            }
+            
+            // 3. Visibility (usar SOLO última fecha)
+            const latestInTop100 = latestRanks.filter(d => parseInt(d.rank) <= 100).length;
+            const latestVisibility = (latestInTop100 / latestRanks.length * 100).toFixed(1);
+            document.getElementById('visibility').textContent = latestVisibility + '%';
+            
+            if (hasComparison) {
+                const prevInTop100 = prevRanks.filter(d => parseInt(d.rank) <= 100).length;
+                const prevVisibility = (prevInTop100 / prevRanks.length * 100);
+                const visibilityChange = (latestVisibility - prevVisibility).toFixed(1);
+                const changeEl = document.getElementById('visibility-change');
+                if (visibilityChange > 0) {
+                    changeEl.innerHTML = '<span style="color: #34C759">↑ +' + visibilityChange + '%</span>';
+                } else if (visibilityChange < 0) {
+                    changeEl.innerHTML = '<span style="color: #FF3B30">↓ ' + visibilityChange + '%</span>';
+                } else {
+                    changeEl.innerHTML = '<span style="color: var(--text-secondary)">Sin cambios</span>';
+                }
+            }
+            
+            // 4. Average Ranking (usar SOLO última fecha)
+            const latestAvg = (latestRanks.reduce((sum, d) => sum + parseInt(d.rank), 0) / latestRanks.length).toFixed(1);
+            document.getElementById('avg-ranking').textContent = '#' + latestAvg;
+            
+            if (hasComparison) {
+                const prevAvg = prevRanks.reduce((sum, d) => sum + parseInt(d.rank), 0) / prevRanks.length;
+                const change = prevAvg - latestAvg; // Positive = mejora (bajó ranking)
+                const changeEl = document.getElementById('avg-change');
+                if (change > 0) {
+                    changeEl.innerHTML = '<span style="color: #34C759">↑ Mejora de ' + change.toFixed(1) + ' posiciones</span>';
+                } else if (change < 0) {
+                    changeEl.innerHTML = '<span style="color: #FF3B30">↓ Caída de ' + Math.abs(change).toFixed(1) + ' posiciones</span>';
+                } else {
+                    changeEl.innerHTML = '<span style="color: var(--text-secondary)">Sin cambios</span>';
+                }
+            }
             
             // Create charts
             createRankingsChart();
@@ -1864,9 +1962,10 @@ class InteractiveDashboard:
             const ctx = document.getElementById('rankingsChart');
             if (!ctx) return;
             
-            // Group by keyword
+            // Group by keyword - USAR DATOS FILTRADOS
+            const dataToUse = filteredData || currentData;
             const keywordData = {};
-            currentData.forEach(row => {
+            dataToUse.forEach(row => {
                 if (!keywordData[row.keyword]) {
                     keywordData[row.keyword] = [];
                 }
@@ -1951,10 +2050,11 @@ class InteractiveDashboard:
             const ctx = document.getElementById('distributionChart');
             if (!ctx) return;
             
-            const top10 = currentData.filter(d => parseInt(d.rank) <= 10).length;
-            const top50 = currentData.filter(d => parseInt(d.rank) > 10 && parseInt(d.rank) <= 50).length;
-            const top100 = currentData.filter(d => parseInt(d.rank) > 50 && parseInt(d.rank) <= 100).length;
-            const other = currentData.filter(d => parseInt(d.rank) > 100).length;
+            const dataToUse = filteredData || currentData;
+            const top10 = dataToUse.filter(d => parseInt(d.rank) <= 10).length;
+            const top50 = dataToUse.filter(d => parseInt(d.rank) > 10 && parseInt(d.rank) <= 50).length;
+            const top100 = dataToUse.filter(d => parseInt(d.rank) > 50 && parseInt(d.rank) <= 100).length;
+            const other = dataToUse.filter(d => parseInt(d.rank) > 100).length;
             
             if (charts.distribution) charts.distribution.destroy();
             
