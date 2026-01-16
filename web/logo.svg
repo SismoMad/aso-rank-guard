@@ -1,0 +1,12 @@
+<svg width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 15px rgba(255,255,255,0.6));">
+  <circle cx="32" cy="32" r="28" stroke="white" stroke-width="2" fill="none" opacity="0.4"/>
+  <circle cx="32" cy="32" r="20" stroke="white" stroke-width="2.5" fill="none" opacity="0.6"/>
+  <circle cx="32" cy="32" r="12" stroke="white" stroke-width="3" fill="none" opacity="0.8"/>
+  <circle cx="32" cy="32" r="6" fill="white" style="filter: drop-shadow(0 0 12px rgba(255,255,255,1));"/>
+  <line x1="32" y1="32" x2="32" y2="4" stroke="#60efff" stroke-width="4" stroke-linecap="round" style="filter: drop-shadow(0 0 10px #60efff);">
+    <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="3s" repeatCount="indefinite"/>
+  </line>
+  <circle cx="46" cy="16" r="4" fill="#00ff88" style="filter: drop-shadow(0 0 8px #00ff88);"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></circle>
+  <circle cx="18" cy="24" r="4" fill="#ffeb3b" style="filter: drop-shadow(0 0 8px #ffeb3b);"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
+  <circle cx="50" cy="44" r="4" fill="#ff6b9d" style="filter: drop-shadow(0 0 8px #ff6b9d);"><animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/></circle>
+</svg>

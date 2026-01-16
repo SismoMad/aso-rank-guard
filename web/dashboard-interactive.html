@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASO Rank Guard - Dashboard Interactive Pro</title>
+    <title>RankRadar - ASO Intelligence Platform</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -347,11 +348,22 @@
             <button class="theme-toggle" onclick="toggleTheme()">
                 <i data-lucide="moon" style="width: 24px; height: 24px; color: white;"></i>
             </button>
-            <h1>
-                <i data-lucide="rocket" style="width: 48px; height: 48px; display: inline-block; vertical-align: middle; margin-right: 10px;"></i>
-                ASO Rank Guard Pro
-            </h1>
-            <p class="subtitle">Dashboard Interactive · Advanced Analytics & Insights</p>
+            <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin: 10px 0;">
+                <svg width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 15px rgba(255,255,255,0.6));">
+                  <circle cx="32" cy="32" r="28" stroke="white" stroke-width="2" fill="none" opacity="0.4"/>
+                  <circle cx="32" cy="32" r="20" stroke="white" stroke-width="2.5" fill="none" opacity="0.6"/>
+                  <circle cx="32" cy="32" r="12" stroke="white" stroke-width="3" fill="none" opacity="0.8"/>
+                  <circle cx="32" cy="32" r="6" fill="white" style="filter: drop-shadow(0 0 12px rgba(255,255,255,1));"/>
+                  <line x1="32" y1="32" x2="32" y2="4" stroke="#60efff" stroke-width="4" stroke-linecap="round" style="filter: drop-shadow(0 0 10px #60efff);">
+                    <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="3s" repeatCount="indefinite"/>
+                  </line>
+                  <circle cx="46" cy="16" r="4" fill="#00ff88" style="filter: drop-shadow(0 0 8px #00ff88);"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></circle>
+                  <circle cx="18" cy="24" r="4" fill="#ffeb3b" style="filter: drop-shadow(0 0 8px #ffeb3b);"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
+                  <circle cx="50" cy="44" r="4" fill="#ff6b9d" style="filter: drop-shadow(0 0 8px #ff6b9d);"><animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/></circle>
+                </svg>
+                <h1 style="margin: 0; font-size: 3em; text-shadow: 0 0 20px rgba(255,255,255,0.5);">RankRadar</h1>
+            </div>
+            <p class="subtitle">ASO Intelligence Platform · Real-time Rankings & Insights</p>
             
             <div class="controls">
                 <div class="filter-group">
@@ -587,6 +599,63 @@
     },
     "metrics_after": {},
     "impact": {}
+  },
+  {
+    "name": "Test Experiment",
+    "hypothesis": "Test hypothesis",
+    "change_type": "subtitle",
+    "description": "Test description",
+    "start_date": "2026-01-16T12:44:57.715676",
+    "end_date": null,
+    "status": "running",
+    "metrics_before": {
+      "avg_rank": 45.5,
+      "top_10_count": 2,
+      "visibility_rate": 75.0,
+      "keyword_ranks": {
+        "test": 45
+      }
+    },
+    "metrics_after": {},
+    "impact": {}
+  },
+  {
+    "name": "Test Experiment",
+    "hypothesis": "Test hypothesis",
+    "change_type": "subtitle",
+    "description": "Test description",
+    "start_date": "2026-01-16T12:46:21.951141",
+    "end_date": null,
+    "status": "running",
+    "metrics_before": {
+      "avg_rank": 45.5,
+      "top_10_count": 2,
+      "visibility_rate": 75.0,
+      "keyword_ranks": {
+        "test": 45
+      }
+    },
+    "metrics_after": {},
+    "impact": {}
+  },
+  {
+    "name": "Test Experiment",
+    "hypothesis": "Test hypothesis",
+    "change_type": "subtitle",
+    "description": "Test description",
+    "start_date": "2026-01-16T12:47:57.811851",
+    "end_date": null,
+    "status": "running",
+    "metrics_before": {
+      "avg_rank": 45.5,
+      "top_10_count": 2,
+      "visibility_rate": 75.0,
+      "keyword_ranks": {
+        "test": 45
+      }
+    },
+    "metrics_after": {},
+    "impact": {}
   }
 ];
 
@@ -648,13 +717,20 @@
                                                 <td style="padding: 8px;">${c.app_name || 'N/A'}</td>
                                                 <td style="padding: 8px; font-size: 0.9em;">${c.keyword}</td>
                                                 <td style="padding: 8px; text-align: center;">#${c.position}</td>
-                                                <td style="padding: 8px; text-align: center;">⭐ ${parseFloat(c.rating || 0).toFixed(1)}</td>
+                                                <td style="padding: 8px; text-align: center;">
+                                                    <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                        <i data-lucide="star" style="width: 16px; height: 16px; color: #fbbf24;"></i>
+                                                        ${parseFloat(c.rating || 0).toFixed(1)}
+                                                    </span>
+                                                </td>
                                             </tr>
                                         `).join('')}
                                     </tbody>
                                 </table>
                             </div>
                         `;
+                        // Reinitialize Lucide icons for new content
+                        setTimeout(() => lucide.createIcons(), 100);
                     }
                 }
             } catch (e) {
