@@ -96,169 +96,247 @@ class InteractiveDashboard:
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --primary: #667eea;
-            --primary-dark: #764ba2;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
+            --primary: #007AFF;
+            --primary-hover: #0051D5;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            
+            /* Light mode */
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F7;
+            --bg-card: #FFFFFF;
+            --bg-hover: #F5F5F7;
+            --text-primary: #1D1D1F;
+            --text-secondary: #48484A;
+            --text-tertiary: #6E6E73;
+            --border: rgba(0,0,0,0.08);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --shadow-lg: 0 12px 48px rgba(0,0,0,0.12);
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body.dark-mode {
+            --bg-primary: #000000;
+            --bg-secondary: #1C1C1E;
+            --bg-card: #1C1C1E;
+            --bg-hover: #2C2C2E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #AEAEB2;
+            --text-tertiary: #98989D;
+            --border: rgba(255,255,255,0.1);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+            --shadow-lg: 0 12px 48px rgba(0,0,0,0.5);
+        }
+        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
             color: var(--text-primary);
-            padding: 20px;
+            padding: 32px;
             min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
         }
         
-        .container { max-width: 1800px; margin: 0 auto; }
+        .container { 
+            max-width: 1600px; 
+            margin: 0 auto; 
+        }
         
-        /* Header con dark mode toggle */
+        /* Header estilo Apple */
         header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            padding: 40px;
+            background: var(--bg-card);
+            padding: 48px;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(102,126,234,0.3);
-            margin-bottom: 30px;
-            position: relative;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
         }
         
-        h1 { color: white; font-size: 3em; margin-bottom: 10px; font-weight: 800; }
-        .subtitle { color: rgba(255,255,255,0.9); font-size: 1.2em; margin-bottom: 20px; }
+        h1 { 
+            color: var(--text-primary); 
+            font-size: 2.75em; 
+            margin-bottom: 8px; 
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
         
-        /* Filtros y controles */
+        .subtitle { 
+            color: var(--text-secondary); 
+            font-size: 1.1em; 
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+        
+        /* Filtros y controles estilo Apple */
         .controls {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
-            margin-top: 20px;
             align-items: center;
         }
         
         .filter-group {
             display: flex;
-            gap: 10px;
-            background: rgba(255,255,255,0.1);
-            padding: 10px 15px;
+            gap: 8px;
+            background: var(--bg-secondary);
+            padding: 6px;
             border-radius: 12px;
+            border: 1px solid var(--border);
         }
         
         .filter-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
+            background: transparent;
+            color: var(--text-primary);
             border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 8px 16px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.95em;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9em;
+            font-weight: 500;
         }
         
-        .filter-btn:hover { background: rgba(255,255,255,0.3); }
+        .filter-btn:hover { background: var(--bg-card); }
         .filter-btn.active {
-            background: rgba(255,255,255,0.4);
-            font-weight: 700;
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
         }
         
         select, input[type="date"] {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 15px;
-            border-radius: 10px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.95em;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
         }
         
-        select option { background: var(--bg-card); color: var(--text-primary); }
+        select:hover, input[type="date"]:hover {
+            border-color: var(--primary);
+        }
         
-        /* Grid layouts */
+        select option { 
+            background: var(--bg-card); 
+            color: var(--text-primary); 
+        }
+        
+        /* Cards estilo Apple */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
         }
         
         .stat-card {
-            background: linear-gradient(135deg, var(--bg-card) 0%, #334155 100%);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
         }
         
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(102,126,234,0.4);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
         }
         
         .stat-value {
-            font-size: 3em;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 10px 0;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 8px 0;
+            letter-spacing: -1px;
         }
         
         .stat-label {
             color: var(--text-secondary);
-            font-size: 0.95em;
+            font-size: 0.85em;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
-        /* Tabs */
+        .stat-change {
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+        
+        /* Layout con sidebar vertical */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        /* Tabs verticales Apple style */
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-            padding-bottom: 10px;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
         }
         
         .tab-btn {
             background: transparent;
             color: var(--text-secondary);
+            padding: 12px 16px;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px 10px 0 0;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1.1em;
-            font-weight: 600;
+            text-align: left;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .tab-btn:hover { background: rgba(255,255,255,0.05); }
+        .tab-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        
         .tab-btn.active {
             background: var(--primary);
             color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .tabs-content {
+            min-height: 600px;
         }
         
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s;
+            animation: fadeIn 0.3s ease;
         }
         
         .tab-content.active { display: block; }
@@ -268,75 +346,73 @@ class InteractiveDashboard:
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Chart containers */
+        /* Chart containers Apple style */
         .chart-container {
-            background: linear-gradient(135deg, var(--bg-card) 0%, #334155 100%);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 30px;
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .chart-container:hover {
+            box-shadow: var(--shadow-md);
         }
         
         .chart-title {
-            font-size: 1.8em;
-            margin-bottom: 25px;
+            font-size: 1.5em;
+            margin-bottom: 24px;
             color: var(--text-primary);
-            font-weight: 700;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            letter-spacing: -0.5px;
         }
         
-        /* Tables */
+        /* Tables Apple style */
         .data-table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 10px;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
         }
         
         .data-table thead th {
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
+            background: var(--bg-secondary);
+            padding: 12px 16px;
             text-align: left;
             color: var(--text-secondary);
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.85em;
-            letter-spacing: 1px;
+            font-size: 0.75em;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
         }
         
         .data-table tbody tr {
-            background: rgba(255,255,255,0.05);
-            transition: all 0.2s;
+            background: var(--bg-card);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .data-table tbody tr:hover {
-            background: rgba(102,126,234,0.2);
-            transform: scale(1.01);
+            background: var(--bg-hover);
         }
         
         .data-table tbody td {
-            padding: 20px 15px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
         }
         
-        .data-table tbody tr td:first-child {
-            border-left: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px 0 0 10px;
-        }
-        
-        .data-table tbody tr td:last-child {
-            border-right: 1px solid rgba(255,255,255,0.1);
-            border-radius: 0 10px 10px 0;
-        }
-        
-        /* Badges */
+        /* Badges Apple style */
         .badge {
-            padding: 6px 14px;
-            border-radius: 15px;
-            font-size: 0.85em;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
             font-weight: 600;
             display: inline-block;
         }
@@ -346,38 +422,40 @@ class InteractiveDashboard:
         .badge-danger { background: var(--danger); color: white; }
         .badge-info { background: var(--primary); color: white; }
         
-        /* Cards */
+        /* Cards Apple style */
         .card {
-            background: rgba(255,255,255,0.05);
+            background: var(--bg-card);
             padding: 20px;
             border-radius: 12px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary);
-            transition: all 0.3s;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .card:hover {
-            background: rgba(102,126,234,0.1);
-            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
         }
         
         .card-title {
-            font-size: 1.2em;
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 12px;
             color: var(--text-primary);
         }
         
         .card-desc {
             color: var(--text-secondary);
-            margin-bottom: 10px;
+            font-size: 0.95em;
+            line-height: 1.5;
         }
         
-        /* Loading */
+        /* Loading Apple style */
         .loading {
             text-align: center;
-            padding: 100px;
-            font-size: 1.5em;
+            padding: 80px;
+            font-size: 1.2em;
+            color: var(--text-secondary);
         }
         
         @keyframes spin {
@@ -385,46 +463,88 @@ class InteractiveDashboard:
             to { transform: rotate(360deg); }
         }
         
-        /* Export buttons */
+        /* Export buttons Apple style */
         .export-btns {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            margin-top: 24px;
         }
         
         .export-btn {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
             padding: 10px 20px;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
         }
         
         .export-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
+            background: var(--bg-hover);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
         }
         
-        /* Dark mode toggle */
+        /* Dark mode toggle Apple style */
         .theme-toggle {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 10px;
-            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .theme-toggle:hover {
-            background: rgba(255,255,255,0.3);
-            transform: rotate(180deg);
+            background: var(--bg-hover);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        /* Logo adaptable */
+        .logo-ring {
+            stroke: var(--text-primary);
+            transition: stroke 0.3s ease;
+        }
+        
+        .logo-center {
+            fill: var(--primary);
+            filter: drop-shadow(0 0 12px var(--primary));
+        }
+        
+        .logo-text {
+            color: var(--text-primary);
+            text-shadow: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                position: static;
+                max-height: none;
+                flex-direction: row;
+                overflow-x: auto;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -432,22 +552,22 @@ class InteractiveDashboard:
     <div class="container">
         <header>
             <button class="theme-toggle" onclick="toggleTheme()">
-                <i data-lucide="moon" style="width: 24px; height: 24px; color: white;"></i>
+                <i data-lucide="moon" style="width: 20px; height: 20px;"></i>
             </button>
             <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin: 10px 0;">
-                <svg width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 15px rgba(255,255,255,0.6));">
-                  <circle cx="32" cy="32" r="28" stroke="white" stroke-width="2" fill="none" opacity="0.4"/>
-                  <circle cx="32" cy="32" r="20" stroke="white" stroke-width="2.5" fill="none" opacity="0.6"/>
-                  <circle cx="32" cy="32" r="12" stroke="white" stroke-width="3" fill="none" opacity="0.8"/>
-                  <circle cx="32" cy="32" r="6" fill="white" style="filter: drop-shadow(0 0 12px rgba(255,255,255,1));"/>
-                  <line x1="32" y1="32" x2="32" y2="4" stroke="#60efff" stroke-width="4" stroke-linecap="round" style="filter: drop-shadow(0 0 10px #60efff);">
+                <svg id="logo" width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="32" cy="32" r="28" class="logo-ring" stroke-width="2" fill="none" opacity="0.4"/>
+                  <circle cx="32" cy="32" r="20" class="logo-ring" stroke-width="2.5" fill="none" opacity="0.6"/>
+                  <circle cx="32" cy="32" r="12" class="logo-ring" stroke-width="3" fill="none" opacity="0.8"/>
+                  <circle cx="32" cy="32" r="6" class="logo-center"/>
+                  <line x1="32" y1="32" x2="32" y2="4" stroke="#007AFF" stroke-width="4" stroke-linecap="round" style="filter: drop-shadow(0 0 10px #007AFF);">
                     <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="3s" repeatCount="indefinite"/>
                   </line>
-                  <circle cx="46" cy="16" r="4" fill="#00ff88" style="filter: drop-shadow(0 0 8px #00ff88);"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></circle>
-                  <circle cx="18" cy="24" r="4" fill="#ffeb3b" style="filter: drop-shadow(0 0 8px #ffeb3b);"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
-                  <circle cx="50" cy="44" r="4" fill="#ff6b9d" style="filter: drop-shadow(0 0 8px #ff6b9d);"><animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/></circle>
+                  <circle cx="46" cy="16" r="4" fill="#34C759" style="filter: drop-shadow(0 0 8px #34C759);"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></circle>
+                  <circle cx="18" cy="24" r="4" fill="#FF9500" style="filter: drop-shadow(0 0 8px #FF9500);"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
+                  <circle cx="50" cy="44" r="4" fill="#FF3B30" style="filter: drop-shadow(0 0 8px #FF3B30);"><animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/></circle>
                 </svg>
-                <h1 style="margin: 0; font-size: 3em; text-shadow: 0 0 20px rgba(255,255,255,0.5);">RankRadar</h1>
+                <h1 class="logo-text" style="margin: 0; font-size: 3em;">RankRadar</h1>
             </div>
             <p class="subtitle">ASO Intelligence Platform · Real-time Rankings & Insights</p>
             
@@ -515,33 +635,38 @@ class InteractiveDashboard:
                 </div>
             </div>
 
-            <!-- Tabs Navigation -->
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('rankings')">
-                    <i data-lucide="trending-up" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i>
-                    Rankings
-                </button>
-                <button class="tab-btn" onclick="switchTab('competitors')">
-                    <i data-lucide="users" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i>
-                    Competidores
-                </button>
-                <button class="tab-btn" onclick="switchTab('discoveries')">
-                    <i data-lucide="search" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i>
-                    Descubrimientos
-                </button>
-                <button class="tab-btn" onclick="switchTab('costs')">
-                    <i data-lucide="dollar-sign" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i>
-                    Análisis de Costos
-                </button>
-                <button class="tab-btn" onclick="switchTab('patterns')">
-                    <i data-lucide="calendar" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i>
-                    Patrones
-                </button>
-                <button class="tab-btn" onclick="switchTab('experiments')">
-                    <i data-lucide="flask" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i>
-                    A/B Tests
-                </button>
-            </div>
+            <!-- Layout con sidebar vertical -->
+            <div class="content-wrapper">
+                <!-- Tabs Navigation (Sidebar) -->
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('rankings')">
+                        <i data-lucide="trending-up" style="width: 20px; height: 20px;"></i>
+                        Rankings
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('competitors')">
+                        <i data-lucide="users" style="width: 20px; height: 20px;"></i>
+                        Competidores
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('discoveries')">
+                        <i data-lucide="search" style="width: 20px; height: 20px;"></i>
+                        Descubrimientos
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('costs')">
+                        <i data-lucide="dollar-sign" style="width: 20px; height: 20px;"></i>
+                        Análisis de Costos
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('patterns')">
+                        <i data-lucide="calendar" style="width: 20px; height: 20px;"></i>
+                        Patrones
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('experiments')">
+                        <i data-lucide="flask-conical" style="width: 20px; height: 20px;"></i>
+                        A/B Tests
+                    </button>
+                </div>
+
+                <!-- Tabs Content -->
+                <div class="tabs-content">
 
             <!-- Tab: Rankings -->
             <div id="tab-rankings" class="tab-content active">
@@ -654,8 +779,11 @@ class InteractiveDashboard:
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+            
+                </div> <!-- End tabs-content -->
+            </div> <!-- End content-wrapper -->
+        </div> <!-- End content -->
+    </div> <!-- End container -->
 
     <script>
         // Initialize Lucide icons
@@ -1032,18 +1160,32 @@ class InteractiveDashboard:
                         y: {
                             reverse: true,
                             beginAtZero: false,
-                            ticks: { color: '#94a3b8' },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
+                            ticks: { 
+                                color: document.body.classList.contains('dark-mode') ? '#AEAEB2' : '#48484A',
+                                font: { size: 12 }
+                            },
+                            grid: { 
+                                color: document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
+                            }
                         },
                         x: {
                             type: 'time',
-                            ticks: { color: '#94a3b8' },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
+                            ticks: { 
+                                color: document.body.classList.contains('dark-mode') ? '#AEAEB2' : '#48484A',
+                                font: { size: 12 }
+                            },
+                            grid: { 
+                                color: document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
+                            }
                         }
                     },
                     plugins: {
                         legend: {
-                            labels: { color: '#e2e8f0' }
+                            labels: { 
+                                color: document.body.classList.contains('dark-mode') ? '#FFFFFF' : '#1D1D1F',
+                                font: { size: 14, weight: '600' },
+                                padding: 15
+                            }
                         }
                     }
                 }
@@ -1075,7 +1217,11 @@ class InteractiveDashboard:
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            labels: { color: '#e2e8f0' }
+                            labels: { 
+                                color: document.body.classList.contains('dark-mode') ? '#FFFFFF' : '#1D1D1F',
+                                font: { size: 14, weight: '600' },
+                                padding: 15
+                            }
                         }
                     }
                 }
@@ -1113,12 +1259,22 @@ class InteractiveDashboard:
                     indexAxis: 'y',
                     scales: {
                         x: {
-                            ticks: { color: '#94a3b8' },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
+                            ticks: { 
+                                color: document.body.classList.contains('dark-mode') ? '#AEAEB2' : '#48484A',
+                                font: { size: 12 }
+                            },
+                            grid: { 
+                                color: document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
+                            }
                         },
                         y: {
-                            ticks: { color: '#94a3b8' },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
+                            ticks: { 
+                                color: document.body.classList.contains('dark-mode') ? '#AEAEB2' : '#48484A',
+                                font: { size: 12 }
+                            },
+                            grid: { 
+                                color: document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
+                            }
                         }
                     },
                     plugins: {
@@ -1169,12 +1325,31 @@ class InteractiveDashboard:
         }
 
         function toggleTheme() {
-            // Toggle dark/light mode
-            document.body.style.filter = 
-                document.body.style.filter === 'invert(1) hue-rotate(180deg)' 
-                ? '' 
-                : 'invert(1) hue-rotate(180deg)';
+            document.body.classList.toggle('dark-mode');
+            const icon = document.querySelector('.theme-toggle i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.setAttribute('data-lucide', 'sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.setAttribute('data-lucide', 'moon');
+                localStorage.setItem('theme', 'light');
+            }
+            lucide.createIcons();
+            
+            // Recreate charts with new colors
+            updateDashboard();
         }
+        
+        // Restore theme from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                const icon = document.querySelector('.theme-toggle i');
+                icon.setAttribute('data-lucide', 'sun');
+                lucide.createIcons();
+            }
+        });
     </script>
 </body>
 </html>"""
