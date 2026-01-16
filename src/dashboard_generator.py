@@ -1020,10 +1020,6 @@ class InteractiveDashboard:
                         <i data-lucide="search" style="width: 20px; height: 20px;"></i>
                         <span data-i18n="discoveries">Descubrimientos</span>
                     </button>
-                    <button class="tab-btn" onclick="switchTab('costs')">
-                        <i data-lucide="dollar-sign" style="width: 20px; height: 20px;"></i>
-                        <span data-i18n="costs">Análisis de Costos</span>
-                    </button>
                     <button class="tab-btn" onclick="switchTab('patterns')">
                         <i data-lucide="calendar" style="width: 20px; height: 20px;"></i>
                         <span data-i18n="patterns">Patrones</span>
@@ -1099,30 +1095,6 @@ class InteractiveDashboard:
                 </div>
             </div>
 
-            <!-- Tab: Costs -->
-            <div id="tab-costs" class="tab-content">
-                <div class="chart-container">
-                    <h2 class="chart-title">
-                        <i data-lucide="trending-up" style="width: 32px; height: 32px;"></i>
-                        Revenue & Opportunity Costs
-                    </h2>
-                    <div id="costs-content">
-                        <div class="stats-grid">
-                            <div class="card">
-                                <div class="card-title">Revenue Portfolio</div>
-                                <div class="card-desc">Valor estimado de keywords actuales</div>
-                                <div style="font-size: 2em; font-weight: bold; color: var(--success);" id="portfolio-value">$0</div>
-                            </div>
-                            <div class="card">
-                                <div class="card-title">Oportunidad Perdida</div>
-                                <div class="card-desc">$ que podrías ganar mejorando rankings</div>
-                                <div style="font-size: 2em; font-weight: bold; color: var(--warning);" id="opportunity-lost">$0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Tab: Patterns -->
             <div id="tab-patterns" class="tab-content">
                 <div class="chart-container">
@@ -1146,9 +1118,63 @@ class InteractiveDashboard:
                         Experimentos A/B
                     </h2>
                     <div id="experiments-content">
-                        <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
-                            Crea experimentos para trackear impacto de cambios ASO
-                        </p>
+                        <!-- Botón nuevo experimento -->
+                        <div style="margin-bottom: 30px; text-align: right;">
+                            <button onclick="showNewExperimentForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
+                                <i data-lucide="plus-circle" style="width: 20px; height: 20px;"></i>
+                                Nuevo Experimento
+                            </button>
+                        </div>
+                        
+                        <!-- Formulario nuevo experimento (oculto por defecto) -->
+                        <div id="new-experiment-form" style="display: none; background: var(--card-bg); padding: 24px; border-radius: 16px; margin-bottom: 30px; border: 2px solid #667eea;">
+                            <h3 style="margin-top: 0; margin-bottom: 20px; color: #667eea;">🧪 Crear Nuevo Experimento</h3>
+                            
+                            <div style="display: grid; gap: 16px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 6px; font-weight: 500;">Nombre del experimento</label>
+                                    <input id="exp-name" type="text" placeholder='Ej: "Nuevo título con Bible Stories"' 
+                                           style="width: 100%; padding: 10px; border: 2px solid #E5E5EA; border-radius: 8px; font-size: 15px; background: var(--card-bg);">
+                                </div>
+                                
+                                <div>
+                                    <label style="display: block; margin-bottom: 6px; font-weight: 500;">Fecha de inicio (cuando publicaste el cambio)</label>
+                                    <input id="exp-date" type="date" 
+                                           style="width: 100%; padding: 10px; border: 2px solid #E5E5EA; border-radius: 8px; font-size: 15px; background: var(--card-bg);">
+                                </div>
+                                
+                                <div>
+                                    <label style="display: block; margin-bottom: 6px; font-weight: 500;">Tipo de cambio</label>
+                                    <select id="exp-type" style="width: 100%; padding: 10px; border: 2px solid #E5E5EA; border-radius: 8px; font-size: 15px; background: var(--card-bg);">
+                                        <option value="keywords">Keywords</option>
+                                        <option value="title">Título</option>
+                                        <option value="subtitle">Subtítulo</option>
+                                        <option value="screenshots">Screenshots</option>
+                                        <option value="description">Descripción</option>
+                                        <option value="icon">Icono</option>
+                                        <option value="mixed">Varios cambios</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label style="display: block; margin-bottom: 6px; font-weight: 500;">Descripción del cambio</label>
+                                    <textarea id="exp-desc" rows="3" placeholder="Ej: Añadí 'bedtime stories' y 'kids bible' al título"
+                                              style="width: 100%; padding: 10px; border: 2px solid #E5E5EA; border-radius: 8px; font-size: 15px; background: var(--card-bg); font-family: inherit;"></textarea>
+                                </div>
+                                
+                                <div style="display: flex; gap: 12px; margin-top: 8px;">
+                                    <button onclick="saveExperiment()" style="flex: 1; background: #34C759; color: white; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                                        💾 Guardar Experimento
+                                    </button>
+                                    <button onclick="hideNewExperimentForm()" style="flex: 1; background: #8E8E93; color: white; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                                        ❌ Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Lista de experimentos -->
+                        <div id="experiments-list"></div>
                     </div>
                 </div>
             </div>
@@ -1756,74 +1782,74 @@ class InteractiveDashboard:
         }
         
         function loadExperimentsData() {
-            try {
-                const container = document.getElementById('experiments-content');
-                if (container) {
-                    if (EXPERIMENTS_DATA && EXPERIMENTS_DATA.experiments && EXPERIMENTS_DATA.experiments.length > 0) {
-                        const active = EXPERIMENTS_DATA.experiments.filter(e => e.status === 'active');
-                        const completed = EXPERIMENTS_DATA.experiments.filter(e => e.status === 'completed');
-                        
-                        container.innerHTML = `
-                            <h3>🧪 Experimentos A/B Testing</h3>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
-                                <div style="background: var(--bg-card); padding: 15px; border-radius: 8px; text-align: center;">
-                                    <div style="color: #10b981; font-size: 2em;">${active.length}</div>
-                                    <div style="color: var(--text-secondary);">Activos</div>
-                                </div>
-                                <div style="background: var(--bg-card); padding: 15px; border-radius: 8px; text-align: center;">
-                                    <div style="color: var(--text-secondary); font-size: 2em;">${completed.length}</div>
-                                    <div style="color: var(--text-secondary);">Completados</div>
-                                </div>
-                            </div>
-                            
-                            ${active.length > 0 ? `
-                                <h4 style="margin-top: 30px;">🔄 Experimentos Activos</h4>
-                                ${active.map(exp => `
-                                    <div style="background: var(--bg-card); padding: 15px; margin: 10px 0; border-radius: 8px;">
-                                        <div style="font-weight: bold;">${exp.name}</div>
-                                        <div style="color: var(--text-secondary); margin-top: 5px;">
-                                            ${exp.hypothesis}
-                                        </div>
-                                        <div style="margin-top: 8px; font-size: 0.9em;">
-                                            Inicio: ${exp.start_date?.split('T')[0] || 'N/A'}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            ` : ''}
-                            
-                            ${completed.length > 0 ? `
-                                <h4 style="margin-top: 30px;">✅ Experimentos Completados</h4>
-                                ${completed.slice(0, 10).map(exp => `
-                                    <div style="background: var(--bg-card); padding: 15px; margin: 10px 0; border-radius: 8px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <div style="font-weight: bold;">${exp.name}</div>
-                                            <div style="background: ${exp.verdict === 'success' ? '#10b981' : exp.verdict === 'failure' ? '#ef4444' : '#6b7280'}; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">
-                                                ${exp.verdict || 'inconclusive'}
-                                            </div>
-                                        </div>
-                                        <div style="color: var(--text-secondary); margin-top: 5px; font-size: 0.9em;">
-                                            ${exp.change_type} | ${exp.start_date?.split('T')[0]} - ${exp.end_date?.split('T')[0]}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            ` : ''}
-                        `;
-                    } else {
-                        container.innerHTML = `
-                            <h3>🧪 A/B Testing</h3>
-                            <div style="background: var(--bg-card); padding: 30px; text-align: center; border-radius: 8px; margin-top: 20px;">
-                                <div style="font-size: 3em; margin-bottom: 10px;">🧪</div>
-                                <p>No hay experimentos registrados todavía</p>
-                                <p style="color: var(--text-secondary); margin-top: 10px;">
-                                    Usa el módulo ab_testing_tracker para crear experimentos antes de hacer cambios en tu metadata
-                                </p>
-                            </div>
-                        `;
-                    }
-                }
-            } catch (e) {
-                console.error('Error loading experiments:', e);
+            // Cargar experimentos desde localStorage
+            const experiments = JSON.parse(localStorage.getItem('experiments') || '[]');
+            const listContainer = document.getElementById('experiments-list');
+            
+            if (!listContainer) return;
+            
+            if (experiments.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
+                        <i data-lucide="flask" style="width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.3;"></i>
+                        <h3 style="margin: 0 0 8px 0; font-weight: 600;">No hay experimentos todavía</h3>
+                        <p style="margin: 0;">Crea tu primer experimento para trackear el impacto de tus cambios ASO</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
             }
+            
+            // Ordenar por fecha (más reciente primero)
+            experiments.sort((a, b) => new Date(b.date_start) - new Date(a.date_start));
+            
+            const typeIcons = {
+                keywords: '🔑',
+                title: '📝',
+                subtitle: '📋',
+                screenshots: '📸',
+                description: '📄',
+                icon: '🎨',
+                mixed: '🔀'
+            };
+            
+            listContainer.innerHTML = experiments.map(exp => {
+                const startDate = new Date(exp.date_start);
+                const today = new Date();
+                const daysSince = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+                const canAnalyze = daysSince >= 7;
+                
+                return `
+                    <div style="background: var(--card-bg); padding: 20px; border-radius: 14px; margin-bottom: 16px; border: 2px solid ${canAnalyze ? '#34C759' : '#E5E5EA'};">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <span style="font-size: 24px;">${typeIcons[exp.type] || '🧪'}</span>
+                                    <h3 style="margin: 0; font-size: 18px; font-weight: 700;">${exp.name}</h3>
+                                </div>
+                                <p style="margin: 0 0 8px 0; color: var(--text-secondary); font-size: 14px;">${exp.description}</p>
+                                <div style="display: flex; gap: 16px; font-size: 13px; color: var(--text-secondary);">
+                                    <span>📅 ${startDate.toLocaleDateString('es-ES')}</span>
+                                    <span>⏱️ Hace ${daysSince} días</span>
+                                    <span style="padding: 2px 8px; background: ${canAnalyze ? '#34C75920' : '#FF950020'}; color: ${canAnalyze ? '#34C759' : '#FF9500'}; border-radius: 6px; font-weight: 600;">
+                                        ${canAnalyze ? 'Listo para analizar' : `Análisis en ${7 - daysSince} días`}
+                                    </span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                ${canAnalyze ? `
+                                    <button onclick="analyzeExperiment('${exp.id}')" style="background: #007AFF; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">
+                                        📊 Analizar
+                                    </button>
+                                ` : ''}
+                                <button onclick="deleteExperiment('${exp.id}')" style="background: #FF3B30; color: white; padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px;">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function parseCSV(csv) {
@@ -2241,6 +2267,134 @@ class InteractiveDashboard:
             } else if (format === 'pdf') {
                 alert('Export PDF próximamente...');
             }
+        }
+        
+        function showNewExperimentForm() {
+            document.getElementById('new-experiment-form').style.display = 'block';
+            document.getElementById('exp-date').valueAsDate = new Date();
+        }
+        
+        function hideNewExperimentForm() {
+            document.getElementById('new-experiment-form').style.display = 'none';
+            document.getElementById('exp-name').value = '';
+            document.getElementById('exp-desc').value = '';
+        }
+        
+        function saveExperiment() {
+            const name = document.getElementById('exp-name').value;
+            const date = document.getElementById('exp-date').value;
+            const type = document.getElementById('exp-type').value;
+            const desc = document.getElementById('exp-desc').value;
+            
+            if (!name || !date) {
+                alert('⚠️ Por favor completa el nombre y fecha del experimento');
+                return;
+            }
+            
+            // Generar ID único
+            const id = 'exp_' + Date.now();
+            
+            // Guardar en localStorage (temporal - en producción se guardaría en CSV)
+            const experiments = JSON.parse(localStorage.getItem('experiments') || '[]');
+            experiments.push({
+                id: id,
+                name: name,
+                date_start: date,
+                type: type,
+                description: desc,
+                status: 'active'
+            });
+            localStorage.setItem('experiments', JSON.stringify(experiments));
+            
+            hideNewExperimentForm();
+            loadExperimentsData();
+            
+            alert('✅ Experimento creado! El análisis se hará automáticamente 7 días después de la fecha de inicio.');
+        }
+        
+        function analyzeExperiment(experimentId) {
+            const experiments = JSON.parse(localStorage.getItem('experiments') || '[]');
+            const exp = experiments.find(e => e.id === experimentId);
+            if (!exp) return;
+            
+            const startDate = new Date(exp.date_start);
+            const today = new Date();
+            const daysSince = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+            
+            if (daysSince < 7) {
+                alert(`⏳ Análisis disponible en ${7 - daysSince} días (necesitamos 7 días de datos post-cambio)`);
+                return;
+            }
+            
+            // Calcular 7 días ANTES y DESPUÉS
+            const beforeStart = new Date(startDate);
+            beforeStart.setDate(beforeStart.getDate() - 7);
+            const afterEnd = new Date(startDate);
+            afterEnd.setDate(afterEnd.getDate() + 7);
+            
+            // Filtrar datos
+            const beforeData = EMBEDDED_DATA.filter(d => {
+                const date = new Date(d.date);
+                return date >= beforeStart && date < startDate;
+            });
+            
+            const afterData = EMBEDDED_DATA.filter(d => {
+                const date = new Date(d.date);
+                return date >= startDate && date <= afterEnd;
+            });
+            
+            if (beforeData.length === 0 || afterData.length === 0) {
+                alert('❌ No hay suficientes datos históricos para este análisis');
+                return;
+            }
+            
+            // Calcular métricas
+            const beforeAvg = (beforeData.reduce((sum, d) => sum + parseInt(d.rank), 0) / beforeData.length).toFixed(1);
+            const afterAvg = (afterData.reduce((sum, d) => sum + parseInt(d.rank), 0) / afterData.length).toFixed(1);
+            const change = (beforeAvg - afterAvg).toFixed(1);
+            
+            const beforeTop10 = new Set(beforeData.filter(d => parseInt(d.rank) <= 10).map(d => d.keyword)).size;
+            const afterTop10 = new Set(afterData.filter(d => parseInt(d.rank) <= 10).map(d => d.keyword)).size;
+            
+            let verdict = '';
+            let color = '';
+            if (change > 5) {
+                verdict = '✅ ÉXITO - Mejora significativa';
+                color = '#34C759';
+            } else if (change > 0) {
+                verdict = '⚠️ NEUTRAL - Mejora leve';
+                color = '#FF9500';
+            } else {
+                verdict = '❌ NEGATIVO - Empeoró';
+                color = '#FF3B30';
+            }
+            
+            const results = `
+📊 RESULTADOS DEL EXPERIMENTO
+
+${verdict}
+
+Ranking Promedio:
+  ANTES: #${beforeAvg}
+  DESPUÉS: #${afterAvg}
+  CAMBIO: ${change > 0 ? '↑' : '↓'} ${Math.abs(change)} posiciones
+
+Keywords Top 10:
+  ANTES: ${beforeTop10}
+  DESPUÉS: ${afterTop10}
+  CAMBIO: ${afterTop10 - beforeTop10 > 0 ? '+' : ''}${afterTop10 - beforeTop10}
+            `;
+            
+            alert(results);
+        }
+        
+        function deleteExperiment(experimentId) {
+            if (!confirm('¿Seguro que quieres eliminar este experimento?')) return;
+            
+            const experiments = JSON.parse(localStorage.getItem('experiments') || '[]');
+            const filtered = experiments.filter(e => e.id !== experimentId);
+            localStorage.setItem('experiments', JSON.stringify(filtered));
+            loadExperimentsData();
         }
 
         function toggleTheme() {
