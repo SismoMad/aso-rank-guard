@@ -195,6 +195,7 @@ class InteractiveDashboard:
             padding: 6px;
             border-radius: 12px;
             border: 1px solid var(--border);
+            align-items: center;
         }
         
         .filter-btn {
@@ -465,18 +466,12 @@ class InteractiveDashboard:
         }
         
         /* Export buttons Apple style */
-        .export-btns {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-        
         .export-btn {
-            background: var(--bg-card);
+            background: transparent;
             color: var(--text-primary);
-            border: 1px solid var(--border);
-            padding: 10px 20px;
-            border-radius: 10px;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
@@ -487,27 +482,23 @@ class InteractiveDashboard:
         }
         
         .export-btn:hover {
-            background: var(--bg-hover);
-            border-color: var(--primary);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
+            background: var(--bg-card);
         }
         
         /* Dark mode toggle Apple style */
         .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            width: 44px;
-            height: 44px;
+            background: var(--bg-card) !important;
+            border: 2px solid var(--primary) !important;
+            width: 48px !important;
+            height: 48px !important;
             border-radius: 12px;
-            display: flex;
+            display: flex !important;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999 !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
         }
         
         .theme-toggle:hover {
@@ -524,12 +515,10 @@ class InteractiveDashboard:
         
         .logo-center {
             fill: var(--primary);
-            filter: drop-shadow(0 0 12px var(--primary));
         }
         
         .logo-text {
             color: var(--text-primary);
-            text-shadow: none;
         }
         
         /* Responsive */
@@ -552,28 +541,31 @@ class InteractiveDashboard:
 <body>
     <div class="container">
         <header>
-            <div style="position: absolute; top: 20px; right: 20px; display: flex; gap: 8px;">
-                <button class="theme-toggle" onclick="toggleLanguage()" title="Change language">
-                    <span id="lang-flag" style="font-size: 20px;">🇪🇸</span>
+            <div style="position: absolute; top: 20px; right: 20px; display: flex; gap: 12px; z-index: 10000;">
+                <button class="theme-toggle" onclick="toggleLanguage()" title="Change language" style="background: #007AFF !important;">
+                    <span id="lang-flag" style="font-size: 24px; display: block;">🇪🇸</span>
                 </button>
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <i data-lucide="moon" style="width: 20px; height: 20px;"></i>
+                <button class="theme-toggle" onclick="toggleTheme()" style="background: #007AFF !important;">
+                    <i data-lucide="moon" style="width: 24px; height: 24px; color: white;"></i>
                 </button>
             </div>
-            <div style="display: flex; align-items: center; gap: 20px; justify-content: center; margin: 10px 0;">
-                <svg id="logo" width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="32" cy="32" r="28" class="logo-ring" stroke-width="2" fill="none" opacity="0.4"/>
-                  <circle cx="32" cy="32" r="20" class="logo-ring" stroke-width="2.5" fill="none" opacity="0.6"/>
-                  <circle cx="32" cy="32" r="12" class="logo-ring" stroke-width="3" fill="none" opacity="0.8"/>
-                  <circle cx="32" cy="32" r="6" class="logo-center"/>
-                  <line x1="32" y1="32" x2="32" y2="4" stroke="#007AFF" stroke-width="4" stroke-linecap="round" style="filter: drop-shadow(0 0 10px #007AFF);">
-                    <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="3s" repeatCount="indefinite"/>
-                  </line>
-                  <circle cx="46" cy="16" r="4" fill="#34C759" style="filter: drop-shadow(0 0 8px #34C759);"><animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/></circle>
-                  <circle cx="18" cy="24" r="4" fill="#FF9500" style="filter: drop-shadow(0 0 8px #FF9500);"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
-                  <circle cx="50" cy="44" r="4" fill="#FF3B30" style="filter: drop-shadow(0 0 8px #FF3B30);"><animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/></circle>
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 4px;">
+                <svg id="logo" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Radar grid -->
+                  <path d="M4 24 L44 24 M24 4 L24 44" stroke="var(--text-primary)" stroke-width="1" opacity="0.15"/>
+                  <circle cx="24" cy="24" r="18" stroke="var(--text-primary)" stroke-width="1" opacity="0.2" fill="none"/>
+                  <circle cx="24" cy="24" r="12" stroke="var(--text-primary)" stroke-width="1.5" opacity="0.3" fill="none"/>
+                  
+                  <!-- Central pulse -->
+                  <circle cx="24" cy="24" r="4" fill="#007AFF"/>
+                  <circle cx="24" cy="24" r="6" stroke="#007AFF" stroke-width="2" fill="none" opacity="0.4"/>
+                  
+                  <!-- Signal lines -->
+                  <path d="M24 24 L24 8" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+                  <path d="M24 24 L38 14" stroke="#007AFF" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+                  <path d="M24 24 L36 32" stroke="#007AFF" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
                 </svg>
-                <h1 class="logo-text" style="margin: 0; font-size: 3em;">RankRadar</h1>
+                <h1 class="logo-text" style="margin: 0; font-size: 2.75em; font-weight: 700;">RankRadar</h1>
             </div>
             <p class="subtitle" data-i18n="subtitle">ASO Intelligence Platform · Real-time Rankings & Insights</p>
             
@@ -585,10 +577,10 @@ class InteractiveDashboard:
                     <button class="filter-btn" onclick="setTimeRange(90)" data-i18n="days90">90 días</button>
                 </div>
                 
-                <div class="filter-group">
-                    <label style="color: white;" data-i18n="from">Desde:</label>
+                <div class="filter-group" style="align-items: center;">
+                    <label style="color: var(--text-primary); font-size: 0.9em; font-weight: 500;" data-i18n="from">Desde:</label>
                     <input type="date" id="date-from" onchange="applyCustomDateRange()">
-                    <label style="color: white;" data-i18n="to">Hasta:</label>
+                    <label style="color: var(--text-primary); font-size: 0.9em; font-weight: 500;" data-i18n="to">Hasta:</label>
                     <input type="date" id="date-to" onchange="applyCustomDateRange()">
                 </div>
                 
@@ -598,7 +590,7 @@ class InteractiveDashboard:
                     </select>
                 </div>
                 
-                <div class="export-btns">
+                <div class="filter-group">
                     <button class="export-btn" onclick="exportData('csv')">
                         <i data-lucide="download" style="width: 16px; height: 16px;"></i>
                         <span data-i18n="exportCSV">CSV</span>
