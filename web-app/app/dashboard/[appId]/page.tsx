@@ -441,7 +441,8 @@ export default function AppDetailPage({ params: paramsPromise }: PageProps) {
             </div>
           </div>
 
-          {/* Top 10 Keywords Timeline */}          {console.log('🎯 Renderizando timeline - topKeywords:', topKeywords.length, 'chartData:', chartData.length)}          {topKeywords.length > 0 && (
+          {/* Top 10 Keywords Timeline */}
+          {topKeywords.length > 0 && (
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
