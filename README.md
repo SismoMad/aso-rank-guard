@@ -395,19 +395,38 @@ trends:
 ```
 aso-rank-guard/
 ├── config/
-│   ├── config.yaml              # ⚙️ Configuración principal
-│   ├── credentials.json         # 🔐 Google Calendar (opcional)
-│   └── token.json               # 🔐 Google Calendar (opcional)
+│   └── config.yaml              # ⚙️ Configuración principal
 ├── data/
-│   └── ranks.csv                # 📊 Histórico de rankings
+│   ├── ranks.csv                # 📊 Histórico de rankings
+│   ├── competitors.csv          # 🎯 Datos de competidores
+│   ├── keyword_discoveries.csv  # 🔍 Keywords descubiertos
+│   └── backups/                 # 💾 Backups automáticos
+├── docs/                        # 📚 Documentación completa
+│   ├── README.md                # 📖 Índice de documentación
+│   ├── ASO_PRO.md              # 🚀 Guía PRO
+│   ├── CHANGELOG.md            # 📋 Historial de cambios
+│   └── TODO.md                 # 🎯 Roadmap
 ├── logs/
-│   └── rank_guard.log           # 📝 Logs de ejecución
+│   ├── rank_guard.log          # 📝 Logs de tracking
+│   └── api.log                 # 🌐 Logs de API
+├── scripts/                     # 🔧 Scripts de mantenimiento
+│   ├── README.md               # 📖 Guía de scripts
+│   ├── backup.sh               # 💾 Backup de datos
+│   ├── deploy_to_server.sh     # 🚀 Deploy a servidor
+│   └── server_setup.sh         # 🖥️ Setup servidor
 ├── src/
-│   ├── rank_tracker.py          # 🎯 Script principal
-│   ├── telegram_alerts.py       # 🔔 Módulo de alertas
-│   └── trend_analyzer.py        # 📈 Análisis de tendencias
-├── requirements.txt             # 📦 Dependencias Python
-└── README.md                    # 📖 Esta guía
+│   ├── rank_tracker.py         # 🎯 Tracking de keywords
+│   ├── telegram_bot.py         # 🤖 Bot interactivo
+│   ├── aso_expert_pro.py       # 🎓 Análisis experto PRO
+│   ├── competitor_tracker.py   # 🔍 Tracking competidores
+│   ├── keyword_discovery.py    # 💡 Descubrimiento keywords
+│   └── api.py                  # 🌐 API REST
+├── web/
+│   └── dashboard.html          # 📊 Dashboard interactivo
+├── run.sh                      # ⚡ Script principal
+├── pro.sh                      # 🚀 Script PRO
+├── requirements.txt            # 📦 Dependencias Python
+└── README.md                   # 📖 Esta guía
 ```
 
 ---
