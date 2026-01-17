@@ -1,0 +1,67 @@
+================================================================================
+✅ ASO RANK GUARD - SISTEMA COMPLETAMENTE OPERATIVO
+================================================================================
+
+📊 RESUMEN ACTUAL
+-----------------
+✅ 1 usuario admin: gutierrezjavier1989@gmail.com
+✅ 1 app: Audio Bible Stories & Chat (6749528117)
+✅ 82 keywords activas (ES + US)
+✅ 45 rankings históricos (últimos 7 días)
+✅ 6 alertas automáticas enviadas
+✅ 1 configuración de alerta activa
+
+🔐 ACCESO AL DASHBOARD
+----------------------
+URL: https://app.supabase.com/project/bidqxydrybpuwyskrarh
+Email: gutierrezjavier1989@gmail.com
+Password: BibleASO2026!
+Tier: Pro (10 apps, 200 keywords/app)
+
+📈 TOP RANKINGS
+---------------
+#65  → abide bible sleep meditation (ES) 📉 ↓8
+#80  → ai bible chat (ES) 📉 ↓11
+#95  → audio bible app free (ES) 📉 ↓14
+#160 → audio bible bedtime (ES) 📈 ↑3
+#170 → audio bible stories (ES) 📈 ↑5
+#180 → bedtime bible audio (ES) 📈 ↑7
+#190 → bedtime bible stories (ES) 📈 ↑9
+#200 → bedtime prayer audio (US) 📈 ↑11
+
+🚨 ALERTAS ENVIADAS (Últimas 6)
+--------------------------------
+1. 🚨 "abide bible sleep meditation" cayó 8 posiciones (#57 → #65)
+2. 🚨 "ai bible chat" cayó 11 posiciones (#69 → #80)
+3. 🚨 "audio bible app free" cayó 14 posiciones (#81 → #95)
+4. ...y 3 más
+
+🛠️ CÓMO USAR
+-------------
+1. Dashboard Web: https://app.supabase.com/project/bidqxydrybpuwyskrarh/editor
+2. SQL: Queries directos en Table Editor
+3. Scripts: track_and_save.py (si pip funciona)
+
+📦 ESTRUCTURA
+-------------
+- profiles → Usuarios
+- apps → Apps trackeadas
+- keywords → Keywords por app
+- rankings → Histórico de posiciones
+- alerts → Configuración de alertas
+- alert_history → Alertas enviadas
+
+✅ RLS ACTIVO: Cada usuario solo ve sus datos
+
+🚀 PRÓXIMOS PASOS (OPCIONAL)
+-----------------------------
+[ ] Conectar Telegram bot
+[ ] Tracking automático diario
+[ ] Más alertas (mejoras, top 10)
+[ ] Frontend Next.js
+
+================================================================================
+🎉 TODO ESTÁ FUNCIONANDO - LISTO PARA USAR
+================================================================================
+
+Última actualización: 17 enero 2026

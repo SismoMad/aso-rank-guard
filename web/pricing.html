@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precios - ASO Rank Guard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #1a1a1a;
+            line-height: 1.6;
+            background: #f9fafb;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #1e40af;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Pricing Toggle */
+        .pricing-toggle {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .toggle-container {
+            display: inline-flex;
+            background: white;
+            border-radius: 12px;
+            padding: 0.5rem;
+            gap: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .toggle-btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .save-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            font-weight: 700;
+        }
+
+        /* Pricing Grid */
+        .pricing-section {
+            padding: 2rem 2rem 5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            transition: all 0.3s;
+            border: 2px solid #e5e7eb;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .pricing-card.featured {
+            border-color: #2563eb;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.08);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            right: 30px;
+            background: #10b981;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.4);
+        }
+
+        .plan-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .plan-price {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-price span {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .plan-description {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .plan-features li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .pricing-card.featured .plan-features li {
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .pricing-card.featured .plan-features li:before {
+            color: white;
+        }
+
+        .plan-features li.disabled {
+            opacity: 0.3;
+        }
+
+        .plan-features li.disabled:before {
+            content: "✗";
+            color: #ef4444;
+        }
+
+        .btn-cta {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-white {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-white:hover {
+            background: #f9fafb;
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .comparison-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .comparison-table {
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        td.check {
+            text-align: center;
+            color: #10b981;
+            font-size: 1.5rem;
+        }
+
+        td.cross {
+            text-align: center;
+            color: #ef4444;
+            font-size: 1.5rem;
+        }
+
+        /* FAQ */
+        .faq-section {
+            padding: 5rem 2rem;
+            background: #f9fafb;
+        }
+
+        .faq-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .faq-item h3 {
+            color: #2563eb;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .faq-item p {
+            color: #6b7280;
+            line-height: 1.8;
+        }
+
+        /* CTA */
+        .final-cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .btn-large {
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1f2937;
+            color: #9ca3af;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">ASO<span>RankGuard</span></a>
+            <div class="nav-links">
+                <a href="index.html#features">Características</a>
+                <a href="pricing.html">Precios</a>
+                <a href="login.html" class="btn btn-secondary">Iniciar Sesión</a>
+                <a href="login.html?signup=true" class="btn btn-primary">Prueba Gratis</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Planes simples y transparentes</h1>
+        <p>Elige el plan perfecto para tu negocio. Sin costes ocultos. Cancela cuando quieras.</p>
+    </section>
+
+    <!-- Pricing Toggle -->
+    <section class="pricing-toggle">
+        <div class="toggle-container">
+            <button class="toggle-btn active" onclick="switchPricing('monthly')">Mensual</button>
+            <button class="toggle-btn" onclick="switchPricing('annual')">Anual <span class="save-badge">-20%</span></button>
+        </div>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section class="pricing-section">
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="plan-header">
+                    <div class="plan-name">Free</div>
+                    <div class="plan-price" id="price-free">$0<span>/mes</span></div>
+                    <p class="plan-description">Perfecto para probar el servicio</p>
+                </div>
+                <ul class="plan-features">
+                    <li>1 aplicación</li>
+                    <li>10 keywords por app</li>
+                    <li>Tracking diario</li>
+                    <li>7 días de historial</li>
+                    <li>Gráficos básicos</li>
+                    <li class="disabled">Alertas Telegram</li>
+                    <li class="disabled">Exportar datos</li>
+                    <li class="disabled">Soporte prioritario</li>
+                </ul>
+                <a href="login.html?signup=true" class="btn btn-primary btn-cta">Empezar Gratis</a>
+            </div>
+
+            <!-- Pro Plan (Featured) -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">Más Popular</div>
+                <div class="plan-header">
+                    <div class="plan-name">Pro</div>
+                    <div class="plan-price" id="price-pro">$29<span>/mes</span></div>
+                    <p class="plan-description">Ideal para desarrolladores serios</p>
+                </div>
+                <ul class="plan-features">
+                    <li>5 aplicaciones</li>
+                    <li>100 keywords por app</li>
+                    <li>Tracking cada 6 horas</li>
+                    <li>90 días de historial</li>
+                    <li>Gráficos avanzados</li>
+                    <li>Alertas por Telegram</li>
+                    <li>Exportar CSV/JSON</li>
+                    <li>Soporte por email</li>
+                    <li>Análisis de competidores</li>
+                </ul>
+                <a href="login.html?signup=true" class="btn btn-white btn-cta">Probar 14 días gratis</a>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="pricing-card">
+                <div class="plan-header">
+                    <div class="plan-name">Enterprise</div>
+                    <div class="plan-price" id="price-enterprise">$99<span>/mes</span></div>
+                    <p class="plan-description">Para agencias y equipos grandes</p>
+                </div>
+                <ul class="plan-features">
+                    <li>20 aplicaciones</li>
+                    <li>500 keywords por app</li>
+                    <li>Tracking cada hora</li>
+                    <li>Historial ilimitado</li>
+                    <li>Dashboard personalizable</li>
+                    <li>API completa</li>
+                    <li>Reportes automáticos</li>
+                    <li>Soporte prioritario 24/7</li>
+                    <li>White-label disponible</li>
+                    <li>Gestor de cuenta dedicado</li>
+                </ul>
+                <a href="login.html?signup=true" class="btn btn-primary btn-cta">Contactar Ventas</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="comparison-section">
+        <h2 class="comparison-title">Comparación Detallada</h2>
+        <div class="comparison-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Free</th>
+                        <th>Pro</th>
+                        <th>Enterprise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Aplicaciones</td>
+                        <td>1</td>
+                        <td>5</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>Keywords por App</td>
+                        <td>10</td>
+                        <td>100</td>
+                        <td>500</td>
+                    </tr>
+                    <tr>
+                        <td>Frecuencia Tracking</td>
+                        <td>Diario</td>
+                        <td>6 horas</td>
+                        <td>1 hora</td>
+                    </tr>
+                    <tr>
+                        <td>Historial</td>
+                        <td>7 días</td>
+                        <td>90 días</td>
+                        <td>Ilimitado</td>
+                    </tr>
+                    <tr>
+                        <td>Alertas Telegram</td>
+                        <td class="cross">✗</td>
+                        <td class="check">✓</td>
+                        <td class="check">✓</td>
+                    </tr>
+                    <tr>
+                        <td>Exportar Datos</td>
+                        <td class="cross">✗</td>
+                        <td class="check">✓</td>
+                        <td class="check">✓</td>
+                    </tr>
+                    <tr>
+                        <td>API Access</td>
+                        <td class="cross">✗</td>
+                        <td class="cross">✗</td>
+                        <td class="check">✓</td>
+                    </tr>
+                    <tr>
+                        <td>Soporte</td>
+                        <td>Comunidad</td>
+                        <td>Email</td>
+                        <td>24/7 Prioritario</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <h2 class="faq-title">Preguntas Frecuentes</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <h3>¿Puedo cambiar de plan en cualquier momento?</h3>
+                <p>Sí, puedes actualizar o degradar tu plan en cualquier momento. Los cambios se reflejarán inmediatamente y se te cobrará proporcionalmente.</p>
+            </div>
+            <div class="faq-item">
+                <h3>¿Ofrecen período de prueba?</h3>
+                <p>Sí, el plan Pro incluye 14 días de prueba gratis. No se requiere tarjeta de crédito. El plan Free está disponible para siempre sin límite de tiempo.</p>
+            </div>
+            <div class="faq-item">
+                <h3>¿Qué métodos de pago aceptan?</h3>
+                <p>Aceptamos todas las tarjetas de crédito y débito principales (Visa, Mastercard, American Express) a través de Stripe.</p>
+            </div>
+            <div class="faq-item">
+                <h3>¿Puedo cancelar mi suscripción?</h3>
+                <p>Sí, puedes cancelar tu suscripción en cualquier momento desde el dashboard. No hay penalizaciones ni cargos por cancelación.</p>
+            </div>
+            <div class="faq-item">
+                <h3>¿Qué pasa con mis datos si cancelo?</h3>
+                <p>Tus datos se mantendrán durante 90 días después de la cancelación. Puedes exportarlos en cualquier momento. Después de 90 días, se eliminarán permanentemente.</p>
+            </div>
+            <div class="faq-item">
+                <h3>¿Ofrecen descuentos para startups o educación?</h3>
+                <p>Sí, ofrecemos descuentos especiales del 50% para startups verificadas y estudiantes. Contacta a nuestro equipo de ventas para más información.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2>¿Listo para empezar?</h2>
+        <p>Únete a cientos de desarrolladores que ya están mejorando sus rankings</p>
+        <a href="login.html?signup=true" class="btn btn-white btn-large">Comienza Gratis Hoy</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 ASO Rank Guard. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        const pricing = {
+            monthly: {
+                free: '$0',
+                pro: '$29',
+                enterprise: '$99'
+            },
+            annual: {
+                free: '$0',
+                pro: '$23',  // -20%
+                enterprise: '$79'  // -20%
+            }
+        };
+
+        let currentPlan = 'monthly';
+
+        function switchPricing(plan) {
+            currentPlan = plan;
+            
+            // Update toggle buttons
+            const buttons = document.querySelectorAll('.toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update prices
+            document.getElementById('price-free').innerHTML = pricing[plan].free + '<span>/mes</span>';
+            document.getElementById('price-pro').innerHTML = pricing[plan].pro + '<span>/mes</span>';
+            document.getElementById('price-enterprise').innerHTML = pricing[plan].enterprise + '<span>/mes</span>';
+        }
+    </script>
+</body>
+</html>

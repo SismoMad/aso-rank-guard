@@ -1,0 +1,39 @@
+# =============================================================================
+# ASO Rank Guard - Supabase Dependencies
+# =============================================================================
+# Install with: pip install -r requirements-supabase.txt
+# =============================================================================
+
+# Supabase client
+supabase>=2.0.0
+
+# PostgreSQL adapter (used by supabase-py)
+postgrest-py>=0.10.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# HTTP requests (for iTunes API and Telegram)
+requests>=2.31.0
+
+# Data analysis (keep for compatibility with old scripts)
+pandas>=2.0.0
+
+# Telegram (if using bot)
+python-telegram-bot>=20.0
+
+# YAML config (transitioning away from this)
+PyYAML>=6.0
+
+# Logging and monitoring
+colorlog>=6.7.0  # Better console logging
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# Type hints
+typing-extensions>=4.7.0
+
+# Date/time utilities
+python-dateutil>=2.8.2

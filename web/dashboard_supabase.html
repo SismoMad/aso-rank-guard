@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASO Rank Guard - Dashboard Supabase</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; padding: 20px; min-height: 100vh; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(102,126,234,0.3); margin-bottom: 30px; }
+        h1 { color: white; font-size: 3em; margin-bottom: 10px; font-weight: 800; }
+        .subtitle { color: rgba(255,255,255,0.9); font-size: 1.2em; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2); }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(102,126,234,0.4); }
+        .stat-icon { margin-bottom: 15px; color: #667eea; }
+        .stat-value { font-size: 3em; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; }
+        .stat-label { color: #94a3b8; font-size: 0.95em; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .chart-container { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; }
+        .chart-title { font-size: 1.8em; margin-bottom: 25px; color: #e2e8f0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .keyword-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .keyword-row { background: rgba(255,255,255,0.05); transition: all 0.2s; }
+        .keyword-row:hover { background: rgba(102,126,234,0.2); transform: scale(1.01); }
+        .keyword-row td { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .keyword-row td:first-child { border-left: 1px solid rgba(255,255,255,0.1); border-radius: 10px 0 0 10px; }
+        .keyword-row td:last-child { border-right: 1px solid rgba(255,255,255,0.1); border-radius: 0 10px 10px 0; }
+        .keyword-name { font-weight: 600; font-size: 1.1em; color: #e2e8f0; }
+        .rank-badge { padding: 8px 16px; border-radius: 20px; font-weight: bold; color: white; display: inline-block; min-width: 60px; text-align: center; }
+        .rank-top10 { background: linear-gradient(135deg, #10b981, #059669); }
+        .rank-top50 { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .rank-top100 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .rank-other { background: linear-gradient(135deg, #6b7280, #4b5563); }
+        .loading { text-align: center; padding: 100px; font-size: 1.5em; }
+        .refresh-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 30px rgba(102,126,234,0.4); }
+        .refresh-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(102,126,234,0.6); }
+        .last-update { color: #94a3b8; text-align: center; margin-top: 30px; font-size: 0.95em; }
+        .header-controls { display: flex; align-items: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+        .login-section { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 20px; display: none; }
+        .login-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+        .user-info { background: rgba(16,185,129,0.1); padding: 10px 20px; border-radius: 10px; color: #10b981; font-weight: 600; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i data-lucide="rocket" style="width: 48px; height: 48px; display: inline-block; vertical-align: middle; margin-right: 10px;"></i>ASO Rank Guard Pro</h1>
+            <p class="subtitle">Dashboard Inteligente de Rankings · Powered by Supabase ⚡</p>
+            <div class="header-controls">
+                <button class="refresh-btn" onclick="loadAllData()"><i data-lucide="refresh-cw" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i>Actualizar Datos</button>
+                <div id="user-info" class="user-info" style="display:none;"></div>
+                <button class="login-btn" onclick="handleAuth()" id="auth-btn">Login</button>
+            </div>
+        </header>
+
+        <!-- Login Section (opcional) -->
+        <div id="login-section" class="login-section">
+            <h3>🔐 Acceso con Supabase</h3>
+            <p>Inicia sesión para ver tus datos personalizados</p>
+            <input type="email" id="email" placeholder="Email" style="padding: 10px; margin: 10px 0; width: 300px; border-radius: 5px; border: 1px solid #667eea;">
+            <input type="password" id="password" placeholder="Password" style="padding: 10px; margin: 10px 0; width: 300px; border-radius: 5px; border: 1px solid #667eea;">
+            <button class="login-btn" onclick="login()">Entrar</button>
+        </div>
+
+        <div id="loading" class="loading"><i data-lucide="loader" style="width: 40px; height: 40px; display: inline-block; animation: spin 1s linear infinite;"></i><br>Conectando a Supabase...</div>
+
+        <div id="content" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="smartphone" style="width: 48px; height: 48px;"></i></div>
+                    <div class="stat-label">Total Keywords</div>
+                    <div class="stat-value" id="total-keywords">-</div>
+                    <div class="stat-change">Monitoreando activamente</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="trophy" style="width: 48px; height: 48px;"></i></div>
+                    <div class="stat-label">Top 10</div>
+                    <div class="stat-value" id="top-10">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="star" style="width: 48px; height: 48px;"></i></div>
+                    <div class="stat-label">Top 50</div>
+                    <div class="stat-value" id="top-50">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="target" style="width: 48px; height: 48px;"></i></div>
+                    <div class="stat-label">Última actualización</div>
+                    <div class="stat-value" id="last-check" style="font-size: 1.5em;">-</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h2 class="chart-title"><i data-lucide="trending-up" style="width: 32px; height: 32px;"></i> Evolución de Rankings</h2>
+                <div style="height: 400px;">
+                    <canvas id="evolutionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h2 class="chart-title"><i data-lucide="list" style="width: 32px; height: 32px;"></i> Rankings Detallados</h2>
+                <table class="keyword-table" id="keywords-table">
+                    <thead>
+                        <tr style="color: #94a3b8;">
+                            <th style="text-align: left; padding: 10px;">Keyword</th>
+                            <th style="text-align: center;">País</th>
+                            <th style="text-align: center;">Posición</th>
+                            <th style="text-align: center;">Última actualización</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="last-update" id="last-update"></div>
+    </div>
+
+    <script>
+        // Configurar Supabase
+        const SUPABASE_URL = 'https://bidqxydrybpuwyskrarh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpZHF4eWRyeWJwdXd5c2tyYXJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcxMjU5NDgsImV4cCI6MjA1MjcwMTk0OH0.oAVOtxBrKz1wGWr6JuHbF3r63bXr8vXilZ-rvSPTfaI';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const APP_ID = 'd30da119-98d7-4c12-9e9f-13f3726c82fe';
+        
+        let evolutionChart = null;
+        let currentUser = null;
+
+        // Auth handlers
+        async function handleAuth() {
+            if (currentUser) {
+                await supabase.auth.signOut();
+                currentUser = null;
+                document.getElementById('auth-btn').textContent = 'Login';
+                document.getElementById('user-info').style.display = 'none';
+            } else {
+                document.getElementById('login-section').style.display = 'block';
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+            
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                currentUser = data.user;
+                document.getElementById('user-info').textContent = '👤 ' + currentUser.email;
+                document.getElementById('user-info').style.display = 'block';
+                document.getElementById('auth-btn').textContent = 'Logout';
+                document.getElementById('login-section').style.display = 'none';
+                loadAllData();
+            }
+        }
+
+        // Cargar estadísticas
+        async function loadStats() {
+            try {
+                // Total keywords
+                const { count: totalKeywords } = await supabase
+                    .from('keywords')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('app_id', APP_ID)
+                    .eq('is_active', true);
+                
+                document.getElementById('total-keywords').textContent = totalKeywords || 0;
+                
+                // Obtener rankings recientes
+                const { data: keywords } = await supabase
+                    .from('keywords')
+                    .select('id')
+                    .eq('app_id', APP_ID)
+                    .eq('is_active', true)
+                    .limit(100);
+                
+                let top10 = 0, top50 = 0;
+                
+                for (const kw of keywords) {
+                    const { data: rankings } = await supabase
+                        .from('rankings')
+                        .select('rank')
+                        .eq('keyword_id', kw.id)
+                        .order('tracked_at', { ascending: false })
+                        .limit(1);
+                    
+                    if (rankings && rankings[0]) {
+                        const rank = rankings[0].rank;
+                        if (rank <= 10) top10++;
+                        if (rank <= 50) top50++;
+                    }
+                }
+                
+                document.getElementById('top-10').textContent = top10;
+                document.getElementById('top-50').textContent = top50;
+                document.getElementById('last-check').textContent = new Date().toLocaleTimeString('es-ES');
+                
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Cargar tabla de keywords
+        async function loadKeywordsTable() {
+            try {
+                const { data: keywords } = await supabase
+                    .from('keywords')
+                    .select('id, keyword, country')
+                    .eq('app_id', APP_ID)
+                    .eq('is_active', true)
+                    .order('keyword');
+                
+                const tbody = document.querySelector('#keywords-table tbody');
+                tbody.innerHTML = '';
+                
+                for (const kw of keywords) {
+                    const { data: rankings } = await supabase
+                        .from('rankings')
+                        .select('rank, tracked_at')
+                        .eq('keyword_id', kw.id)
+                        .order('tracked_at', { ascending: false })
+                        .limit(1);
+                    
+                    const rank = rankings && rankings[0] ? rankings[0].rank : null;
+                    const trackedAt = rankings && rankings[0] ? new Date(rankings[0].tracked_at).toLocaleString('es-ES') : '-';
+                    
+                    let badge = 'rank-other';
+                    if (rank <= 10) badge = 'rank-top10';
+                    else if (rank <= 50) badge = 'rank-top50';
+                    else if (rank <= 100) badge = 'rank-top100';
+                    
+                    const tr = document.createElement('tr');
+                    tr.className = 'keyword-row';
+                    tr.innerHTML = `
+                        <td><div class="keyword-name">${kw.keyword}</div></td>
+                        <td style="text-align:center;">${kw.country}</td>
+                        <td style="text-align:center;"><span class="rank-badge ${badge}">#${rank || 'N/A'}</span></td>
+                        <td style="text-align:center; color: #94a3b8; font-size: 0.9em;">${trackedAt}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+                
+            } catch (error) {
+                console.error('Error loading keywords:', error);
+            }
+        }
+
+        // Cargar gráfico de evolución
+        async function loadEvolutionChart() {
+            try {
+                const since = new Date();
+                since.setDate(since.getDate() - 7);
+                
+                const { data: rankings } = await supabase
+                    .from('rankings')
+                    .select(`
+                        rank,
+                        tracked_at,
+                        keyword:keywords(keyword)
+                    `)
+                    .gte('tracked_at', since.toISOString())
+                    .order('tracked_at');
+                
+                // Agrupar por keyword
+                const kwData = {};
+                rankings.forEach(r => {
+                    const kwName = r.keyword?.keyword || 'Unknown';
+                    if (!kwData[kwName]) kwData[kwName] = [];
+                    kwData[kwName].push({
+                        x: new Date(r.tracked_at),
+                        y: r.rank
+                    });
+                });
+                
+                // Top 5 keywords con mejores rankings
+                const top5 = Object.keys(kwData)
+                    .sort((a, b) => {
+                        const avgA = kwData[a].reduce((s, p) => s + p.y, 0) / kwData[a].length;
+                        const avgB = kwData[b].reduce((s, p) => s + p.y, 0) / kwData[b].length;
+                        return avgA - avgB;
+                    })
+                    .slice(0, 5);
+                
+                const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+                const datasets = top5.map((kw, i) => ({
+                    label: kw,
+                    data: kwData[kw].sort((a, b) => a.x - b.x),
+                    borderColor: colors[i],
+                    backgroundColor: colors[i] + '20',
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5
+                }));
+                
+                const ctx = document.getElementById('evolutionChart').getContext('2d');
+                if (evolutionChart) evolutionChart.destroy();
+                
+                evolutionChart = new Chart(ctx, {
+                    type: 'line',
+                    data: { datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: { unit: 'day' },
+                                grid: { color: 'rgba(255,255,255,0.1)' },
+                                ticks: { color: '#94a3b8' }
+                            },
+                            y: {
+                                reverse: true,
+                                grid: { color: 'rgba(255,255,255,0.1)' },
+                                ticks: { color: '#94a3b8' },
+                                title: { display: true, text: 'Posición', color: '#94a3b8' }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: '#e2e8f0' } },
+                            tooltip: { backgroundColor: 'rgba(15,23,42,0.95)' }
+                        }
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error loading chart:', error);
+            }
+        }
+
+        async function loadAllData() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('content').style.display = 'none';
+                
+                await Promise.all([
+                    loadStats(),
+                    loadKeywordsTable(),
+                    loadEvolutionChart()
+                ]);
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                document.getElementById('last-update').textContent = `Última actualización: ${new Date().toLocaleString('es-ES')}`;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = `<div style="color:#ef4444;">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Check auth status on load
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                currentUser = session.user;
+                document.getElementById('user-info').textContent = '👤 ' + currentUser.email;
+                document.getElementById('user-info').style.display = 'block';
+                document.getElementById('auth-btn').textContent = 'Logout';
+            }
+        });
+
+        // Initial load
+        loadAllData().then(() => lucide.createIcons());
+        
+        // Auto refresh every 5 minutes
+        setInterval(() => loadAllData().then(() => lucide.createIcons()), 5 * 60 * 1000);
+    </script>
+</body>
+</html>

@@ -24,14 +24,8 @@ ALTER TABLE public.tracking_jobs ENABLE ROW LEVEL SECURITY;
 -- ============================================================================
 -- HELPER FUNCTION: Get authenticated user ID
 -- ============================================================================
-
-CREATE OR REPLACE FUNCTION auth.user_id()
-RETURNS UUID AS $$
-  SELECT COALESCE(
-    auth.uid(), -- Supabase auth helper
-    (current_setting('request.jwt.claims', true)::jsonb->>'sub')::uuid
-  );
-$$ LANGUAGE SQL STABLE;
+-- Nota: No creamos auth.user_id() porque el schema auth es restringido
+-- Usamos directamente auth.uid() en las policies
 
 -- ============================================================================
 -- PROFILES POLICIES

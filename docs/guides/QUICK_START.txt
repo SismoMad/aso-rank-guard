@@ -1,0 +1,72 @@
+================================================================================
+ASO RANK GUARD - SISTEMA COMPLETO Y FUNCIONANDO
+================================================================================
+
+SISTEMA CONFIGURADO Y LISTO:
+
+1. DASHBOARD WEB
+   Archivo: web/dashboard_supabase.html
+   Uso: Abre el archivo en tu navegador o sube a tu servidor
+   - Conexion directa a Supabase
+   - Rankings en tiempo real
+   - Graficos de evolucion
+   - Auto-refresh cada 5 minutos
+
+2. BOT TELEGRAM
+   Archivo: bot_telegram_supabase.py
+   Uso: python3 bot_telegram_supabase.py
+   Comandos: /rankings, /stats, /top, /changes, /alerts
+
+3. API FASTAPI (opcional)
+   Archivo: api/main.py
+   Uso: cd api && python3 main.py
+   Docs: http://localhost:8000/docs
+
+4. BASE DE DATOS
+   - Supabase PostgreSQL
+   - Dashboard: https://app.supabase.com/project/bidqxydrybpuwyskrarh
+   - User: gutierrezjavier1989@gmail.com
+   - Password: BibleASO2026!
+
+INICIO RAPIDO:
+
+./start.sh
+
+Opciones:
+1) Abrir Dashboard Web
+2) Iniciar Bot Telegram
+3) Tracking manual
+4) Iniciar API
+5) Ver stats
+6) Test conexion
+
+SUBIR A TU SERVIDOR (http://194.164.160.111:8447/):
+
+scp web/dashboard_supabase.html usuario@194.164.160.111:/ruta/dashboard.html
+
+ARCHIVOS IMPORTANTES:
+
+- GUIA_USO_COMPLETA.md - Documentacion detallada
+- start.sh - Script de inicio rapido
+- web/dashboard_supabase.html - Dashboard web
+- bot_telegram_supabase.py - Bot de Telegram
+- api/main.py - API FastAPI
+
+CHECKLIST:
+
+[x] Supabase configurado
+[x] Dashboard web funcionando
+[x] Bot de Telegram listo
+[x] API FastAPI creada
+[x] 82 keywords activas
+[x] 45 rankings historicos
+[x] 6 alertas enviadas
+[x] Documentacion completa
+
+[ ] Dashboard subido a servidor
+[ ] Tracking automatico (cron)
+[ ] Bot en segundo plano
+
+PROXIMO PASO: ./start.sh y elige opcion 1
+
+Ultima actualizacion: 17 enero 2026

@@ -30,10 +30,6 @@ CREATE INDEX IF NOT EXISTS idx_rankings_keyword_id ON public.rankings(keyword_id
 CREATE INDEX IF NOT EXISTS idx_rankings_tracked_at ON public.rankings(tracked_at DESC);
 CREATE INDEX IF NOT EXISTS idx_rankings_keyword_date ON public.rankings(keyword_id, tracked_at DESC);
 
--- Índice para análisis de tendencias (últimos 30 días)
-CREATE INDEX IF NOT EXISTS idx_rankings_recent ON public.rankings(tracked_at DESC) 
-  WHERE tracked_at > NOW() - INTERVAL '30 days';
-
 -- Comentarios
 COMMENT ON TABLE public.rankings IS 'Historical ASO ranking positions for keywords';
 COMMENT ON COLUMN public.rankings.rank IS 'App Store ranking position (1-200+)';

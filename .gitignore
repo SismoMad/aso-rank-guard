@@ -57,3 +57,13 @@ htmlcov/
 # Temporal
 *.tmp
 *.bak
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Build artifacts
+nextjs-build/
+web-app-*/
+*.tar
+*.gz

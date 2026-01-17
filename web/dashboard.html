@@ -3,195 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASO Rank Guard - Dashboard Pro</title>
+    <title>ASO Rank Guard - SaaS Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; padding: 20px; min-height: 100vh; }
-        .container { max-width: 1600px; margin: 0 auto; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+        
+        /* Login Screen */
+        .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .login-box { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 50px; border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); max-width: 450px; width: 100%; border: 1px solid rgba(255,255,255,0.1); }
+        .login-header { text-align: center; margin-bottom: 40px; }
+        .login-header h1 { font-size: 2.5em; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .login-header p { color: #94a3b8; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9em; font-weight: 600; }
+        .input-group input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #e2e8f0; font-size: 1em; transition: all 0.3s; }
+        .input-group input:focus { outline: none; border-color: #667eea; background: rgba(255,255,255,0.08); }
+        .btn-primary { width: 100%; padding: 15px; border-radius: 10px; border: none; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 30px rgba(102,126,234,0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(102,126,234,0.6); }
+        .btn-secondary { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #94a3b8; font-size: 0.95em; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); color: #e2e8f0; }
+        .error-msg { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9em; display: none; }
+        .success-msg { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9em; display: none; }
+        
+        /* Dashboard */
+        .dashboard { padding: 20px; max-width: 1600px; margin: 0 auto; display: none; }
         header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(102,126,234,0.3); margin-bottom: 30px; }
         h1 { color: white; font-size: 3em; margin-bottom: 10px; font-weight: 800; }
         .subtitle { color: rgba(255,255,255,0.9); font-size: 1.2em; }
+        .header-controls { display: flex; align-items: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; justify-content: space-between; }
+        .user-info { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 10px; color: white; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .btn-logout { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .btn-logout:hover { background: rgba(255,255,255,0.2); }
+        
+        /* App Selector */
+        .app-selector-container { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 20px; border-radius: 15px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .app-selector { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        .app-card { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 10px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; display: flex; align-items: center; gap: 10px; }
+        .app-card:hover { background: rgba(102,126,234,0.2); transform: scale(1.05); }
+        .app-card.active { border-color: #667eea; background: rgba(102,126,234,0.3); }
+        .app-card h3 { font-size: 1.1em; margin: 0; }
+        .app-card p { font-size: 0.85em; color: #94a3b8; margin: 5px 0 0; }
+        .btn-add-app { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 15px 30px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .btn-add-app:hover { transform: scale(1.05); }
+        
+        /* Stats Grid */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; position: relative; overflow: hidden; }
         .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2); }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(102,126,234,0.4); }
-        .stat-icon { margin-bottom: 15px; color: #667eea; }
         .stat-value { font-size: 3em; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; }
         .stat-label { color: #94a3b8; font-size: 0.95em; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .stat-change { margin-top: 10px; font-size: 0.9em; display: flex; align-items: center; gap: 5px; }
+        
+        /* Keywords Table */
         .chart-container { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; }
         .chart-title { font-size: 1.8em; margin-bottom: 25px; color: #e2e8f0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .two-columns { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; margin-bottom: 30px; }
-        @media (max-width: 1200px) { .two-columns { grid-template-columns: 1fr; } }
-        .opportunity-card { background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 25px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 20px rgba(16,185,129,0.3); cursor: pointer; transition: all 0.3s; }
-        .opportunity-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(16,185,129,0.5); }
-        .opportunity-title { font-size: 1.3em; font-weight: 700; margin-bottom: 10px; color: white; }
-        .opportunity-desc { color: rgba(255,255,255,0.9); margin-bottom: 15px; }
-        .opportunity-action { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 8px; display: inline-block; color: white; font-weight: 600; font-size: 0.9em; }
         .keyword-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
         .keyword-row { background: rgba(255,255,255,0.05); transition: all 0.2s; }
         .keyword-row:hover { background: rgba(102,126,234,0.2); transform: scale(1.01); }
         .keyword-row td { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .keyword-row td:first-child { border-left: 1px solid rgba(255,255,255,0.1); border-radius: 10px 0 0 10px; }
         .keyword-row td:last-child { border-right: 1px solid rgba(255,255,255,0.1); border-radius: 0 10px 10px 0; }
-        .keyword-name { font-weight: 600; font-size: 1.1em; color: #e2e8f0; }
         .rank-badge { padding: 8px 16px; border-radius: 20px; font-weight: bold; color: white; display: inline-block; min-width: 60px; text-align: center; }
         .rank-top10 { background: linear-gradient(135deg, #10b981, #059669); }
         .rank-top50 { background: linear-gradient(135deg, #3b82f6, #2563eb); }
         .rank-top100 { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .rank-other { background: linear-gradient(135deg, #6b7280, #4b5563); }
-        .volume-badge { background: rgba(102,126,234,0.2); padding: 5px 12px; border-radius: 15px; font-size: 0.85em; color: #a5b4fc; font-weight: 600; }
-        .trend-indicator { font-size: 1.5em; font-weight: bold; }
-        .trend-up { color: #10b981; }
-        .trend-down { color: #ef4444; }
-        .trend-stable { color: #64748b; }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 40px; border-radius: 20px; max-width: 600px; width: 90%; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .modal-header h2 { font-size: 2em; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-close { background: none; border: none; color: #94a3b8; font-size: 1.5em; cursor: pointer; }
+        .btn-close:hover { color: #e2e8f0; }
+        
         .loading { text-align: center; padding: 100px; font-size: 1.5em; }
-        .refresh-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 30px rgba(102,126,234,0.4); }
-        .refresh-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(102,126,234,0.6); }
-        .last-update { color: #94a3b8; text-align: center; margin-top: 30px; font-size: 0.95em; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .action-list { list-style: none; }
-        .action-item { background: rgba(255,255,255,0.05); padding: 20px; margin-bottom: 15px; border-radius: 12px; border-left: 4px solid #667eea; transition: all 0.3s; }
-        .action-item:hover { background: rgba(102,126,234,0.1); transform: translateX(5px); }
-        .action-priority { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.8em; font-weight: 700; margin-bottom: 10px; }
-        .priority-high { background: #ef4444; color: white; }
-        .priority-medium { background: #f59e0b; color: white; }
-        .priority-low { background: #10b981; color: white; }
-        .impact-score { background: linear-gradient(135deg, #fbbf24, #f59e0b); padding: 8px 16px; border-radius: 20px; font-weight: bold; color: white; display: inline-block; font-size: 0.9em; }
-        .keyword-row:hover .keyword-name::after { content: attr(data-insight); position: absolute; bottom: 100%; left: 0; background: rgba(15,23,42,0.95); color: #e2e8f0; padding: 10px 15px; border-radius: 8px; font-size: 0.85em; white-space: nowrap; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .keyword-name { position: relative; }
-        .notification { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(16,185,129,0.4); z-index: 1000; display: none; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .export-btns { display: flex; gap: 10px; margin-left: auto; }
-        .export-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 10px; font-size: 0.9em; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
-        .export-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-        .header-controls { display: flex; align-items: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
-        .time-selector { display: flex; gap: 10px; }
-        .time-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-size: 0.95em; cursor: pointer; transition: all 0.3s; }
-        .time-btn.active { background: rgba(255,255,255,0.4); font-weight: 700; }
-        .time-btn:hover { background: rgba(255,255,255,0.3); }
-        .perf-indicator { position: fixed; bottom: 20px; right: 20px; background: rgba(15,23,42,0.95); padding: 15px 20px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); font-size: 0.85em; z-index: 999; }
-        .perf-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
-        .perf-green { background: #10b981; box-shadow: 0 0 10px #10b981; }
-        .perf-yellow { background: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
-        .perf-red { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        
+        .empty-state { text-align: center; padding: 80px 20px; color: #94a3b8; }
+        .empty-state h3 { font-size: 1.5em; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🚀 ASO Rank Guard</h1>
+                <p>Tu SaaS de monitorización ASO</p>
+            </div>
+            
+            <div id="error-msg" class="error-msg"></div>
+            <div id="success-msg" class="success-msg"></div>
+            
+            <div id="login-form">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" placeholder="tu@email.com">
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="login-password" placeholder="••••••••">
+                </div>
+                <button class="btn-primary" onclick="handleLogin()">Iniciar Sesión</button>
+                <button class="btn-secondary" onclick="showSignup()">¿No tienes cuenta? Regístrate</button>
+            </div>
+            
+            <div id="signup-form" style="display:none;">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="signup-email" placeholder="tu@email.com">
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="signup-password" placeholder="Mínimo 6 caracteres">
+                </div>
+                <button class="btn-primary" onclick="handleSignup()">Crear Cuenta</button>
+                <button class="btn-secondary" onclick="showLogin()">¿Ya tienes cuenta? Inicia sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
         <header>
-            <h1><i data-lucide="rocket" style="width: 48px; height: 48px; display: inline-block; vertical-align: middle; margin-right: 10px;"></i>ASO Rank Guard Pro</h1>
-            <p class="subtitle">Dashboard Inteligente de Rankings · Optimiza tu ASO en Tiempo Real</p>
+            <h1>🚀 ASO Rank Guard</h1>
+            <p class="subtitle">Dashboard Inteligente Multi-App</p>
             <div class="header-controls">
-                <button class="refresh-btn" onclick="loadAllData()"><i data-lucide="refresh-cw" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i>Actualizar Datos</button>
-                <div class="time-selector">
-                    <button class="time-btn active" onclick="setTimeRange(7)" id="btn-7d">7 días</button>
-                    <button class="time-btn" onclick="setTimeRange(14)" id="btn-14d">14 días</button>
-                    <button class="time-btn" onclick="setTimeRange(30)" id="btn-30d">30 días</button>
+                <div class="user-info" id="user-info">
+                    <i data-lucide="user"></i>
+                    <span id="user-email"></span>
                 </div>
-                <div class="export-btns">
-                    <button class="export-btn" onclick="exportToCSV()"><i data-lucide="download" style="width: 16px; height: 16px;"></i>CSV</button>
-                    <button class="export-btn" onclick="exportToJSON()"><i data-lucide="file-json" style="width: 16px; height: 16px;"></i>JSON</button>
-                </div>
+                <button class="btn-logout" onclick="handleLogout()">
+                    <i data-lucide="log-out" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i>
+                    Cerrar Sesión
+                </button>
             </div>
         </header>
 
-        <div id="notification" class="notification"></div>
+        <!-- App Selector -->
+        <div class="app-selector-container">
+            <div class="app-selector" id="app-selector">
+                <button class="btn-add-app" onclick="showAddAppModal()">
+                    <i data-lucide="plus-circle" style="width: 20px; height: 20px;"></i>
+                    Agregar App
+                </button>
+            </div>
+        </div>
 
-        <div id="loading" class="loading"><i data-lucide="loader" style="width: 40px; height: 40px; display: inline-block; animation: spin 1s linear infinite;"></i><br>Cargando datos...</div>
+        <div id="loading" class="loading" style="display:none;">
+            <i data-lucide="loader" style="width: 40px; height: 40px; display: inline-block; animation: spin 1s linear infinite;"></i><br>
+            Cargando datos...
+        </div>
 
-        <div id="content" style="display: none;">
+        <div id="content" style="display:none;">
+            <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon"><i data-lucide="smartphone" style="width: 48px; height: 48px;"></i></div>
                     <div class="stat-label">Total Keywords</div>
                     <div class="stat-value" id="total-keywords">-</div>
-                    <div class="stat-change">Monitoreando activamente</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon"><i data-lucide="trophy" style="width: 48px; height: 48px;"></i></div>
                     <div class="stat-label">Top 10</div>
                     <div class="stat-value" id="top-10">-</div>
-                    <div class="stat-change" id="top10-change"></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon"><i data-lucide="star" style="width: 48px; height: 48px;"></i></div>
                     <div class="stat-label">Top 50</div>
                     <div class="stat-value" id="top-50">-</div>
-                    <div class="stat-change" id="top50-change"></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon"><i data-lucide="target" style="width: 48px; height: 48px;"></i></div>
-                    <div class="stat-label">Visibilidad Estimada</div>
-                    <div class="stat-value" id="visibility-score">-</div>
-                    <div class="stat-change">Impresiones/día estimadas</div>
+                    <div class="stat-label">Promedio</div>
+                    <div class="stat-value" id="avg-rank">-</div>
                 </div>
             </div>
 
-            <!-- Evolución temporal - Gráfico grande -->
+            <!-- Evolution Chart -->
             <div class="chart-container">
-                <h2 class="chart-title"><i data-lucide="trending-up" style="width: 32px; height: 32px;"></i> Evolución de Top 5 Keywords (<span id="days-label">Últimos 7 días</span>)</h2>
+                <h2 class="chart-title">
+                    <i data-lucide="trending-up" style="width: 32px; height: 32px;"></i>
+                    Evolución de Rankings
+                </h2>
                 <div style="height: 400px;">
                     <canvas id="evolutionChart"></canvas>
                 </div>
             </div>
 
-            <!-- Nuevo gráfico de distribución -->
+            <!-- Keywords Table -->
             <div class="chart-container">
-                <h2 class="chart-title"><i data-lucide="bar-chart" style="width: 32px; height: 32px;"></i> Distribución de Rankings & Comparativa</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                    <div style="height: 300px;">
-                        <canvas id="distributionChart"></canvas>
-                    </div>
-                    <div style="height: 300px;">
-                        <canvas id="comparisonChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dos columnas para el resto -->
-            <div class="two-columns">
-                <div>
-                    <div class="chart-container">
-                        <h2 class="chart-title"><i data-lucide="gem" style="width: 32px; height: 32px;"></i> Análisis Posición vs Volumen</h2>
-                        <div style="height: 350px;">
-                            <canvas id="volumeChart"></canvas>
-                        </div>
-                        <p style="color: #94a3b8; font-size: 0.9em; margin-top: 15px; text-align: center;">
-                            <span style="display: inline-block; width: 12px; height: 12px; background: #10b981; border-radius: 50%; margin-right: 5px;"></span>Top 10 · 
-                            <span style="display: inline-block; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%; margin-right: 5px;"></span>Top 50 · 
-                            <span style="display: inline-block; width: 12px; height: 12px; background: #f59e0b; border-radius: 50%; margin-right: 5px;"></span>Top 100 · Tamaño = Volumen de búsquedas
-                        </p>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="chart-container">
-                        <h2 class="chart-title"><i data-lucide="crosshair" style="width: 32px; height: 32px;"></i> Acciones Prioritarias</h2>
-                        <ul class="action-list" id="actions-list"></ul>
-                    </div>
-
-                    <div class="chart-container">
-                        <h2 class="chart-title"><i data-lucide="flame" style="width: 32px; height: 32px;"></i> Oportunidades Detectadas</h2>
-                        <div id="opportunities-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <h2 class="chart-title"><i data-lucide="list" style="width: 32px; height: 32px;"></i> Rankings Detallados</h2>
+                <h2 class="chart-title">
+                    <i data-lucide="list" style="width: 32px; height: 32px;"></i>
+                    Rankings Actuales
+                </h2>
                 <table class="keyword-table" id="keywords-table">
                     <thead>
                         <tr style="color: #94a3b8;">
                             <th style="text-align: left; padding: 10px;">Keyword</th>
-                            <th style="text-align: center;">Posición</th>
-                            <th style="text-align: center;">Tendencia</th>
-                            <th style="text-align: center;">Volumen Est.</th>
-                            <th style="text-align: center;">Dificultad</th>
-                            <th style="text-align: center;">Impacto</th>
+                            <th style="text-align: center;">País</th>
+                            <th style="text-align: center;">Ranking</th>
+                            <th style="text-align: center;">Última actualización</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -199,557 +212,434 @@
             </div>
         </div>
 
-        <div class="last-update" id="last-update"></div>
-        
-        <!-- Performance indicator -->
-        <div class="perf-indicator" id="perf-indicator">
-            <span class="perf-dot perf-green"></span>
-            <span id="perf-text">Sistema operacional</span>
+        <div id="empty-state" class="empty-state">
+            <h3>👋 ¡Bienvenido!</h3>
+            <p>Agrega tu primera app para empezar a monitorear rankings</p>
+            <button class="btn-add-app" onclick="showAddAppModal()" style="margin: 20px auto; display: inline-flex;">
+                <i data-lucide="plus-circle" style="width: 20px; height: 20px;"></i>
+                Agregar Mi Primera App
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Add App -->
+    <div id="add-app-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📱 Agregar Nueva App</h2>
+                <button class="btn-close" onclick="closeAddAppModal()">×</button>
+            </div>
+            <div class="input-group">
+                <label>Nombre de la App</label>
+                <input type="text" id="app-name" placeholder="Mi App Increíble">
+            </div>
+            <div class="input-group">
+                <label>App Store ID</label>
+                <input type="text" id="app-store-id" placeholder="123456789">
+                <small style="color: #94a3b8; font-size: 0.85em; display: block; margin-top: 5px;">
+                    Encuentra el ID en la URL de tu app: apps.apple.com/app/<strong>id123456789</strong>
+                </small>
+            </div>
+            <div class="input-group">
+                <label>País</label>
+                <select id="app-country" style="width: 100%; padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #e2e8f0; font-size: 1em;">
+                    <option value="US">🇺🇸 Estados Unidos</option>
+                    <option value="ES">🇪🇸 España</option>
+                    <option value="MX">🇲🇽 México</option>
+                    <option value="AR">🇦🇷 Argentina</option>
+                    <option value="CO">🇨🇴 Colombia</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="addApp()">Agregar App</button>
         </div>
     </div>
 
     <script>
-        const API_URL = window.location.origin;
-        let evolutionChart = null, volumeChart = null, distributionChart = null, comparisonChart = null;
-        let currentDays = 7;
-        let lastChecksum = null;
-
-        // Datos reales de popularidad y dificultad (ASO Intelligence)
-        const KEYWORD_DATA = {
-            "relaxing bible stories": {popularity: 0, difficulty: 67},
-            "guided scripture audio": {popularity: 5, difficulty: 67},
-            "bible chat": {popularity: 67, difficulty: 70},
-            "relaxing bible audio": {popularity: 5, difficulty: 74},
-            "bible sleep story": {popularity: 5, difficulty: 63},
-            "bible sleep": {popularity: 5, difficulty: 70},
-            "calming bible app": {popularity: 5, difficulty: 75},
-            "bible notes": {popularity: 34, difficulty: 71},
-            "bible path": {popularity: 50, difficulty: 64},
-            "healing scripture audio": {popularity: 5, difficulty: 67},
-            "bible reading": {popularity: 24, difficulty: 78},
-            "peaceful scripture audio": {popularity: 5, difficulty: 68},
-            "bedtime bible stories": {popularity: 5, difficulty: 68},
-            "bible journey": {popularity: 5, difficulty: 59},
-            "bible stories audio": {popularity: 5, difficulty: 70},
-            "bible bedtime stories": {popularity: 5, difficulty: 67},
-            "bible ai chat": {popularity: 15, difficulty: 58},
-            "bible stories bedtime": {popularity: 5, difficulty: 67},
-            "chat bible": {popularity: 5, difficulty: 69},
-            "calming bible stories": {popularity: 5, difficulty: 68},
-            "daily bible reading": {popularity: 24, difficulty: 70},
-            "bible sleep stories app": {popularity: 5, difficulty: 75},
-            "audio bible": {popularity: 40, difficulty: 63},
-            "sleep with bible": {popularity: 5, difficulty: 74},
-            "audio bible stories for sleep": {popularity: 5, difficulty: 75},
-            "audio bible stories": {popularity: 22, difficulty: 61},
-            "guided bible path": {popularity: 5, difficulty: 68},
-            "bible reading audio": {popularity: 5, difficulty: 76},
-            "peaceful bible app": {popularity: 5, difficulty: 69},
-            "bible chat app": {popularity: 27, difficulty: 70},
-            "guided bible journey": {popularity: 5, difficulty: 73},
-            "bible listening app": {popularity: 5, difficulty: 78},
-            "daily audio bible": {popularity: 13, difficulty: 69},
-            "sleep bible audio": {popularity: 5, difficulty: 78},
-            "bible chat gpt": {popularity: 13, difficulty: 66},
-            "bible reading plan": {popularity: 26, difficulty: 67},
-            "scripture audio stories": {popularity: 5, difficulty: 65},
-            "calming scripture audio": {popularity: 5, difficulty: 72},
-            "audio bible app": {popularity: 5, difficulty: 70},
-            "scripture meditation audio": {popularity: 5, difficulty: 70},
-            "relaxing bible app": {popularity: 5, difficulty: 68},
-            "audio bible app free": {popularity: 51, difficulty: 65},
-            "bible audio app": {popularity: 5, difficulty: 71},
-            "bible meditation audio": {popularity: 5, difficulty: 74},
-            "listen to the bible": {popularity: 19, difficulty: 77},
-            "sleep bible stories": {popularity: 5, difficulty: 64},
-            "bible audio": {popularity: 32, difficulty: 73},
-            "daily scripture audio": {popularity: 5, difficulty: 64}
-        };
-
-        function estimateVolume(keyword, rank) {
-            const kw = keyword.toLowerCase();
-            
-            // Usar datos reales si están disponibles
-            if (KEYWORD_DATA[kw]) {
-                const pop = KEYWORD_DATA[kw].popularity;
-                // Convertir popularity score a búsquedas/día estimadas
-                // Score 0-5: 20-100/día
-                // Score 5-24: 100-500/día
-                // Score 24-40: 500-1200/día
-                // Score 40-67: 1200-2500/día
-                if (pop <= 5) return Math.round(20 + (pop * 16));
-                if (pop <= 24) return Math.round(100 + ((pop - 5) * 21));
-                if (pop <= 40) return Math.round(500 + ((pop - 24) * 44));
-                return Math.round(1200 + ((pop - 40) * 48));
-            }
-            
-            // Fallback: estimación genérica
-            const wordCount = keyword.split(' ').length;
-            let monthlyVolume;
-            if (wordCount === 1) monthlyVolume = 8000;
-            else if (wordCount === 2) monthlyVolume = 2000;
-            else if (wordCount === 3) monthlyVolume = 600;
-            else monthlyVolume = 200;
-            
-            if (kw.includes('bible') && wordCount <= 2) monthlyVolume *= 1.5;
-            if (kw.includes('sleep') && wordCount <= 2) monthlyVolume *= 1.3;
-            if (kw.includes('kids') || kw.includes('children')) monthlyVolume *= 0.8;
-            
-            return Math.round(monthlyVolume / 30);
-        }
-
-        function getDifficulty(keyword) {
-            const kw = keyword.toLowerCase();
-            return KEYWORD_DATA[kw] ? KEYWORD_DATA[kw].difficulty : null;
-        }
-
-        function estimateImpressions(rank, volume) {
-            if (!rank || rank > 100) return 0;
-            // CTRs más realistas basados en datos de ASO
-            let ctr;
-            if (rank === 1) ctr = 0.28;
-            else if (rank === 2) ctr = 0.18;
-            else if (rank === 3) ctr = 0.12;
-            else if (rank <= 5) ctr = 0.08;
-            else if (rank <= 10) ctr = 0.05;
-            else if (rank <= 20) ctr = 0.025;
-            else if (rank <= 50) ctr = 0.01;
-            else ctr = 0.005;
-            
-            return Math.round(volume * ctr);
-        }
-
-        async function fetchAPI(endpoint) {
-            const startTime = performance.now();
-            const res = await fetch(`${API_URL}${endpoint}`);
-            const endTime = performance.now();
-            const responseTime = endTime - startTime;
-            
-            updatePerformanceIndicator(responseTime, res.ok);
-            
-            if (!res.ok) throw new Error(`Error: ${res.status}`);
-            return await res.json();
-        }
+        // Config Supabase
+        const SUPABASE_URL = 'https://bidqxydrybpuwyskrarh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpZHF4eWRyeWJwdXd5c2tyYXJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcxMjU5NDgsImV4cCI6MjA1MjcwMTk0OH0.oAVOtxBrKz1wGWr6JuHbF3r63bXr8vXilZ-rvSPTfaI';
         
-        function updatePerformanceIndicator(responseTime, success) {
-            const indicator = document.getElementById('perf-indicator');
-            const dot = indicator.querySelector('.perf-dot');
-            const text = document.getElementById('perf-text');
-            
-            if (!success) {
-                dot.className = 'perf-dot perf-red';
-                text.textContent = 'Error en API';
-            } else if (responseTime < 100) {
-                dot.className = 'perf-dot perf-green';
-                text.textContent = `⚡ ${Math.round(responseTime)}ms (cached)`;
-            } else if (responseTime < 500) {
-                dot.className = 'perf-dot perf-yellow';
-                text.textContent = `⏱️ ${Math.round(responseTime)}ms`;
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let currentUser = null;
+        let currentApp = null;
+        let userApps = [];
+        let evolutionChart = null;
+
+        // === AUTH ===
+        
+        function showLogin() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('signup-form').style.display = 'none';
+            clearMessages();
+        }
+
+        function showSignup() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('signup-form').style.display = 'block';
+            clearMessages();
+        }
+
+        function clearMessages() {
+            document.getElementById('error-msg').style.display = 'none';
+            document.getElementById('success-msg').style.display = 'none';
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error-msg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            document.getElementById('success-msg').style.display = 'none';
+        }
+
+        function showSuccess(msg) {
+            const el = document.getElementById('success-msg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            document.getElementById('error-msg').style.display = 'none';
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                showError('Por favor completa todos los campos');
+                return;
+            }
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) {
+                showError(error.message);
             } else {
-                dot.className = 'perf-dot perf-red';
-                text.textContent = `🐌 ${Math.round(responseTime)}ms (slow)`;
+                currentUser = data.user;
+                showDashboard();
             }
         }
 
-        function setTimeRange(days) {
-            currentDays = days;
-            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`btn-${days}d`).classList.add('active');
-            document.getElementById('days-label').textContent = `Últimos ${days} días`;
-            loadEvolutionChart();
-            loadComparisonChart();
+        async function handleSignup() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            if (!email || !password) {
+                showError('Por favor completa todos los campos');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password
+            });
+
+            if (error) {
+                showError(error.message);
+            } else {
+                showSuccess('¡Cuenta creada! Revisa tu email para confirmar (o inicia sesión directamente)');
+                setTimeout(() => showLogin(), 2000);
+            }
         }
 
-        function showNotification(message) {
-            const notif = document.getElementById('notification');
-            notif.innerHTML = `<i data-lucide="bell" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-right: 10px;"></i>${message}`;
-            notif.style.display = 'block';
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            currentUser = null;
+            currentApp = null;
+            userApps = [];
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+
+        // === DASHBOARD ===
+
+        async function showDashboard() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('user-email').textContent = currentUser.email;
+            
+            await loadUserApps();
             lucide.createIcons();
-            setTimeout(() => notif.style.display = 'none', 4000);
         }
 
-        async function checkForUpdates() {
-            try {
-                const current = await fetchAPI('/api/rankings/current');
-                const checksum = JSON.stringify(current.rankings.map(r => `${r.keyword}-${r.rank}`).sort()).length;
-                if (lastChecksum && checksum !== lastChecksum) {
-                    showNotification('¡Nuevos datos disponibles! Actualizando dashboard...');
-                    await loadAllData();
-                }
-                lastChecksum = checksum;
-            } catch (e) {
-                console.error('Error checking updates:', e);
+        async function loadUserApps() {
+            const { data: apps, error } = await supabase
+                .from('apps')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading apps:', error);
+                return;
+            }
+
+            userApps = apps || [];
+            renderAppSelector();
+
+            if (userApps.length === 0) {
+                document.getElementById('empty-state').style.display = 'block';
+                document.getElementById('content').style.display = 'none';
+            } else {
+                document.getElementById('empty-state').style.display = 'none';
+                selectApp(userApps[0]);
             }
         }
 
-        async function exportToCSV() {
-            try {
-                const current = await fetchAPI('/api/rankings/current');
-                const headers = ['Keyword', 'Posición', 'País', 'App ID', 'Volumen Est.', 'Impresiones Est.'];
-                const rows = current.rankings.map(r => {
-                    const vol = estimateVolume(r.keyword, r.rank);
-                    const imp = estimateImpressions(r.rank, vol);
-                    return [r.keyword, r.rank || 'N/A', r.country, r.app_id, vol, imp];
-                });
-                let csv = headers.join(',') + '\\n';
-                csv += rows.map(r => r.map(v => `"${v}"`).join(',')).join('\\n');
-                const blob = new Blob([csv], {type: 'text/csv'});
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `aso-rankings-${new Date().toISOString().split('T')[0]}.csv`;
-                a.click();
-                showNotification('Reporte CSV descargado correctamente');
-            } catch (e) {
-                console.error('Error exporting CSV:', e);
-            }
+        function renderAppSelector() {
+            const container = document.getElementById('app-selector');
+            container.innerHTML = '<button class="btn-add-app" onclick="showAddAppModal()"><i data-lucide="plus-circle" style="width: 20px; height: 20px;"></i> Agregar App</button>';
+
+            userApps.forEach(app => {
+                const div = document.createElement('div');
+                div.className = 'app-card' + (currentApp && currentApp.id === app.id ? ' active' : '');
+                div.onclick = () => selectApp(app);
+                div.innerHTML = `
+                    <div>
+                        <h3>${app.name}</h3>
+                        <p>ID: ${app.app_store_id}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            lucide.createIcons();
         }
 
-        async function exportToJSON() {
+        function selectApp(app) {
+            currentApp = app;
+            renderAppSelector();
+            loadAppData();
+        }
+
+        async function loadAppData() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('content').style.display = 'none';
+
             try {
-                const [current, history, stats] = await Promise.all([
-                    fetchAPI('/api/rankings/current'),
-                    fetchAPI(`/api/rankings/history?days=${currentDays}`),
-                    fetchAPI('/api/stats')
+                await Promise.all([
+                    loadStats(),
+                    loadKeywords(),
+                    loadEvolutionChart()
                 ]);
-                const data = {
-                    export_date: new Date().toISOString(),
-                    stats: stats,
-                    current_rankings: current.rankings.map(r => ({
-                        ...r,
-                        volume_estimate: estimateVolume(r.keyword, r.rank),
-                        impressions_estimate: estimateImpressions(r.rank, estimateVolume(r.keyword, r.rank))
-                    })),
-                    history: history.history
-                };
-                const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `aso-rankings-${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                showNotification('Reporte JSON descargado correctamente');
-            } catch (e) {
-                console.error('Error exporting JSON:', e);
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Error cargando datos: ' + error.message);
             }
         }
 
         async function loadStats() {
-            const stats = await fetchAPI('/api/stats');
-            const current = await fetchAPI('/api/rankings/current');
-            document.getElementById('total-keywords').textContent = stats.total_keywords;
-            document.getElementById('top-10').textContent = stats.top_10_keywords;
-            document.getElementById('top-50').textContent = stats.top_50_keywords;
-            let totalImp = 0;
-            current.rankings.forEach(i => totalImp += estimateImpressions(i.rank, estimateVolume(i.keyword, i.rank)));
-            document.getElementById('visibility-score').textContent = (totalImp/1000).toFixed(1) + 'K';
-            document.getElementById('last-update').textContent = `Última actualización: ${new Date(stats.last_check).toLocaleString('es-ES')} ${stats.cached ? '(cached)' : ''}`;
-        }
+            const { count: totalKeywords } = await supabase
+                .from('keywords')
+                .select('*', { count: 'exact', head: true })
+                .eq('app_id', currentApp.id)
+                .eq('is_active', true);
 
-        async function loadEvolutionChart() {
-            const history = await fetchAPI(`/api/rankings/history?days=${currentDays}`);
-            const kwData = {};
-            history.history.forEach(i => {
-                if (!kwData[i.keyword]) kwData[i.keyword] = [];
-                kwData[i.keyword].push({x: new Date(i.timestamp), y: i.rank});
-            });
-            const top5 = Object.keys(kwData).sort((a,b) => {
-                const avgA = kwData[a].reduce((s,p) => s+p.y, 0) / kwData[a].length;
-                const avgB = kwData[b].reduce((s,p) => s+p.y, 0) / kwData[b].length;
-                return avgA - avgB;
-            }).slice(0,5);
-            const colors = ['#10b981','#3b82f6','#f59e0b','#ef4444','#8b5cf6'];
-            const datasets = top5.map((kw,i) => ({
-                label: kw,
-                data: kwData[kw].sort((a,b) => a.x-b.x),
-                borderColor: colors[i],
-                backgroundColor: colors[i]+'20',
-                tension: 0.4,
-                borderWidth: 3,
-                pointRadius: 5,
-                pointHoverRadius: 8
-            }));
-            const ctx = document.getElementById('evolutionChart').getContext('2d');
-            if (evolutionChart) evolutionChart.destroy();
-            evolutionChart = new Chart(ctx, {
-                type: 'line',
-                data: {datasets},
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {type: 'time', time: {unit: currentDays > 14 ? 'day' : 'day'}, grid: {color: 'rgba(255,255,255,0.1)'}, ticks: {color: '#94a3b8', font: {size: 12}}},
-                        y: {reverse: true, grid: {color: 'rgba(255,255,255,0.1)'}, ticks: {color: '#94a3b8', font: {size: 12}}, title: {display: true, text: 'Posición en App Store', color: '#94a3b8', font: {size: 14}}}
-                    },
-                    plugins: {
-                        legend: {labels: {color: '#e2e8f0', font: {size: 13}, padding: 15}},
-                        tooltip: {backgroundColor: 'rgba(15,23,42,0.95)', titleColor: '#e2e8f0', titleFont: {size: 14}, bodyColor: '#e2e8f0', bodyFont: {size: 13}, borderColor: '#667eea', borderWidth: 2, padding: 12}
-                    }
+            document.getElementById('total-keywords').textContent = totalKeywords || 0;
+
+            // Get latest rankings
+            const { data: keywords } = await supabase
+                .from('keywords')
+                .select('id')
+                .eq('app_id', currentApp.id)
+                .eq('is_active', true);
+
+            let top10 = 0, top50 = 0, totalRank = 0, count = 0;
+
+            for (const kw of keywords || []) {
+                const { data: rankings } = await supabase
+                    .from('rankings')
+                    .select('rank')
+                    .eq('keyword_id', kw.id)
+                    .order('tracked_at', { ascending: false })
+                    .limit(1);
+
+                if (rankings && rankings[0]) {
+                    const rank = rankings[0].rank;
+                    if (rank <= 10) top10++;
+                    if (rank <= 50) top50++;
+                    totalRank += rank;
+                    count++;
                 }
-            });
+            }
+
+            document.getElementById('top-10').textContent = top10;
+            document.getElementById('top-50').textContent = top50;
+            document.getElementById('avg-rank').textContent = count > 0 ? Math.round(totalRank / count) : '-';
         }
 
-        async function loadDistributionChart() {
-            const current = await fetchAPI('/api/rankings/current');
-            const dist = {top10: 0, top50: 0, top100: 0, other: 0};
-            current.rankings.forEach(r => {
-                if (!r.rank || r.rank > 100) dist.other++;
-                else if (r.rank <= 10) dist.top10++;
-                else if (r.rank <= 50) dist.top50++;
-                else dist.top100++;
-            });
-            const ctx = document.getElementById('distributionChart').getContext('2d');
-            if (distributionChart) distributionChart.destroy();
-            distributionChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Top 10', 'Top 50', 'Top 100', '>100'],
-                    datasets: [{
-                        data: [dist.top10, dist.top50, dist.top100, dist.other],
-                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#6b7280'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {position: 'bottom', labels: {color: '#e2e8f0', font: {size: 12}, padding: 15}},
-                        tooltip: {backgroundColor: 'rgba(15,23,42,0.95)', callbacks: {label: ctx => `${ctx.label}: ${ctx.parsed} keywords`}}
-                    }
-                }
-            });
-        }
+        async function loadKeywords() {
+            const { data: keywords } = await supabase
+                .from('keywords')
+                .select('id, keyword, country')
+                .eq('app_id', currentApp.id)
+                .eq('is_active', true)
+                .order('keyword');
 
-        async function loadComparisonChart() {
-            const history = await fetchAPI(`/api/rankings/history?days=${currentDays}`);
-            const df = {};
-            history.history.forEach(h => {
-                const date = new Date(h.timestamp).toISOString().split('T')[0];
-                if (!df[date]) df[date] = {top10: 0, top50: 0, top100: 0};
-                if (h.rank <= 10) df[date].top10++;
-                else if (h.rank <= 50) df[date].top50++;
-                else if (h.rank <= 100) df[date].top100++;
-            });
-            const dates = Object.keys(df).sort();
-            const ctx = document.getElementById('comparisonChart').getContext('2d');
-            if (comparisonChart) comparisonChart.destroy();
-            comparisonChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [
-                        {label: 'Top 10', data: dates.map(d => df[d].top10), borderColor: '#10b981', backgroundColor: '#10b98120', fill: true, tension: 0.4},
-                        {label: 'Top 50', data: dates.map(d => df[d].top50), borderColor: '#3b82f6', backgroundColor: '#3b82f620', fill: true, tension: 0.4},
-                        {label: 'Top 100', data: dates.map(d => df[d].top100), borderColor: '#f59e0b', backgroundColor: '#f59e0b20', fill: true, tension: 0.4}
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {grid: {color: 'rgba(255,255,255,0.1)'}, ticks: {color: '#94a3b8', font: {size: 10}}},
-                        y: {grid: {color: 'rgba(255,255,255,0.1)'}, ticks: {color: '#94a3b8'}, title: {display: true, text: 'Keywords', color: '#94a3b8'}}
-                    },
-                    plugins: {
-                        legend: {position: 'bottom', labels: {color: '#e2e8f0', font: {size: 12}, padding: 10}},
-                        tooltip: {backgroundColor: 'rgba(15,23,42,0.95)'}
-                    }
-                }
-            });
-        }
-
-        async function loadVolumeChart() {
-            const current = await fetchAPI('/api/rankings/current');
-            const data = current.rankings.map(i => ({
-                keyword: i.keyword,
-                rank: i.rank || 999,
-                volume: estimateVolume(i.keyword, i.rank),
-                impressions: estimateImpressions(i.rank||999, estimateVolume(i.keyword, i.rank))
-            })).filter(i => i.rank <= 100).sort((a,b) => a.rank-b.rank).slice(0,15);
-            const ctx = document.getElementById('volumeChart').getContext('2d');
-            if (volumeChart) volumeChart.destroy();
-            volumeChart = new Chart(ctx, {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                        label: 'Keywords',
-                        data: data.map(i => ({x: i.rank, y: i.volume, keyword: i.keyword, impressions: i.impressions})),
-                        backgroundColor: data.map(i => i.rank<=10 ? '#10b981' : i.rank<=50 ? '#3b82f6' : '#f59e0b'),
-                        borderColor: 'rgba(255,255,255,0.5)',
-                        borderWidth: 2,
-                        pointRadius: ctx => Math.max(8, Math.min(20, ctx.raw.y/200))
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {title: {display: true, text: 'Posición (mejor ← → peor)', color: '#94a3b8'}, grid: {color: 'rgba(255,255,255,0.1)'}, ticks: {color: '#94a3b8'}},
-                        y: {title: {display: true, text: 'Volumen Búsquedas/día', color: '#94a3b8'}, grid: {color: 'rgba(255,255,255,0.1)'}, ticks: {color: '#94a3b8'}}
-                    },
-                    plugins: {
-                        legend: {display: false},
-                        tooltip: {
-                            backgroundColor: 'rgba(15,23,42,0.95)',
-                            callbacks: {
-                                title: i => i[0].raw.keyword,
-                                label: i => [`Posición: #${i.raw.x}`, `Volumen: ${i.raw.y.toLocaleString()}/día`, `Impresiones: ${i.raw.impressions.toLocaleString()}/día`]
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        async function loadActionableInsights() {
-            const changes = await fetchAPI('/api/changes?hours=24');
-            const current = await fetchAPI('/api/rankings/current');
-            const actionsList = document.getElementById('actions-list');
-            actionsList.innerHTML = '';
-            const actions = [];
-            changes.changes.forEach(c => {
-                if (c.change < -5 && c.new_rank > 10) {
-                    const vol = estimateVolume(c.keyword, c.old_rank);
-                    const lost = estimateImpressions(c.old_rank, vol) - estimateImpressions(c.new_rank, vol);
-                    actions.push({
-                        priority: 'high',
-                        title: `<i data-lucide="alert-triangle" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> "${c.keyword}" cayó ${Math.abs(c.change)} posiciones`,
-                        desc: `Perdiendo ~${lost} impresiones/día`,
-                        action: 'Revisar reviews y metadata'
-                    });
-                }
-            });
-            current.rankings.forEach(i => {
-                if (i.rank >= 11 && i.rank <= 15) {
-                    const vol = estimateVolume(i.keyword, i.rank);
-                    const gain = estimateImpressions(10, vol) - estimateImpressions(i.rank, vol);
-                    actions.push({
-                        priority: 'medium',
-                        title: `<i data-lucide="target" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> "${i.keyword}" cerca del Top 10`,
-                        desc: `En #${i.rank}. Potencial: +${gain} impresiones/día`,
-                        action: 'Optimizar para Top 10'
-                    });
-                }
-            });
-            actions.slice(0,5).forEach(a => {
-                const li = document.createElement('li');
-                li.className = 'action-item';
-                li.innerHTML = `
-                    <span class="action-priority priority-${a.priority}">${a.priority==='high'?'URGENTE':a.priority==='medium'?'IMPORTANTE':'OPCIONAL'}</span>
-                    <div style="font-weight:600;margin:10px 0;">${a.title}</div>
-                    <div style="color:#94a3b8;margin-bottom:10px;">${a.desc}</div>
-                    <div style="color:#667eea;">→ ${a.action}</div>
-                `;
-                actionsList.appendChild(li);
-            });
-            if (!actions.length) actionsList.innerHTML = '<li class="action-item" style="border-left-color:#10b981;"><i data-lucide="check-circle" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; color: #10b981;"></i> Todo estable. ¡Buen trabajo!</li>';
-        }
-
-        async function loadOpportunities() {
-            const current = await fetchAPI('/api/rankings/current');
-            const opp = document.getElementById('opportunities-list');
-            opp.innerHTML = '';
-            const pot = current.rankings.filter(i => i.rank > 50 && i.rank <= 100)
-                .sort((a,b) => estimateVolume(b.keyword, b.rank) - estimateVolume(a.keyword, a.rank)).slice(0,3);
-            pot.forEach(i => {
-                const vol = estimateVolume(i.keyword, i.rank);
-                const gain = estimateImpressions(20, vol) - estimateImpressions(i.rank, vol);
-                const div = document.createElement('div');
-                div.className = 'opportunity-card';
-                div.innerHTML = `
-                    <div class="opportunity-title"><i data-lucide="gem" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> "${i.keyword}"</div>
-                    <div class="opportunity-desc">En #${i.rank}. Con optimización → Top 20, ganarías ~${gain.toLocaleString()} impresiones/día.</div>
-                    <div class="opportunity-action"><i data-lucide="sparkles" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> Optimizar ahora</div>
-                `;
-                opp.appendChild(div);
-            });
-            if (!pot.length) opp.innerHTML = '<div style="color:#94a3b8;padding:20px;text-align:center;">Continúa monitoreando</div>';
-        }
-
-        async function loadKeywordsTable() {
-            const current = await fetchAPI('/api/rankings/current');
-            const changes = await fetchAPI('/api/changes?hours=24');
             const tbody = document.querySelector('#keywords-table tbody');
             tbody.innerHTML = '';
-            const chg = {};
-            changes.changes.forEach(c => chg[c.keyword] = c.change);
-            current.rankings.sort((a,b) => (a.rank||999)-(b.rank||999)).forEach(i => {
-                const r = i.rank || 999;
-                const vol = estimateVolume(i.keyword, r);
-                const imp = estimateImpressions(r, vol);
-                const c = chg[i.keyword] || 0;
+
+            for (const kw of keywords || []) {
+                const { data: rankings } = await supabase
+                    .from('rankings')
+                    .select('rank, tracked_at')
+                    .eq('keyword_id', kw.id)
+                    .order('tracked_at', { ascending: false })
+                    .limit(1);
+
+                const rank = rankings && rankings[0] ? rankings[0].rank : null;
+                const trackedAt = rankings && rankings[0] ? new Date(rankings[0].tracked_at).toLocaleString('es-ES') : '-';
+
                 let badge = 'rank-other';
-                if (r <= 10) badge = 'rank-top10';
-                else if (r <= 50) badge = 'rank-top50';
-                else if (r <= 100) badge = 'rank-top100';
-                let trend = '<span class="trend-stable">→</span>';
-                if (c > 0) trend = `<span class="trend-up">↑${c}</span>`;
-                if (c < 0) trend = `<span class="trend-down">↓${Math.abs(c)}</span>`;
-                const difficulty = getDifficulty(i.keyword);
-                let diffBadge = '';
-                let insight = '';
-                if (difficulty) {
-                    const diffColor = difficulty >= 75 ? '#ef4444' : difficulty >= 70 ? '#f59e0b' : '#10b981';
-                    diffBadge = `<span style="background: ${diffColor}20; color: ${diffColor}; padding: 5px 12px; border-radius: 15px; font-size: 0.85em; font-weight: 600;">${difficulty}</span>`;
-                    
-                    // Generar insight basado en ranking + dificultad
-                    if (r <= 10 && difficulty >= 70) {
-                        insight = `🏆 Posición TOP en keyword competitiva (diff ${difficulty}) - Mantener!`;
-                    } else if (r <= 10 && difficulty < 70) {
-                        insight = `✅ TOP en keyword alcanzable (diff ${difficulty}) - Excelente`;
-                    } else if (r <= 50 && difficulty < 65) {
-                        insight = `🎯 Oportunidad: baja dificultad (${difficulty}), puede alcanzar Top 10`;
-                    } else if (r > 50 && difficulty >= 75) {
-                        insight = `⚠️ Muy competitiva (diff ${difficulty}), considera long-tail`;
-                    } else if (r > 50 && difficulty < 70) {
-                        insight = `💡 Potencial: dificultad media (${difficulty}), optimizar metadata`;
-                    }
-                } else {
-                    diffBadge = '<span style="color: #64748b;">-</span>';
-                }
+                if (rank <= 10) badge = 'rank-top10';
+                else if (rank <= 50) badge = 'rank-top50';
+                else if (rank <= 100) badge = 'rank-top100';
+
                 const tr = document.createElement('tr');
                 tr.className = 'keyword-row';
                 tr.innerHTML = `
-                    <td><div class="keyword-name" ${insight ? `title="${insight}"` : ''}>${i.keyword}</div></td>
-                    <td style="text-align:center;"><span class="rank-badge ${badge}">#${r>999?'N/A':r}</span></td>
-                    <td style="text-align:center;"><span class="trend-indicator">${trend}</span></td>
-                    <td style="text-align:center;"><span class="volume-badge">${vol.toLocaleString()}/día</span></td>
-                    <td style="text-align:center;">${diffBadge}</td>
-                    <td style="text-align:center;"><span class="impact-score">${imp.toLocaleString()}</span></td>
+                    <td>${kw.keyword}</td>
+                    <td style="text-align:center;">${kw.country}</td>
+                    <td style="text-align:center;"><span class="rank-badge ${badge}">#${rank || 'N/A'}</span></td>
+                    <td style="text-align:center; color: #94a3b8; font-size: 0.9em;">${trackedAt}</td>
                 `;
                 tbody.appendChild(tr);
-            });
-        }
-
-        async function loadAllData() {
-            try {
-                document.getElementById('loading').style.display = 'block';
-                document.getElementById('content').style.display = 'none';
-                await Promise.all([
-                    loadStats(), 
-                    loadEvolutionChart(), 
-                    loadDistributionChart(),
-                    loadComparisonChart(),
-                    loadVolumeChart(), 
-                    loadActionableInsights(), 
-                    loadOpportunities(), 
-                    loadKeywordsTable()
-                ]);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loading').innerHTML = `<div style="color:#ef4444;"><i data-lucide="x-circle" style="width: 40px; height: 40px; display: inline-block;"></i><br>Error: ${error.message}</div>`;
-                lucide.createIcons();
             }
         }
 
-        loadAllData().then(() => lucide.createIcons());
-        setInterval(() => {
-            checkForUpdates();
-            loadAllData().then(() => lucide.createIcons());
-        }, 5 * 60 * 1000);
+        async function loadEvolutionChart() {
+            const since = new Date();
+            since.setDate(since.getDate() - 7);
+
+            const { data: rankings } = await supabase
+                .from('rankings')
+                .select(`
+                    rank,
+                    tracked_at,
+                    keyword:keywords!inner(keyword, app_id)
+                `)
+                .eq('keyword.app_id', currentApp.id)
+                .gte('tracked_at', since.toISOString())
+                .order('tracked_at');
+
+            const kwData = {};
+            rankings?.forEach(r => {
+                const kwName = r.keyword?.keyword || 'Unknown';
+                if (!kwData[kwName]) kwData[kwName] = [];
+                kwData[kwName].push({
+                    x: new Date(r.tracked_at),
+                    y: r.rank
+                });
+            });
+
+            const top5 = Object.keys(kwData)
+                .sort((a, b) => {
+                    const avgA = kwData[a].reduce((s, p) => s + p.y, 0) / kwData[a].length;
+                    const avgB = kwData[b].reduce((s, p) => s + p.y, 0) / kwData[b].length;
+                    return avgA - avgB;
+                })
+                .slice(0, 5);
+
+            const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+            const datasets = top5.map((kw, i) => ({
+                label: kw,
+                data: kwData[kw].sort((a, b) => a.x - b.x),
+                borderColor: colors[i],
+                backgroundColor: colors[i] + '20',
+                tension: 0.4,
+                borderWidth: 3
+            }));
+
+            const ctx = document.getElementById('evolutionChart').getContext('2d');
+            if (evolutionChart) evolutionChart.destroy();
+
+            evolutionChart = new Chart(ctx, {
+                type: 'line',
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { unit: 'day' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            reverse: true,
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#94a3b8' },
+                            title: { display: true, text: 'Posición', color: '#94a3b8' }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#e2e8f0' } }
+                    }
+                }
+            });
+        }
+
+        // === ADD APP ===
+
+        function showAddAppModal() {
+            document.getElementById('add-app-modal').style.display = 'flex';
+        }
+
+        function closeAddAppModal() {
+            document.getElementById('add-app-modal').style.display = 'none';
+            document.getElementById('app-name').value = '';
+            document.getElementById('app-store-id').value = '';
+        }
+
+        async function addApp() {
+            const name = document.getElementById('app-name').value;
+            const appStoreId = document.getElementById('app-store-id').value;
+            const country = document.getElementById('app-country').value;
+
+            if (!name || !appStoreId) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('apps')
+                .insert([{
+                    user_id: currentUser.id,
+                    name: name,
+                    app_store_id: appStoreId,
+                    country: country
+                }])
+                .select()
+                .single();
+
+            if (error) {
+                alert('Error creando app: ' + error.message);
+            } else {
+                closeAddAppModal();
+                await loadUserApps();
+                selectApp(data);
+            }
+        }
+
+        // Check auth on load
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                currentUser = session.user;
+                showDashboard();
+            }
+        });
+
+        lucide.createIcons();
     </script>
 </body>
 </html>
