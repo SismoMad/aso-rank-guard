@@ -6,6 +6,13 @@ config/credentials.json
 config/token.json
 CREDENTIALS.md
 .env
+.env.local
+.env.*.local
+.env.production
+*.pem
+*.key
+*.p12
+*.crt
 
 # Datos y logs (pueden contener información sensible)
 data/*.csv
@@ -67,3 +74,8 @@ nextjs-build/
 web-app-*/
 *.tar
 *.gz
+
+# Next.js
+web-app/.next/
+web-app/out/
+web-app/.env*.local

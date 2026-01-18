@@ -1,0 +1,9 @@
+# Web Environment Files
+# Add this to your .gitignore
+
+# Config files with real credentials
+web/env.js
+web/config.js
+
+# Only commit the example files
+# web/env.example.js

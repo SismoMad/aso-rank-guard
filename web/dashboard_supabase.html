@@ -123,8 +123,10 @@
 
     <script>
         // Configurar Supabase
-        const SUPABASE_URL = 'https://bidqxydrybpuwyskrarh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpZHF4eWRyeWJwdXd5c2tyYXJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcxMjU5NDgsImV4cCI6MjA1MjcwMTk0OH0.oAVOtxBrKz1wGWr6JuHbF3r63bXr8vXilZ-rvSPTfaI';
+        // ⚠️ IMPORTANT: These should come from environment variables in production
+        // For now, get them from a config file or server endpoint
+        const SUPABASE_URL = window.ENV?.SUPABASE_URL || 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = window.ENV?.SUPABASE_ANON_KEY || 'YOUR_ANON_KEY';
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const APP_ID = 'd30da119-98d7-4c12-9e9f-13f3726c82fe';
