@@ -240,7 +240,11 @@ class SupabaseClient:
             data = [
                 {
                     'keyword_id': r['keyword_id'],
-                    'rank': r['rank'] if r.get('rank') and r['rank'] < 999 else None,
+                    'rank': (
+                        int(r['rank'])
+                        if r.get('rank') and int(r['rank']) > 0 and int(r['rank']) < 999
+                        else 999
+                    ),
                     'tracked_at': r.get('tracked_at', datetime.utcnow().isoformat())
                 }
                 for r in rankings
